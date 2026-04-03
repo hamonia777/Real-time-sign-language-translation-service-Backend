@@ -108,26 +108,25 @@ uvicorn main.main:app --reload
 
 ```
 
-## 📁 프로젝트 구조
+## 📂 프로젝트 구조 (Project Structure)
 
-```
+```text
 main/
 ├── api/                    # API 라우팅 계층
-│   ├── router.py          # 메인 라우터
+│   ├── router.py           # 메인 라우터
 │   └── user/
-│       └── user_routes.py # 사용자 엔드포인트
+│       └── user_routes.py  # 사용자 엔드포인트
 ├── domain/                 # 도메인 계층
 │   └── user/
-│       ├── dto/           # Data Transfer Objects
-│       ├── entity/        # 데이터베이스 모델
-│       ├── repository/    # 리포지토리 인터페이스
-│       ├── service/       # 비즈니스 로직
-│       └── usecase/       # 유스케이스
+│       ├── dto/            # Data Transfer Objects
+│       ├── entity/         # 데이터베이스 모델
+│       ├── repository/     # 리포지토리 인터페이스
+│       ├── service/        # 비즈니스 로직
+│       └── usecase/        # 유스케이스
 ├── core/                   # 공통 설정
-│   └── config.py          # 환경 설정
-│   └── database.py        # 데이터 베이스 관리 코드
-└── main.py                # FastAPI 앱 진입점
-```
+│   ├── config.py           # 환경 설정
+│   └── database.py         # 데이터 베이스 관리 코드
+└── main.py                 # FastAPI 앱 진입점
 
 ## 🔧 환경 설정 파일
 
