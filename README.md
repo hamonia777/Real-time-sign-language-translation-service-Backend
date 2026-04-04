@@ -63,9 +63,9 @@ DB_PORT=3306
 DB_NAME=sign
 ```
 
-### 5단계: MySQL 데이터베이스 설정
+### 5단계: MySQL 데이터베이스 설정(로컬 db로 테스트할때)
 
-#### 옵션 a: 새 사용자 생성 (만약 안될시에 시도해보세요)
+#### 옵션 A: 새 사용자 생성 (만약 안될시에 시도해보세요)
 ```bash
 # MySQL에 접속
 mysql -u root
@@ -83,7 +83,7 @@ DB_USER=app_user
 DB_PASSWORD=your_password
 ```
 
-#### 옵션 ㅠ: root 사용자 사용 (WSL/Linux)
+#### 옵션 B: root 사용자 사용 (WSL/Linux)
 ```bash
 # MySQL에 접속 (비밀번호 없이)
 mysql -u root
