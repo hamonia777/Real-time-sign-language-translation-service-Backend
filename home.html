@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수어 연구소</title>
+    <link rel="stylesheet" href="home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="main-header">
+        <div class="wide-container header-inner">
+            <div class="logo">수어 연구소</div>
+            <nav class="nav-bar">
+                <a href="#">수어학습</a>
+                <a href="#">수어검색</a>
+                <a href="#">고객지원</a>
+                <a href="#">마이페이지</a>
+            </nav>
+            <button class="login-btn">로그인</button>
+        </div>
+    </header>
+
+    <section class="hero-section">
+        <div class="wide-container hero-inner">
+            <div class="hero-text">
+                <h1>좀 더 간편하게 수어를 배울 수 있는<br>수어 학습 플랫폼, <span>수어 연구소</span></h1>
+                <p>소통의 벽을 허무는 특별한 학습 공간</p>
+                <button class="start-btn">수어학습 시작하기</button>
+            </div>
+            <div class="hero-visual">
+                <div class="image-frame">
+                    <img src="hero_visual.png" alt="메인 비주얼">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="feature-section">
+        <div class="wide-container">
+            <div class="section-title">
+                <h2>좀 더 재밌고 실용적이게<br> 수어 공부를 하고 싶으신가요?</h2>
+                <p>수어 연구소로 원활한 학습을 진행해보세요.</p>
+            </div>
+            <div class="feature-content-wrapper">
+                <div class="feature-item">
+                    <div class="icon-box"><img src="icon1.png" alt="아이콘"></div>
+                    <h3>전문적인 학습 콘텐츠</h3>
+                    <p>국립수어사전 기반의 검증된<br> 데이터로 완성하는 올바른 수어</p>
+                </div>
+                <div class="divider"></div>
+                <div class="feature-item">
+                    <div class="icon-box"><img src="icon2.png" alt="아이콘"></div>
+                    <h3>AI 기술 기반 인식</h3>
+                    <p>실시간 피드백으로<br> 정교해지는 수어 실력</p>
+                </div>
+                <div class="divider"></div>
+                <div class="feature-item">
+                    <div class="icon-box"><img src="icon3.png" alt="아이콘"></div>
+                    <h3>맞춤형 학습 경로</h3>
+                    <p>학습자 특성을 배려한 <br> 개인별 최적 커리큘럼 로드맵</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="ranking-section">
+        <div class="wide-container ranking-inner">
+            <div class="ranking-info">
+                <h2>실시간 열정 학습자 랭킹을<br> 확인해보세요!</h2>
+                <p>TOP 5 순위를 공개하여 동기부여에<br> 도움을 줍니다.</p>
+            </div>
+            <div class="ranking-card">
+                <div class="card-header">
+                    <span class="top-tag">TOP 5</span>
+                    <span class="update-info">2026년 03월 23일 16시 59분 기준</span>
+                </div>
+                <div class="ranking-table">
+                    <!-- 헤더 행 -->
+                    <div class="rank-header">
+                        <span>순위</span>
+                        <span>닉네임</span>
+                        <span>학습갯수</span>
+                    </div>
+                    <!-- 데이터 행 (JS로 삽입) -->
+                    <div id="ranking-list"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="guide-section">
+        <div class="wide-container">
+            <div class="section-title">
+            <h2>이용 가이드 - 3단계 학습법</h2>
+            <p>단계별로 차근차근 진행해 보아요.</p>
+            </div>
+
+            <div class="tab-group">
+            <button class="tab-btn active">어디서든</button>
+            <button class="tab-btn">간편하게</button>
+            </div>
+
+            <div class="step-wrapper">
+            <div class="step-card">
+                <div class="card-content">
+                <div class="text-group">
+                    <span class="step-label">1단계</span>
+                    <h3>영상시청</h3>
+                </div>
+                <div class="step-icon">
+                    <img src="monitor_icon.png" alt="영상 아이콘">
+                </div>
+                </div>
+                <p class="step-desc">국립 수어 사전 기반<br>단어/문장 반복 시청</p>
+            </div>
+
+            <div class="step-arrow">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+
+            <div class="step-card">
+                <div class="card-content">
+                <div class="text-group">
+                    <span class="step-label">2단계</span>
+                    <h3>카메라 설정</h3>
+                </div>
+                <div class="step-icon">
+                    <img src="camera_icon.png" alt="카메라 아이콘">
+                </div>
+                </div>
+                <p class="step-desc">최적의 인식 환경 조성 및<br>사용법 확인</p>
+            </div>
+
+            <div class="step-arrow">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+
+            <div class="step-card">
+                <div class="card-content">
+                <div class="text-group">
+                    <span class="step-label">3단계</span>
+                    <h3>수어 실습</h3>
+                </div>
+                <div class="step-icon">
+                    <img src="thumb_icon.png" alt="추천 아이콘">
+                </div>
+                </div>
+                <p class="step-desc">AI 정확도 판정(80점 이상) 및<br>학습 완료</p>
+            </div>
+            </div>
+        </div>
+        </section>
+
+    <footer class="main-footer">
+        <div class="wide-container">
+            <div class="footer-content">
+                <h2>수어 연구소와 함께<br>즐기면서 공부해요</h2>
+                <button class="kakao-btn">카카오톡 문의</button>
+            </div>
+            <div class="footer-bottom">
+                <p class="univ-info">수어 연구소 in KyungPook National University</p>
+                <p class="team-info">(주)수어 연구소 팀원 : 김가령 정혜미 박진웅 허민영</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
