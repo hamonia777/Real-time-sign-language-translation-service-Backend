@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>수어 연구소 - 간편가입</title>
+    <link rel="stylesheet" href="../css/home.css"> <link rel="stylesheet" href="../css/register.css"> </head>
+<body class="register-page-bg">
+    <header class="main-header">
+        <div class="wide-container header-inner">
+            <div class="logo" onclick="location.href='home.html'">
+                <img src="../logo.png" alt="로고" class="logo-img">
+                <span>수어 연구소</span>
+            </div>
+            <nav class="nav-bar">
+                <a href="#">수어학습</a>
+                <a href="#">수어검색</a>
+                <a href="#">고객지원</a>
+                <a href="#">마이페이지</a>
+            </nav>
+            <button class="login-btn">로그인</button>
+        </div>
+    </header>
+
+    <main class="register-main">
+        <div class="register-card">
+            <h2 class="title">간편가입</h2>
+            
+            <form id="registerForm">
+                <div class="input-group">
+                    <label>이름</label>
+                    <input type="text" placeholder="이름을 입력해 주세요.">
+                </div>
+
+                <div class="input-group">
+                    <label>연락처</label>
+                    <input type="tel" placeholder="연락처를 입력해 주세요.">
+                </div>
+
+                <div class="input-group">
+                    <label>이메일</label>
+                    <input type="email" value="gim02673@gmail.com">
+                </div>
+
+                <div class="agreement-section">
+                    <div class="check-item all-check">
+                        <input type="checkbox" id="checkAll">
+                        <label for="checkAll">모두 동의합니다</label>
+                    </div>
+                    
+                    <div class="dashed-line"></div> <div class="check-list">
+                        <div class="check-item">
+                            <input type="checkbox" id="term1">
+                            <label for="term1">[필수] 이용약관 동의</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="term2">
+                            <label for="term2">[필수] 개인정보 수집 및 이용 동의</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="term3">
+                            <label for="term3">[선택] 마케팅, 이벤트 할인 혜택 등 정보 수신에 동의합니다.</label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">가입하기</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

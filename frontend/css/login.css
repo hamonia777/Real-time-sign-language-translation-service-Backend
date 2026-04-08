@@ -1,0 +1,92 @@
+/* 로그인 페이지 전체 배경 */
+.login-page-bg {
+    background-color: #F9F9F9;
+    min-height: 100vh;
+}
+
+.login-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 55px);
+}
+
+/* 로그인 카드 */
+.login-card {
+    width: 780px; 
+    background: #FFFFFF;
+    border: 1.2px solid #EFEFEF;
+    border-radius: 20px;
+    padding: 35px 30px;
+}
+
+.login-header h2 {
+    font-size: 19px;
+    font-weight: 600;
+    color: #474747;
+    margin-bottom: 12px;
+    text-align: left;
+}
+
+.login-header p {
+    font-size: 12px; 
+    color: #676767;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+/* 구분선 */
+.divider-line {
+    width: 100%;
+    height: 1px;
+    background-color: #D8D8D8;
+    margin-bottom: 30px;
+}
+
+/* 카카오 버튼 */
+.kakao-login-btn {
+    width: 100%;
+    height: 50px; 
+    background: #FFDF2C;
+    border-radius: 5px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.kakao-login-btn:hover {
+    opacity: 0.9;
+}
+
+.kakao-icon {
+    width: 23px;
+    height: auto;
+}
+
+.kakao-login-btn span {
+    font-size: 12px; 
+    font-weight: 500;
+    color: #392020;
+}
+
+/* 로그아웃 버튼 스타일 (피그마 시안 반영) */
+.header-auth-btn.logout-style {
+    background: #FFFFFF;      
+    border: 1px solid #1F2A58;    
+    color: #1F2A58;               
+    width: 80px;                  
+    height: 30px;
+    border-radius: 99px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.header-auth-btn.logout-style:hover {
+    background: #f0f2f5;
+}

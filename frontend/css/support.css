@@ -1,0 +1,157 @@
+/* 1. 전체 레이아웃 (720px -> 792px로 살짝 확장) */
+.support-page { background-color: #FFFFFF; }
+.support-main { 
+    max-width: 792px; 
+    margin: 0 auto;
+    padding: 33px 16px; 
+}
+
+/* 섹션 타이틀 (19px -> 21px) */
+.section-title {
+    font-size: 19px;
+    font-weight: 600;
+    color: #474747;
+    margin-bottom: 22px;
+}
+
+/* 2. 자주 묻는 질문 (FAQ) 섹션 */
+.category-group {
+    display: flex !important;      
+    flex-direction: column;        
+    gap: 13px;                     
+    margin-bottom: 44px;
+    align-items: center;           
+}
+
+/* 자식 컨테이너 */
+.category-row {
+    display: flex;
+    justify-content: center;       
+    gap: 9px;                      
+    width: 100%;                   
+}
+
+/* 칩 스타일 (폰트 12px -> 13px) */
+.chip {
+    padding: 8px 15px;
+    border-radius: 999px;
+    border: 1px solid #517AAF;
+    background: #FFFFFF;
+    color: #34436D;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;           
+}
+
+.chip.active {
+    background: #34436D;
+    color: #FFFFFF;
+}
+
+.faq-box {
+    border: 1px solid #D6D6D6;
+    border-radius: 11px;
+    padding: 22px;
+    margin-bottom: 44px;
+}
+
+.faq-box h2 {
+    font-size: 20px;
+    margin-bottom: 13px;
+}
+
+.faq-content h3 { font-size: 16px; margin-bottom: 9px; }
+.faq-content p, .faq-content li { 
+    font-size: 14px; 
+    line-height: 1.5; 
+}
+
+.section-divider { border: none; border-top: 1px solid #F0F0F0; margin: 33px 0; }
+
+/* 3. 게시판 섹션 */
+.form-group { margin-bottom: 16px; }
+
+.form-group textarea {
+    font-family: inherit; 
+    height: 165px; 
+    padding: 13px;
+    resize: none;
+    line-height: 1.5; 
+}
+
+.form-group textarea::placeholder {
+    font-family: inherit;
+}
+
+.label-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 9px;
+}
+
+.label-row label {
+    font-size: 14px; 
+    font-weight: 600;
+    color: #474747;
+}
+
+.required-tag, .optional-tag {
+    font-size: 14px;
+    color: #517AAF;
+    font-weight: 600;
+}
+
+/* 입력창 (높이 38px -> 42px) */
+.form-group input, .form-group textarea {
+    width: 100%;
+    background: #FAFAFA;
+    border: 1px solid #D6D6D6;
+    border-radius: 2px;
+    padding: 11px;
+    font-size: 13px;
+    box-sizing: border-box;
+}
+
+.form-group input { height: 42px; }
+.form-group textarea { height: 110px; resize: none; }
+
+/* 마케팅 동의 영역 */
+.marketing-check {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 11px;
+    border: 1px solid #D6D6D6;
+    border-radius: 2px;
+}
+
+.marketing-check input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+}
+
+.marketing-check label {
+    font-size: 13px;
+}
+
+/* 문의하기 버튼 (140x40 -> 154x44) */
+.submit-inquiry-btn {
+    display: block;
+    width: 140px; 
+    height: 38px; 
+    background: #517AAF;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    margin: 33px auto 0;
+    cursor: pointer;
+}
+
+/* 입력창 클릭(포커스) 시 스타일 커스텀 */
+.form-group input:focus, 
+.form-group textarea:focus {
+    outline: none; 
+    border: 1.5px solid #6390cc; 
+}

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수어 연구소 - 고객지원</title>
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/support.css">
+</head>
+<body class="support-page">
+    <header class="main-header">
+        <div class="wide-container header-inner">
+            <div class="logo" onclick="location.href='home.html'">
+                <img src="../logo.png" alt="로고" class="logo-img">
+                <span>수어 연구소</span>
+            </div>
+            
+            <nav class="nav-bar">
+                <a href="learning.html">수어학습</a>
+                <a href="search.html">수어검색</a>
+                <a href="support.html" class="active">고객지원</a>
+                <a href="mypage.html">마이페이지</a>
+            </nav>
+            
+            <button class="login-btn" id="headerAuthBtn">로그인</button>
+        </div>
+    </header>
+
+    <main class="support-main wide-container">
+        <section class="faq-section">
+            <h1 class="section-title">자주 묻는 질문</h1>
+            
+            <div class="category-group">
+                <div class="category-row">
+                    <button class="chip active">카메라 이슈</button>
+                    <button class="chip">순위 업데이트</button>
+                    <button class="chip">카카오톡 채널</button>
+                    <button class="chip">학습 단어</button>
+                </div>
+                <div class="category-row">
+                    <button class="chip">학습 알림</button>
+                    <button class="chip">수어 지원 문의</button>
+                    <button class="chip">후원 문의</button>
+                </div>
+            </div>
+
+            <div class="faq-box">
+                <h2 id="faq-title">Q. 카메라가 안 켜져요</h2>
+                <div id="faq-content" class="faq-content">
+                    </div>
+            </div>
+        </section>
+
+        <hr class="section-divider">
+
+        <section class="board-section">
+            <h1 class="section-title">게시판</h1>
+            
+            <form class="inquiry-form" id="supportForm">
+                <div class="form-group">
+                    <div class="label-row">
+                        <label>제목</label>
+                        <span class="required-tag">(필수)</span>
+                    </div>
+                    <input type="text" placeholder="제목을 입력해 주세요" required>
+                </div>
+
+                <div class="form-group">
+                    <div class="label-row">
+                        <label>내용</label>
+                        <span class="required-tag">(필수)</span>
+                    </div>
+                    <textarea placeholder="내용을 입력해 주세요" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <div class="label-row">
+                        <label>이메일 주소</label>
+                        <span class="required-tag">(필수)</span>
+                    </div>
+                    <input type="email" placeholder="이메일을 입력해 주세요" required>
+                </div>
+
+                <div class="form-group">
+                    <div class="label-row">
+                        <label>휴대 전화번호</label>
+                        <span class="required-tag">(필수)</span>
+                    </div>
+                    <input type="tel" placeholder="전화번호를 입력해 주세요" required>
+                </div>
+
+                <div class="form-group">
+                    <div class="label-row">
+                        <label>개인정보 수집 및 이용 안내</label>
+                        <span class="optional-tag">(선택)</span>
+                    </div>
+                    <div class="marketing-check">
+                        <input type="checkbox" id="marketing-agree">
+                        <label for="marketing-agree">수어 연구소 마케팅 정보 수신에 동의합니다.</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-inquiry-btn">문의하기</button>
+            </form>
+        </section>
+    </main>
+
+    <script src="../js/home.js"></script>
+</body>
+</html>
