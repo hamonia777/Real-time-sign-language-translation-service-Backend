@@ -173,3 +173,51 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const overlay = document.getElementById('surveyOverlay');
+    const nextBtn = document.getElementById('nextStep');
+    const prevBtn = document.getElementById('prevStep');
+    const finishBtn = document.getElementById('finishSurvey');
+    const pages = document.querySelectorAll('.step-page');
+    let step = 1;
+
+    // --- ⭐ 핵심: 가입 직후 첫 로그인인지 체크 ---
+    const needsSurvey = localStorage.getItem('needsSurvey') === 'true';
+    if (overlay && needsSurvey) {
+        overlay.style.display = 'flex';
+    }
+
+    // 카드 선택 처리
+    document.querySelectorAll('.option-card').forEach(card => {
+        card.onclick = () => {
+            card.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+        };
+    });
+
+    // 단계 이동 함수
+    const moveStep = (direction) => {
+        step += direction;
+        pages.forEach((p, i) => p.classList.toggle('active', i + 1 === step));
+        
+        // 스태퍼 & 버튼 업데이트
+        document.querySelectorAll('.step-item').forEach((s, i) => s.classList.toggle('active', i < step));
+        document.querySelectorAll('.step-line').forEach((l, i) => l.classList.toggle('active', i < step - 1));
+
+        prevBtn.style.visibility = step > 1 ? 'visible' : 'hidden';
+        nextBtn.style.display = step < 3 ? 'block' : 'none';
+        finishBtn.style.display = step === 3 ? 'block' : 'none';
+    };
+
+    nextBtn.onclick = () => moveStep(1);
+    prevBtn.onclick = () => moveStep(-1);
+
+    // 완료 버튼
+    finishBtn.onclick = () => {
+        localStorage.removeItem('needsSurvey'); // 티켓 삭제
+        localStorage.setItem('surveyResults', 'done'); // 결과 저장 표시
+        alert("맞춤 설정이 완료되었습니다!");
+        overlay.style.display = 'none';
+    };
+});

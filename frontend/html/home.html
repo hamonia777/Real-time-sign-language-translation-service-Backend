@@ -188,10 +188,112 @@
         <a href="https://pf.kakao.com/_xxxx" target="_blank" class="float-btn kakao-float">
             <img src="../images/chat_icon.png" alt="카톡 문의">
         </a>
-
         <button id="scrollTopBtn" class="float-btn top-float">
             <img src="../images/top_arrow.png" alt="맨 위로">
         </button>
     </div>
+
+    <div id="surveyOverlay" class="survey-overlay" style="display: none;">
+        <div class="survey-modal">
+            
+            <div class="stepper">
+                <div class="step-item active" id="step-node-1">
+                    <div class="step-circle">1</div>
+                    <span>실력 진단</span>
+                </div>
+                <div class="step-line" id="step-line-1"></div>
+                <div class="step-item" id="step-node-2">
+                    <div class="step-circle">2</div>
+                    <span>사용자 유형</span>
+                </div>
+                <div class="step-line" id="step-line-2"></div>
+                <div class="step-item" id="step-node-3">
+                    <div class="step-circle">3</div>
+                    <span>학습 경로</span>
+                </div>
+            </div>
+
+            <div class="survey-content">
+                
+                <div id="survey-step-1" class="step-page active">
+                    <h2 class="survey-question">수어 실력이 어느 정도인가요?</h2>
+                    <div class="option-group">
+                        <div class="option-card" data-value="lv1">
+                            <span class="lv">Lv.1</span>
+                            <strong>기초</strong>
+                            <small>수어를 처음 배워요</small>
+                        </div>
+                        <div class="option-card selected" data-value="lv2">
+                            <span class="lv">Lv.2</span>
+                            <strong>초급</strong>
+                            <small>지문자는 알아요</small>
+                        </div>
+                        <div class="option-card" data-value="lv3">
+                            <span class="lv">Lv.3</span>
+                            <strong>중급</strong>
+                            <small>자주 사용하는<br>표현은 알아요</small>
+                        </div>
+                        <div class="option-card" data-value="lv4">
+                            <span class="lv">Lv.4</span>
+                            <strong>고급</strong>
+                            <small>기본적인 대화는<br>가능해요</small>
+                        </div>
+                        <div class="option-card" data-value="lv5">
+                            <span class="lv">Lv.5</span>
+                            <strong>마스터</strong>
+                            <small>상세하게<br>토론할 수 있어요</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="survey-step-2" class="step-page">
+                    <h2 class="survey-question">자신을 가장 잘 나타내는 유형은?</h2>
+                    <div class="option-group">
+                        <div class="option-card type-card" data-value="deaf">
+                            <strong>수어인</strong>
+                            <small>장애 여부와 상관 없이<br>수어로 소통하는 모든 분</small>
+                        </div>
+                        <div class="option-card type-card selected" data-value="non-deaf">
+                            <strong>비수어인</strong>
+                            <small>수어로 <br>소통하지 않는 모든 분</small>
+                        </div>
+                        <div class="option-card type-card" data-value="oral">
+                            <strong>구화인</strong>
+                            <small>입술 모양을 읽고<br>시각적으로 읽어내시는 분</small>
+                        </div>
+                    </div>
+                    <div class="info-banner">
+                        <img src="../images/info_icon.png" alt="info" class="info-icon">
+                        <span>비수어인 / 구화인 선택 시, 학습 보조를위한 효과음 및 TTS 기능 자동활성화됩니다.</span>
+                    </div>
+                </div>
+
+                <div id="survey-step-3" class="step-page">
+                    <h2 class="survey-question">어떤 학습 경로를 원하시나요?</h2>
+                    <div class="option-group path-group">
+                        
+                        <div class="option-card path-card selected" data-value="basic">
+                            <img src="../images/path_icon.png" alt="basic path" class="path-icon icon-basic">
+                            <strong>기초(지문자)부터</strong>
+                            <small>수어를 지문자부터 차례대로<br> 배우는 과정입니다.</small>
+                        </div>
+                        
+                        <div class="option-card path-card" data-value="ai">
+                            <img src="../images/ai_path_icon.png" alt="AI 추천" class="path-icon icon-ai">
+                            <strong>AI 추천 코스</strong>
+                            <small>AI가 추천 코스를 따라 가는 과정으로 진행됩니다.</small>
+                        </div>
+                        
+                    </div>
+                </div>
+
+            </div> <div class="survey-footer">
+                <button id="prevStep" class="nav-btn prev" style="visibility: hidden;">이전</button>
+                <button id="nextStep" class="nav-btn next">다음</button>
+                <button id="finishSurvey" class="nav-btn finish" style="display: none;">맞춤 설정 완료</button>
+            </div>
+        </div> 
+    </div>
+
 </body>
 </html>
