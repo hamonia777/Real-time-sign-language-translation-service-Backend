@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수어 연구소 - 마이페이지</title>
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/mypage.css">
+</head>
+<body class="mypage-page">
+    <header class="main-header">
+        <div class="wide-container header-inner">
+            <div class="logo" onclick="location.href='home.html'">
+                <img src="../logo.png" alt="로고" class="logo-img">
+                <span>수어 연구소</span>
+            </div>
+            <nav class="nav-bar">
+                <a href="learning.html">수어학습</a>
+                <a href="search.html">수어검색</a>
+                <a href="support.html">고객지원</a>
+                <a href="mypage.html" class="active">마이페이지</a>
+            </nav>
+            <button class="headerAuthBtn logout-style" id="logoutBtn">로그아웃</button>
+        </div>
+    </header>
+
+    <main class="mypage-container">
+        <!-- 상단: 프로필 + 성취도 -->
+        <div class="top-layout">
+            <aside class="profile-card">
+                <div class="profile-img-wrap">
+                    <div class="avatar-circle" id="avatarCircle">
+                        <svg viewBox="0 0 60 60" width="60" height="60" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="30" cy="30" r="30" fill="#FAEFC9"/>
+                            <circle cx="30" cy="22" r="10" fill="#C8A94E" opacity="0.7"/>
+                            <ellipse cx="30" cy="46" rx="16" ry="12" fill="#C8A94E" opacity="0.7"/>
+                        </svg>
+                        <img src="../images/user_avatar.png" alt="프로필" id="userAvatar" onload="this.style.display='block'; document.getElementById('avatarCircle').querySelector('svg').style.display='none';" onerror="this.style.display='none';">
+                    </div>
+                    <button class="avatar-edit-btn">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2.5">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                            <circle cx="12" cy="13" r="4"/>
+                        </svg>
+                    </button>
+                </div>
+                <h2 id="profileName">정혜미</h2>
+                <p id="profileStatus" class="status-text">비수어인 / Lv1. 초급</p>
+                <div class="info-details">
+                    <p id="profileEmail">gim02673@gmail.com</p>
+                    <p id="profilePhone">010-2413-4622</p>
+                </div>
+                <div class="notif-setting">
+                    <span>학습 알림</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="kakaoNotif">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="kakao-link">
+                    <img src="../images/kakao_yellow.png" alt="카카오" id="kakaoBtn">
+                </div>
+            </aside>
+
+            <section class="achievement-section">
+                <h3 class="section-title">성취도</h3>
+                <div class="achievement-card">
+                    <div class="grass-graph-wrapper">
+                        <div class="grass-flex-outer">
+                            <div id="monthLabels" class="month-labels">
+                                <div class="month-spacer"></div>
+                            </div>
+                            <div class="grass-flex">
+                                <div class="day-labels" id="dayLabels">
+                                    <span>월</span>
+                                    <span>수</span>
+                                    <span>금</span>
+                                </div>
+                                <div id="grassGrid" class="grass-grid">
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="grass-legend">
+                            <span>1단계</span>
+                            <div class="l-box lv0"></div>
+                            <div class="l-box lv1"></div>
+                            <div class="l-box lv2"></div>
+                            <div class="l-box lv3"></div>
+                            <div class="l-box lv4"></div>
+                            <span>5단계</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 중단: 학습 기록 -->
+        <section class="record-section">
+            <div class="tab-header">
+                <button class="tab-btn active" data-tab="completed">완료된 학습</button>
+                <button class="tab-btn" data-tab="inprogress">진행 중인 학습</button>
+            </div>
+
+            <div id="tab-completed" class="tab-content active">
+                <div class="content-box">
+                    <div class="box-header">
+                        <span>총 완료 학습 : <strong>153개</strong> 단어/문장</span>
+                        <span class="recent">최근 완료 : 안녕하세요 (2026.03.20)</span>
+                    </div>
+                    <ul class="learning-list">
+                        <li><i class="check-dot"></i> <span>안녕하세요</span> <span class="date">2026.03.20</span> <button class="btn-sm">학습바구니 담기</button></li>
+                        <li><i class="check-dot"></i> <span>감사합니다</span> <span class="date">2026.03.20</span> <button class="btn-sm">학습바구니 담기</button></li>
+                        <li><i class="check-dot"></i> <span>학교</span> <span class="date">2026.03.15</span> <button class="btn-sm">학습바구니 담기</button></li>
+                        <li><i class="check-dot"></i> <span>가족</span> <span class="date">2026.03.15</span> <button class="btn-sm">학습바구니 담기</button></li>
+                        <li><i class="check-dot"></i> <span>친구</span> <span class="date">2026.03.15</span> <button class="btn-sm">학습바구니 담기</button></li>
+                        <li><i class="check-dot"></i> <span>반갑습니다</span> <span class="date">2026.03.15</span> <button class="btn-sm">학습바구니 담기</button></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="tab-inprogress" class="tab-content" style="display: none;">
+                <div class="content-box no-border"> <div class="progress-tab-content">
+                        <div class="summary-header">
+                            <span class="summary-title">진행 중인 학습 : 10개 단어/문장</span>
+                            <span class="summary-recent">최근 진행 : 오전 (2026.03.20)</span>
+                        </div>
+
+                        <div class="progress-list">
+                            <div class="progress-item">
+                                <div class="item-left">
+                                    <div class="custom-radio active"><div class="radio-inner"></div></div>
+                                    <span class="word-text">오전</span>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="bar-bg"><div class="bar-fill" style="width: 70%;"></div></div>
+                                    <span class="percent-text">70% 완료</span>
+                                </div>
+                                <span class="date-text">2026.03.20</span>
+                                <button class="resume-btn">이어하기</button>
+                            </div>
+
+                            <div class="progress-item">
+                                <div class="item-left">
+                                    <div class="custom-radio active"><div class="radio-inner"></div></div>
+                                    <span class="word-text">프로그래머</span>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="bar-bg"><div class="bar-fill" style="width: 40%;"></div></div>
+                                    <span class="percent-text">40% 완료</span>
+                                </div>
+                                <span class="date-text">2026.03.20</span>
+                                <button class="resume-btn">이어하기</button>
+                            </div>
+
+                            <div class="progress-item">
+                                <div class="item-left">
+                                    <div class="custom-radio active"><div class="radio-inner"></div></div>
+                                    <span class="word-text">동료</span>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="bar-bg"><div class="bar-fill" style="width: 20%;"></div></div>
+                                    <span class="percent-text">20% 완료</span>
+                                </div>
+                                <span class="date-text">2026.03.20</span>
+                                <button class="resume-btn">이어하기</button>
+                            </div>
+
+                            <div class="progress-item">
+                                <div class="item-left">
+                                    <div class="custom-radio active"><div class="radio-inner"></div></div>
+                                    <span class="word-text">어머니</span>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="bar-bg"><div class="bar-fill" style="width: 45%;"></div></div>
+                                    <span class="percent-text">45% 완료</span>
+                                </div>
+                                <span class="date-text">2026.03.20</span>
+                                <button class="resume-btn">이어하기</button>
+                            </div>
+
+                            <div class="progress-item">
+                                <div class="item-left">
+                                    <div class="custom-radio active"><div class="radio-inner"></div></div>
+                                    <span class="word-text">아버지</span>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="bar-bg"><div class="bar-fill" style="width: 80%;"></div></div>
+                                    <span class="percent-text">80% 완료</span>
+                                </div>
+                                <span class="date-text">2026.03.19</span>
+                                <button class="resume-btn">이어하기</button>
+                            </div>
+
+                            <div class="progress-item">
+                                <div class="item-left">
+                                    <div class="custom-radio active"><div class="radio-inner"></div></div>
+                                    <span class="word-text">좋아한다</span>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="bar-bg"><div class="bar-fill" style="width: 90%;"></div></div>
+                                    <span class="percent-text">90% 완료</span>
+                                </div>
+                                <span class="date-text">2026.03.18</span>
+                                <button class="resume-btn">이어하기</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 하단: 학습 바구니 -->
+        <section class="basket-section">
+            <h3 class="section-title">학습 바구니</h3>
+            <div class="content-box">
+                <div class="box-header">학습 바구니 총 항목 : 11개</div>
+                <div class="basket-grid">
+                    <div class="basket-col">
+                        <h4>검색에서 추가한 단어/문장</h4>
+                        <ul class="item-list">
+                            <li><div class="flex-center"><i class="green-dot"></i><span>날씨</span></div><button class="btn-blue">학습하기</button></li>
+                            <li><div class="flex-center"><i class="green-dot"></i><span>교실</span></div><button class="btn-blue">학습하기</button></li>
+                            <li><div class="flex-center"><i class="green-dot"></i><span>다시</span></div><button class="btn-blue">학습하기</button></li>
+                            <li><div class="flex-center"><i class="green-dot"></i><span>계절</span></div><button class="btn-blue">학습하기</button></li>
+                        </ul>
+                    </div>
+                    <div class="basket-col">
+                        <h4>다음 단계를 위한 AI 추천</h4>
+                        <ul class="item-list">
+                            <li><div class="flex-center"><i class="green-dot"></i><span>저</span></div><button class="btn-blue">학습하기</button></li>
+                            <li><div class="flex-center"><i class="green-dot"></i><span>오늘</span></div><button class="btn-blue">학습하기</button></li>
+                            <li><div class="flex-center"><i class="green-dot"></i><span>점심</span></div><button class="btn-blue">학습하기</button></li>
+                            <li><div class="flex-center"><i class="green-dot"></i><span>약속</span></div><button class="btn-blue">학습하기</button></li>
+                        </ul>
+                    </div>
+                    <div class="basket-col">
+                        <h4>복습하고 싶은 목록</h4>
+                        <ul class="item-list">
+                            <li><div class="flex-center"><i class="green-dot"></i><span>사랑</span></div><button class="btn-blue">다시 학습</button></li>
+                            <li><div class="flex-center"><i class="green-dot"></i><span>노력</span></div><button class="btn-blue">다시 학습</button></li>
+                            <li><div class="flex-center"><i class="green-dot"></i><span>관심</span></div><button class="btn-blue">다시 학습</button></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="../js/mypage.js"></script>
+</body>
+</html>

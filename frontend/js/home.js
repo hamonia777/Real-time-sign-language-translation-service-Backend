@@ -5,15 +5,20 @@ document.addEventListener('DOMContentLoaded', () => {
        1. 네비게이션 (어느 페이지에서든 작동하도록)
     ----------------------------------------------------------- */
     const navLinks = document.querySelectorAll('.nav-bar a');
-    
+
     navLinks.forEach(link => {
         link.onclick = (e) => {
             const menuText = link.innerText.trim();
             
-            // 텍스트 기반 이동 (HTML에서 href를 안 썼을 경우를 대비)
+            // 텍스트 기반 이동
             if (menuText === "고객지원") {
                 location.href = 'support.html';
-            } else if (menuText === "수어학습" || menuText === "수어검색" || menuText === "마이페이지") {
+            } 
+            else if (menuText === "마이페이지") {
+                location.href = 'mypage.html';
+            } 
+            // 아직 안 만든 페이지들만 알림창 띄우기
+            else if (menuText === "수어학습" || menuText === "수어검색") {
                 alert(`${menuText} 페이지는 준비 중입니다.`);
             }
         };

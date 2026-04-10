@@ -1,0 +1,790 @@
+/* ──────────────────────────────────────────────────────────
+   1. 초기화 및 헤더 공통
+   ────────────────────────────────────────────────────────── */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background-color: #FFFFFF;
+    font-family: 'Inter', sans-serif;
+    color: #474747;
+    line-height: 1.7;
+    letter-spacing: -0.01em;
+}
+
+.wide-container {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 30px;
+}
+
+.main-header {
+    width: 100%;
+    height: 55px;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #f5f5f5;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%; 
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #2C2C2C;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.logo-img {
+    width: 24px;
+    height: auto;
+    object-fit: contain;
+}
+
+.nav-bar { 
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    margin-right: 10px; 
+}
+
+.nav-bar a {
+    text-decoration: none;
+    color: #393939;
+    font-size: 13px;
+    margin: 0 30px;
+    letter-spacing: 0em;
+}
+
+.nav-bar a.active {
+    font-weight: 600;
+    color: #0C0C0C;
+}
+
+.headerAuthBtn {
+  background: #1F2A58;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 99px;
+  width: 75px;
+  height: 28px;
+  font-size: 12px;
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+
+.headerAuthBtn:hover {
+  opacity: 0.9;
+}
+
+/* ──────────────────────────────────────────────────────────
+   2. 마이페이지 본문 레이아웃
+   ────────────────────────────────────────────────────────── */
+.mypage-container {
+    max-width: 960px;
+    margin: 30px auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+/* 상단 레이아웃 정렬 */
+.top-layout {
+    display: flex;
+    gap: 30px; 
+    margin-bottom: 40px;
+    align-items: flex-start; 
+}
+
+/* 2. 성취도 전체 섹션  */
+.achievement-section {
+    flex: 1;
+    min-width: 0;
+}
+
+/* 3. 성취도 제목*/
+.achievement-section .section-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #474747;
+    margin-bottom: 15px;
+    padding-left: 2px;
+}
+
+/* 4. 성취도 흰색 박스 */
+.achievement-card {
+    background: #FFF;
+    border: 1px solid #EEEEEE; 
+    border-radius: 8px;
+    padding: 30px 25px; 
+    min-height: 220px; 
+    box-sizing: border-box;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 5. 잔디 요일 라벨 */
+.day-labels {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 89px; /* (11px * 7행) + (2px * 6개 간격) = 약 89px */
+    margin-right: 12px;
+    padding-top: 2px; 
+}
+
+.day-labels span {
+    font-size: 10px;
+    color: #999;
+    height: 11px;
+    line-height: 11px;
+}
+
+/* 6. 잔디 범례위치 조정 */
+.grass-legend {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    
+    margin-top: auto; 
+    
+    padding-top: 24px;
+    font-size: 10px;
+    color: #999;
+}
+
+.grass-flex {
+    display: flex;
+    margin-top: 10px; 
+    gap: 12px; 
+    align-items: flex-start;
+}
+
+/* 잔디 그리드 간격 유지 */
+.grass-grid {
+    display: grid;
+    grid-template-columns: repeat(53, minmax(0, 1fr)); 
+    grid-template-rows: repeat(7, 1fr);
+    gap: 2px;
+    width: 100%; 
+}
+
+.grass-square {
+    aspect-ratio: 1 / 1; 
+    width: 100%;
+    border-radius: 2px;
+    background: #EFF2F5;
+}
+
+.month-labels {
+    display: grid;
+    grid-template-columns: 22px repeat(53, 1fr); 
+    width: 100%;
+    margin-left: 0;
+    margin-bottom: 5px;
+}
+
+/* ──────────────────────────────────────────────────────────
+   3. 프로필 카드
+   ────────────────────────────────────────────────────────── */
+.profile-card {
+    width: 190px;
+    background: #F8F8F8;
+    border-radius: 7px;
+    padding: 9px 15px 9px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.profile-img-wrap {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 8px;
+}
+
+.avatar-circle {
+    position: relative;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-circle svg {
+    border-radius: 50%;
+    display: block;
+}
+
+#userAvatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.avatar-edit-btn {
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: 22px;
+    height: 22px;
+    background: #FFF;
+    border: 1px solid #EEEEEE;
+    border-radius: 50%;
+    font-size: 9px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#profileName {
+    font-size: 14px;
+    font-weight: 500;
+    color: #424242;
+    margin: 4px 0 4px;
+}
+
+.status-text {
+    font-size: 9.5px;
+    color: #747474;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.info-details p {
+    font-size: 9px;
+    color: #A4A4A4;
+    margin: 3px 0;
+    font-weight: 500;
+}
+
+.notif-setting {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    font-size: 9px;
+    color: #747474;
+    font-weight: 500;
+}
+
+/* 토글 스위치 */
+.toggle-switch {
+    position: relative;
+    width: 30px;
+    height: 16px;
+    flex-shrink: 0;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #D6D6D6;
+    border-radius: 20px;
+    transition: .3s;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 10px;
+    width: 10px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: .3s;
+}
+input:checked + .slider { background-color: #AFCEF6; }
+input:checked + .slider:before { transform: translateX(14px); }
+
+.kakao-link {
+    margin-top: 18px;
+    cursor: pointer;
+}
+.kakao-link img {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+}
+/* ──────────────────────────────────────────────────────────
+   4. 성취도 잔디 (최종 교정본)
+   ────────────────────────────────────────────────────────── */
+.achievement-card {
+    flex: 1;
+    border: 1px solid #EEEEEE;
+    border-radius: 8px;
+    padding: 25px 20px;
+    background: #FFF;
+    overflow: hidden;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.section-title {
+    font-size: 14px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: #2C2C2C;
+}
+
+.grass-graph-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* 월 라벨 행 */
+.month-labels {
+    display: grid;
+    grid-template-columns: 26px repeat(53, 1fr); 
+    font-size: 10px;
+    color: #999;
+    margin-bottom: 8px;
+    height: 15px;   
+    align-items: center;
+}
+
+/* 첫 번째 셀 비우기 */
+.month-spacer {
+    grid-column: 1;
+}
+
+.month-label-item {
+    grid-row: 1;
+    font-size: 10px;
+    color: #393939;
+    white-space: nowrap;
+    text-align: left;
+}
+
+.grass-flex {
+    display: flex;
+    gap: 4px;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.day-labels {
+    display: flex;
+    flex-direction: column;
+    width: 22px;
+    height: 89px; 
+    justify-content: space-between;
+    flex-shrink: 0;
+    font-size: 10px;
+    color: #393939;
+    padding: 2px 0;
+}
+
+.grass-grid {
+    display: grid;
+    grid-template-columns: repeat(53, 1fr); 
+    grid-template-rows: repeat(7, 11px); 
+    grid-auto-flow: column; 
+    gap: 2px;
+    width: 100%;
+}
+
+.grass-square {
+    width: 100%;
+    min-width: 10px; 
+    height: 11px;
+    border-radius: 2px;
+    background: #EFF2F5;
+    cursor: pointer;
+}
+
+/* 잔디 색상 단계 */
+.lv0 { background: #EFF2F5; }
+.lv1 { background: #AFCEF6; }
+.lv2 { background: #6899D8; }
+.lv3 { background: #517AAF; }
+.lv4 { background: #112A49; }
+
+/* 하단 범례 */
+.grass-legend {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    margin-top: 15px;
+    font-size: 10px;
+    color: #999;
+}
+
+.l-box {
+    width: 11px;
+    height: 11px;
+    border-radius: 2px;
+}
+
+/* ──────────────────────────────────────────────────────────
+   5. 완료된 학습 탭 섹션
+   ────────────────────────────────────────────────────────── */
+.record-section { margin-bottom: 40px; }
+
+.tab-header {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0;
+    border-bottom: none;
+}
+
+.tab-btn {
+    padding: 8px 20px;
+    border-radius: 0;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: #717171;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.tab-btn.active {
+    color: #474747;
+    border-bottom: 2px solid #474747;
+    font-weight: 600;
+    background: transparent;
+}
+
+
+.content-box {
+    border: 1px solid #D6D6D6;
+    border-radius: 5px;
+    background: #FFF;
+    overflow: hidden;
+    margin-top: 0;
+}
+
+.box-header {
+    background: #F8F8F8;
+    padding: 14px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    border-bottom: 1px solid #D6D6D6;
+    color: #474747;
+    font-weight: 500;
+}
+
+.box-header strong { font-weight: 700; }
+.recent { color: #474747; }
+
+.learning-list { list-style: none; padding: 0; margin: 0; }
+
+.learning-list li {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 1px solid #F0F0F0;
+    gap: 0;
+}
+
+.learning-list li:last-child { border-bottom: none; }
+
+.check-dot {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #9F9F9F;
+    border-radius: 50%;
+    margin-right: 20px;
+    position: relative;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.check-dot::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: #517AAF;
+    border-radius: 50%;
+    position: absolute;
+}
+
+.learning-list li span:nth-child(2) {
+    flex: 1;
+    font-size: 12px;
+    font-weight: 500;
+    color: #474747;
+}
+
+.learning-list .date {
+    font-size: 11px;
+    color: #717171;
+    margin-right: 25px;
+    font-weight: 500;
+}
+
+.btn-sm {
+    background: #1C4476;
+    color: #FFF;
+    border: none;
+    padding: 7px 18px;
+    border-radius: 99px;
+    font-size: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+}
+
+.btn-sm:hover { opacity: 0.85; }
+
+/* ──────────────────────────────────────────────────────────
+   5.2 진행 중인 학습 탭
+   ────────────────────────────────────────────────────────── */
+
+/* 탭 컨텐츠 박스 내부 여백 초기화 */
+.progress-tab-content {
+    padding: 0; 
+}
+
+/* 상단 헤더 */
+.summary-header {
+    background: #F8F8F8;
+    padding: 14px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #D6D6D6; 
+}
+
+.summary-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: #474747;
+}
+
+.summary-title strong {     
+    font-weight: 700;             
+}
+
+.summary-recent {
+    font-size: 12px; 
+     font-weight: 500;
+    color: #474747;
+}
+
+.progress-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.progress-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px; 
+    border-bottom: 1px solid #F0F0F0; 
+}
+
+.progress-item:last-child {
+    border-bottom: none;
+}
+
+/* 왼쪽 단어 영역 */
+.item-left {
+    display: flex;
+    align-items: center;
+    width: 140px;
+}
+
+.custom-radio {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #9F9F9F;
+    border-radius: 50%;
+    margin-right: 20px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.radio-inner {
+    width: 8px;
+    height: 8px;
+    background: #517AAF;
+    border-radius: 50%;
+}
+
+.word-text {
+    font-size: 12px; 
+    font-weight: 500;
+    color: #474747;
+}
+
+.progress-bar-container {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 15px;
+}
+
+.bar-bg {
+    flex: 1;
+    max-width: 280px; 
+    height: 4px;
+    background: #F2F2F2;
+    position: relative;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    background: #6899D8;
+}
+
+.percent-text {
+    font-size: 11px;
+    font-weight: 500;
+    color: #517AAF;
+    width: 55px;
+}
+
+/* 날짜 */
+.date-text {
+    font-size: 11px;
+    color: #717171;
+    margin-right: 25px; 
+    font-weight: 500;
+    width: 75px;
+    text-align: right;
+}
+
+/* 이어하기 버튼*/
+.resume-btn {
+    background: #1C4476;
+    color: #FFF;
+    border: none;
+    padding: 7px 18px; 
+    border-radius: 99px;
+    font-size: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+}
+
+.resume-btn:hover {
+    opacity: 0.85;
+}
+/* ──────────────────────────────────────────────────────────
+   6. 학습 바구니
+   ────────────────────────────────────────────────────────── */
+.basket-section { margin-bottom: 40px; }
+
+.basket-section .section-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #474747;
+    margin-bottom: 12px;
+}
+
+.basket-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding: 20px;
+}
+
+.basket-col h4 {
+    font-size: 12px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: 500;
+    color: #474747;
+}
+
+.item-list {
+    list-style: none;
+    padding: 10px;
+    border: 1px solid #D6D6D6;
+    border-radius: 5px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.item-list li {
+    background: #F4F8FD;
+    border: 1px solid #EBF4FE;
+    border-radius: 5px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
+}
+
+.green-dot {
+    width: 6px;
+    height: 6px;
+    background: #4F854D;
+    border-radius: 50%;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.item-list li span {
+    font-size: 12px;
+    color: #767474;
+    font-weight: 500;
+}
+
+.btn-blue {
+    background: #517AAF !important;
+    color: #FFF !important;
+    border: none !important;
+    padding: 5px 12px;
+    border-radius: 99px;
+    font-size: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+}
+
+.btn-blue:hover { opacity: 0.85; }
