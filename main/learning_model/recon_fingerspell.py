@@ -29,7 +29,7 @@ bash
 #cd /Users/garyeong/project-1/morpheme/photo_model(경로)
 
 # 3. 학습 스크립트 실행
-#python realtime_recognition.py
+#python recon_fingerspell.py
 
 '''
 
@@ -43,7 +43,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # ==================== 설정 ====================
-MODEL_PATH = "../../models/photo_model/photo_finger_alphabet_411_model_V2.pt"
+MODEL_PATH = "model_fingerspell.pt"
 
 # 키포인트 차원
 POSE_DIM = 75

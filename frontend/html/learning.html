@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수어학습 - 지문자</title>
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/learning.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="main-header">
+        <div class="wide-container header-inner">
+            <div class="logo">
+                <img src="../logo.png" alt="수어 연구소 로고" class="logo-img">
+                <span>수어 연구소</span>
+            </div>
+            <nav class="nav-bar">
+                <a href="learning.html" class="active">수어학습</a>
+                <a href="search.html">수어검색</a>
+                <a href="support.html">고객지원</a>
+                <a href="mypage.html">마이페이지</a>
+            </nav>
+            <button class="login-btn header-auth-btn">로그아웃</button>
+        </div>
+    </header>
+
+    <main class="learning-main">
+        <div class="wide-container">
+            <div class="learning-header">
+                <h1>지문자 학습</h1>
+                <p>한국어 자음 14개, 모음 14개를 단계별로 학습해보세요.</p>
+                <button id="seedBtn" class="seed-btn" type="button">DB 시드 초기화</button>
+            </div>
+
+            <section class="category-section">
+                <h2 class="category-title">자음</h2>
+                <div id="consonantList" class="lesson-grid"></div>
+            </section>
+
+            <section class="category-section">
+                <h2 class="category-title">모음</h2>
+                <div id="vowelList" class="lesson-grid"></div>
+            </section>
+        </div>
+    </main>
+
+    <script src="../js/learning.js"></script>
+</body>
+</html>

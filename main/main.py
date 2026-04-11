@@ -10,7 +10,8 @@ from main.api.router import api_router
 from main.core.config import settings
 from main.core.database import engine
 
-from main.domain.user.entity.user import User  
+from main.domain.user.entity.user import User
+from main.domain.learning.entity.lesson import Lesson  # noqa: F401
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
