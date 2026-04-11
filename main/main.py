@@ -7,7 +7,14 @@ from main.api.router import api_router
 from main.core.config import settings
 from main.core.database import engine
 
-from main.domain.user.entity.user import User  
+from main.domain.user.entity.user import User
+from main.domain.UserLessonProgress.entity.user_lesson_progress import UserLessonProgress
+from main.domain.UserSurveyProfiles.entity.user_survey_profiles import UserSurveyProfile
+from main.domain.Lesson.entity.lesson import Lesson
+from main.domain.LearningBasket.entity.learning_basket import LearningBasket
+from main.domain.Inquiry.entity.inquiry import Inquiry
+from main.domain.LessonWordMapping.entity.lesson_word_mapping import LessonWordMapping
+from main.domain.StudyLog.entity.study_log import StudyLog  
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
