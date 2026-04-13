@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수어 연구소 - 수어검색</title>
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/search.css">
+</head>
+<body class="search-page">
+    <header class="main-header">
+        <div class="wide-container header-inner">
+            <div class="logo" onclick="location.href='home.html'">
+                <img src="../logo.png" alt="로고" class="logo-img">
+                <span>수어 연구소</span>
+            </div>
+            <nav class="nav-bar">
+                <a href="learning.html">수어학습</a>
+                <a href="search.html" class="active">수어검색</a>
+                <a href="support.html">고객지원</a>
+                <a href="mypage.html">마이페이지</a>
+            </nav>
+            <button class="headerAuthBtn logout-style">로그아웃</button>
+        </div>
+    </header>
+
+    <main class="search-container">
+        <section class="search-input-section">
+            <div class="search-bar-wrap">
+                <input type="text" id="searchInput" placeholder="검색할 단어 또는 문장을 입력하세요.">
+                <button id="searchBtn" class="main-search-btn">검색</button>
+            </div>
+        </section>
+
+        <section class="quick-links-section">
+            <div class="recent-search">
+                <h4 class="section-sub-title">최근 검색어</h4>
+                <div class="tag-list">
+                    <span class="search-tag">안녕하세요 <i class="close-icon">×</i></span>
+                    <span class="search-tag">사랑 <i class="close-icon">×</i></span>
+                    <span class="search-tag">날씨 <i class="close-icon">×</i></span>
+                    <span class="search-tag">학교 <i class="close-icon">×</i></span>
+                    <span class="search-tag">감사합니다 <i class="close-icon">×</i></span>
+                    <span class="search-tag">다시 <i class="close-icon">×</i></span>
+                    <span class="search-tag">프로그래머 <i class="close-icon">×</i></span>
+                </div>
+            </div>
+            <div class="popular-search">
+                <h4 class="section-sub-title">인기 검색어</h4>
+                <ol class="rank-list">
+                    <li><span class="rank-num">1</span> 안녕하세요</li>
+                    <li><span class="rank-num">2</span> 똥</li>
+                    <li><span class="rank-num">3</span> 사랑</li>
+                </ol>
+            </div>
+        </section>
+
+        <hr class="full-divider">
+
+        <section class="results-container">
+            <div id="results-list" class="result-state active">
+                <ul class="search-result-list">
+                    <li class="first-item">
+                        <span class="sign-word">ㄱ</span>
+                        <div class="btn-group">
+                            <button class="btn-basket">학습바구니 넣기</button>
+                            <button class="btn-learn">지금 학습하기</button>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="sign-word">가격경쟁</span>
+                        <div class="btn-group">
+                            <button class="btn-basket">학습바구니 넣기</button>
+                            <button class="btn-learn">지금 학습하기</button>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="sign-word">가격수준</span>
+                        <div class="btn-group">
+                            <button class="btn-basket">학습바구니 넣기</button>
+                            <button class="btn-learn">지금 학습하기</button>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="sign-word">가격정책</span>
+                        <div class="btn-group">
+                            <button class="btn-basket">학습바구니 넣기</button>
+                            <button class="btn-learn">지금 학습하기</button>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="sign-word">가격차이</span>
+                        <div class="btn-group">
+                            <button class="btn-basket">학습바구니 넣기</button>
+                            <button class="btn-learn">지금 학습하기</button>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="sign-word">가경자</span>
+                        <div class="btn-group">
+                            <button class="btn-basket">학습바구니 넣기</button>
+                            <button class="btn-learn">지금 학습하기</button>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="sign-word">가계</span>
+                        <div class="btn-group">
+                            <button class="btn-basket">학습바구니 넣기</button>
+                            <button class="btn-learn">지금 학습하기</button>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="sign-word">가계소득</span>
+                        <div class="btn-group">
+                            <button class="btn-basket">학습바구니 넣기</button>
+                            <button class="btn-learn">지금 학습하기</button>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="sign-word">가계수표</span>
+                        <div class="btn-group">
+                            <button class="btn-basket">학습바구니 넣기</button>
+                            <button class="btn-learn">지금 학습하기</button>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="sign-word">가계약</span>
+                        <div class="btn-group">
+                            <button class="btn-basket">학습바구니 넣기</button>
+                            <button class="btn-learn">지금 학습하기</button>
+                        </div>
+                    </li>
+                    <li><span class="sign-word">가공</span><div class="btn-group"><button class="btn-basket">학습바구니 넣기</button><button class="btn-learn">지금 학습하기</button></div></li>
+                    <li><span class="sign-word">가구</span><div class="btn-group"><button class="btn-basket">학습바구니 넣기</button><button class="btn-learn">지금 학습하기</button></div></li>
+                    <li><span class="sign-word">가깝다</span><div class="btn-group"><button class="btn-basket">학습바구니 넣기</button><button class="btn-learn">지금 학습하기</button></div></li>
+                    <li><span class="sign-word">가나다</span><div class="btn-group"><button class="btn-basket">학습바구니 넣기</button><button class="btn-learn">지금 학습하기</button></div></li>
+                    <li><span class="sign-word">가능</span><div class="btn-group"><button class="btn-basket">학습바구니 넣기</button><button class="btn-learn">지금 학습하기</button></div></li>
+                </ul>
+            </div>
+
+            <div id="results-none" class="result-state">
+                <p class="no-result-msg">사전에 없는 수어입니다.</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="../js/search.js"></script>
+</body>
+</html>

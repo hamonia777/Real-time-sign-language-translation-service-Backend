@@ -18,3 +18,13 @@ python-multipart==0.0.22
 
 # Logging
 loguru==0.7.3
+
+# Real-time recognition (fingerspell learning)
+# 주의: torch / mediapipe / opencv 는 플랫폼별 버전이 까다로워
+# 이미 conda py311_env에 설치되어 있는 전제로 버전을 고정하지 않음.
+torch
+mediapipe
+opencv-python
+Pillow
+numpy
+websockets
