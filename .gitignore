@@ -62,3 +62,6 @@ Thumbs.db
 *.iml
 .venv
 venv
+
+# Claude Code
+CLAUDE.md

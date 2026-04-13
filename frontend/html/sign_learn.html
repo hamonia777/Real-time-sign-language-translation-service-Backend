@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지문자 학습</title>
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/learning.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="main-header">
+        <div class="wide-container header-inner">
+            <div class="logo">
+                <img src="../logo.png" alt="수어 연구소 로고" class="logo-img">
+                <span>수어 연구소</span>
+            </div>
+            <nav class="nav-bar">
+                <a href="learning.html" class="active">수어학습</a>
+                <a href="search.html">수어검색</a>
+                <a href="support.html">고객지원</a>
+                <a href="mypage.html">마이페이지</a>
+            </nav>
+            <button class="login-btn header-auth-btn">로그아웃</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="learn-wrap">
+            <div class="learn-title" id="pageTitle">수어 학습 페이지 - 단계 1</div>
+
+            <div class="stepper-row" id="stepper">
+                <div class="node active" data-step="1"><div class="dot">1</div><span>영상 시청</span></div>
+                <div class="line"></div>
+                <div class="node" data-step="2"><div class="dot">2</div><span>환경 세팅</span></div>
+                <div class="line"></div>
+                <div class="node" data-step="3"><div class="dot">3</div><span>수어 실습</span></div>
+                <div class="line"></div>
+                <div class="node" data-step="4"><div class="dot">4</div><span>학습 완료</span></div>
+            </div>
+
+            <!-- Step 1: 영상 시청 -->
+            <section id="step1" class="step-view">
+                <div class="learn-body">
+                    <div class="video-box">
+                        <div class="char-huge" id="targetCharBig">?</div>
+                    </div>
+                    <aside class="side-info">
+                        <h3>학습 단어 정보</h3>
+                        <div class="target-char" id="targetCharSide">?</div>
+                        <div class="pass-line">자음/모음 지문자 형태를 보고 따라할 준비를 하세요.</div>
+                    </aside>
+                </div>
+                <div class="learn-footer">
+                    <button class="btn-secondary" onclick="history.back()">이전</button>
+                    <button class="btn-primary" id="toStep2">다음</button>
+                </div>
+            </section>
+
+            <!-- Step 2: 환경 세팅 -->
+            <section id="step2" class="step-view" style="display:none;">
+                <div class="learn-body">
+                    <div class="camera-box" id="cameraBox2">
+                        <video id="video2" autoplay playsinline muted></video>
+                    </div>
+                    <aside class="side-info">
+                        <h3>세팅 가이드</h3>
+                        <div>👍 오른손으로 진행</div>
+                        <div>🧼 배경 정리</div>
+                        <div>👤 상반신 노출</div>
+                        <div>☀️ 밝은 조명 확보</div>
+                        <div class="status-line" id="cameraStatus2">카메라 상태: 확인 중...</div>
+                    </aside>
+                </div>
+                <div class="learn-footer">
+                    <button class="btn-secondary" id="backTo1">이전</button>
+                    <button class="btn-primary" id="toStep3">다음</button>
+                </div>
+            </section>
+
+            <!-- Step 3: 수어 실습 -->
+            <section id="step3" class="step-view" style="display:none;">
+                <div class="learn-body">
+                    <div class="camera-box" id="cameraBox3">
+                        <video id="video3" autoplay playsinline muted></video>
+                    </div>
+                    <aside class="side-info">
+                        <h3>실시간 채점</h3>
+                        <div>현재 실습 단어:</div>
+                        <div class="target-char" id="targetChar3">?</div>
+                        <div class="pass-line">통과 기준 : <b>80점</b></div>
+                        <div class="pass-line">시도 횟수 : <span id="attemptLabel">1</span>/3</div>
+                        <div class="gauge"><span id="scoreVal">0</span>점</div>
+                        <div class="top3" id="top3Box"></div>
+                        <div class="status-line" id="statusLine3">WebSocket 연결 대기...</div>
+                    </aside>
+                </div>
+                <div class="learn-footer">
+                    <button class="btn-secondary" id="backTo2">이전</button>
+                    <button class="btn-primary" id="confirmStep3">확인</button>
+                </div>
+            </section>
+
+            <!-- Step 4: 학습 완료 -->
+            <section id="step4" class="step-view" style="display:none;">
+                <div class="step4-wrap">
+                    <h2 id="completeMsg">축하합니다!<br>학습을 완료했습니다!</h2>
+                    <div class="step4-card">
+                        <div>현재 실습 단어 : <b id="doneChar">?</b></div>
+                        <div>정확도 : <span class="score" id="doneScore">0</span>점</div>
+                        <div style="display:flex;gap:10px;margin-top:8px;">
+                            <button class="btn-secondary" id="retryBtn">다시 시도</button>
+                            <button class="btn-primary" onclick="location.href='learning.html'">학습 목록</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="../js/sign_learn.js"></script>
+</body>
+</html>
