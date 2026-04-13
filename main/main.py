@@ -12,6 +12,12 @@ from main.core.database import engine
 
 from main.domain.user.entity.user import User
 from main.domain.learning.entity.lesson import Lesson  # noqa: F401
+from main.domain.Inquiry.entity.inquiry import Inquiry
+from main.domain.LearningBasket.entity.learning_basket import LearningBasket
+from main.domain.LessonWordMapping.entity.lesson_word_mapping import LessonWordMapping
+from main.domain.StudyLog.entity.study_log import StudyLog
+from main.domain.UserLessonProgress.entity.user_lesson_progress import UserLessonProgress
+from main.domain.UserSurveyProfiles.entity.user_survey_profiles import UserSurveyProfile
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -39,6 +45,11 @@ app.mount("/js", StaticFiles(directory=frontend_dir / "js"), name="js")
 app.mount("/images", StaticFiles(directory=frontend_dir / "images"), name="images")
 
 # [수정] 기존 JSON 응답 대신 home.html을 메인 페이지로 반환하도록 변경
+@app.on_event("startup")
+async def startup_event():
+    async with engine.begin() as conn:
+        await conn.run_sync(SQLModel.metadata.create_all)
+
 @app.get("/")
 def read_root():
     return FileResponse(frontend_dir / "html" / "home.html")

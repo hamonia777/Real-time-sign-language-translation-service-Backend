@@ -17,6 +17,13 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
 
+    KAKAO_REST_API_KEY: str
+    KAKAO_REDIRECT_URI: str
+    KAKAO_CLIENT_SECRET: str
+    
+    REDIS_HOST: str
+    REDIS_PORT: int = 6379
+
     @property
     def DATABASE_URL(self) -> str:
         return f"mysql+pymysql://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"

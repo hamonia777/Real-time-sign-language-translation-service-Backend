@@ -2,6 +2,10 @@ import jwt
 from datetime import datetime, timedelta, timezone
 from main.core.config import settings
 from main.core.redis_client import redis_client
+from fastapi import Depends, HTTPException
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
+security = HTTPBearer()
 
 def create_tokens(user_id: str | int) -> tuple[str, str]:
     
@@ -32,3 +36,20 @@ async def save_refresh_token(user_id: str | int, refresh_token: str):
         value=refresh_token,
         ex=expire_seconds 
     )
+
+def get_current_user_id(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    token = credentials.credentials
+    try:
+        payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
+        user_id = payload.get("sub")
+        if user_id is None:
+            raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다.")
+        return int(user_id)
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="토큰이 만료되었습니다.")
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=401, detail="토큰 검증에 실패했습니다.")
+
+async def delete_refresh_token(user_id: int):
+    redis_key = f"RT:{user_id}"
+    await redis_client.delete(redis_key)

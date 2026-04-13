@@ -13,19 +13,29 @@ class UserRepository(ABC):
     def find_by_email(self, email: str) -> User | None:
         pass
 
+    @abstractmethod
+    def find_by_kakao_id(self, kakao_id: str) -> User | None:
+        pass
+
 class SqlUserRepository(UserRepository):
     def __init__(self, db: Session):
         self.db = db
 
     def save(self, user: User) -> User:
-        self.db.add(user)      
-        self.db.commit()       
-        self.db.refresh(user) 
+        self.db.add(user)
+        self.db.commit()
+        self.db.refresh(user)
         return user
 
     def find_by_email(self, email: str) -> User | None:
         statement = select(User).where(User.email == email)
-        return self.db.exec(statement).first()
+        result = self.db.execute(statement)
+        return result.scalars().first()
+
+    def find_by_kakao_id(self, kakao_id: str) -> User | None:
+        statement = select(User).where(User.kakao_id == kakao_id)
+        result = self.db.execute(statement)
+        return result.scalars().first()
 
 def get_user_repository(db: Session = Depends(get_db)) -> UserRepository:
     return SqlUserRepository(db)

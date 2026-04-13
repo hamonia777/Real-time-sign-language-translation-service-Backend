@@ -10,6 +10,7 @@ class User(SQLModel, table=True):
     kakao_id: Optional[str] = Field(default=None, max_length=255)
     profile_image_url: Optional[str] = Field(default=None, max_length=255)
     nickname: Optional[str] = Field(default=None, max_length=50)
+    email: Optional[str] = Field(default=None, max_length=50)
     phone_num: Optional[str] = Field(default=None, max_length=20)
     complete_count: int = Field(default=0)
     created_at: datetime = Field(default_factory=datetime.now)
