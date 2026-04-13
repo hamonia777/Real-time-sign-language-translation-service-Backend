@@ -6,12 +6,16 @@ api_router = APIRouter()
 
 api_router.include_router(
     user_routes.router,
-    prefix="/users",
+    prefix="/api/v1/users",
     tags=["Users"]
 )
 
 api_router.include_router(
     learning_routes.router,
-    prefix="/api/learning",
+    prefix="/api/v1/learning",
     tags=["Learning"]
 )
+api_router.include_router(
+    user_routes.router,
+      prefix="/api/v1/auth",
+        tags=["Auth"])
