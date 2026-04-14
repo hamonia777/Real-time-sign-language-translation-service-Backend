@@ -1,30 +1,44 @@
+# === Core Framework ===
 fastapi==0.135.3
 uvicorn==0.42.0
+
+# === Database & ORM ===
 sqlmodel==0.0.38
-pydantic==2.12.5
-pydantic-settings==2.13.1
-pydantic[email]
 SQLAlchemy==2.0.49
 pymysql==1.1.2
-python-dotenv==1.2.2
+alembic==1.14.0
+
+# === Data Validation & Configuration ===
+pydantic==2.12.5
+pydantic-settings==2.13.1
 email-validator==2.3.0
 
-# Authentication & Security
+# === Authentication & Security ===
 python-jose[cryptography]==3.5.0
 cryptography==46.0.6
 passlib[bcrypt]==1.7.4
 bcrypt==5.0.0
 python-multipart==0.0.22
 
-# Logging
+# === Real-time Communication ===
+websockets==12.0
+
+# === Machine Learning & Image Processing ===
+torch>=2.0.0
+mediapipe>=0.10.0
+opencv-python>=4.8.0
+Pillow>=10.0.0
+numpy>=1.24.0
+
+# === Caching & Session Management ===
+redis>=5.0.0
+
+# === Environment & Logging ===
+python-dotenv==1.2.2
 loguru==0.7.3
 
-# Real-time recognition (fingerspell learning)
-# 주의: torch / mediapipe / opencv 는 플랫폼별 버전이 까다로워
-# 이미 conda py311_env에 설치되어 있는 전제로 버전을 고정하지 않음.
-torch
-mediapipe
-opencv-python
-Pillow
-numpy
-websockets
+# === Development Tools (Optional) ===
+# pytest==7.4.0
+# black==23.10.0
+# flake8==6.1.0
+
