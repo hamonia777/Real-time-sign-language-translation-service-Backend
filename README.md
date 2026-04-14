@@ -134,7 +134,6 @@ uvicorn main.main:app --reload
 
 ## 📂 프로젝트 구조 (Project Structure)
 
-```
 Real-time-sign-language-translation-service-Backend/
 ├── main/                           # 백엔드 애플리케이션
 │   ├── api/                        # API 라우팅 계층
@@ -205,7 +204,6 @@ Real-time-sign-language-translation-service-Backend/
 ├── alembic.ini                     # Alembic 설정
 └── README.md                       # 이 파일
 ```
-
 ### 도메인 아키텍처 설명
 
 프로젝트는 **계층화 아키텍처(Layered Architecture)**를 따릅니다:
