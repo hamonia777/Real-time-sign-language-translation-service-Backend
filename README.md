@@ -225,28 +225,6 @@ Real-time-sign-language-translation-service-Backend/
 
 프로젝트 루트 디렉토리에 `.env` 파일을 생성하세요:
 
-```env
-# === 데이터베이스 설정 ===
-DB_USER=app_user
-DB_PASSWORD=your_secure_password
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_NAME=sign
-
-# === JWT 설정 ===
-JWT_SECRET_KEY=your_secret_key_here
-JWT_ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-
-# === Kakao OAuth 설정 ===
-KAKAO_REST_API_KEY=your_kakao_api_key
-KAKAO_REDIRECT_URI=http://localhost:8000/auth/kakao/callback
-KAKAO_CLIENT_SECRET=your_kakao_client_secret
-
-# === Redis 설정 ===
-REDIS_HOST=127.0.0.1
-REDIS_PORT=6379
-```
 
 ## 🚀 실행 방법
 
@@ -258,26 +236,6 @@ uvicorn main.main:app --reload
 **API 문서 접근:**
 - Swagger UI: http://127.0.0.1:8000/docs
 - ReDoc: http://127.0.0.1:8000/redoc
-
-## 📝 API 엔드포인트
-
-### 사용자 관리
-| 메서드 | 엔드포인트 | 설명 |
-|--------|-----------|------|
-| POST | `/users/sign-up` | 회원가입 |
-| POST | `/users/login` | 로그인 |
-| POST | `/users/logout` | 로그아웃 |
-| GET | `/users/me` | 현재 사용자 정보 조회 |
-| PUT | `/users/{user_id}` | 사용자 정보 수정 |
-
-### 학습 관리
-| 메서드 | 엔드포인트 | 설명 |
-|--------|-----------|------|
-| GET | `/learn/lessons` | 레슨 목록 조회 |
-| GET | `/learn/lessons/{lesson_id}` | 레슨 상세 조회 |
-| GET | `/learn/progress/{user_id}` | 사용자 학습 진도 조회 |
-| POST | `/learn/recognition/fingerspell` | 손가락 문자 인식 |
-| POST | `/learn/recognition/word` | 단어 수어 인식 |
 
 ### 데이터베이스 스키마
 
