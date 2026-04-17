@@ -1,30 +1,33 @@
-from main.domain.user.dto.user_request_dto import UserSignUpRequestDto
+from main.domain.UserSurveyProfiles.entity.user_survey_profiles import UserSurveyProfile
+from main.domain.user.dto.user_request_dto import UserInfoRequestDto, UserSignUpRequestDto
 from main.domain.user.dto.user_dto import UserCreateDomainDto
 from main.domain.user.service.user_service import UserService
 from main.domain.user.repository.user_repository import UserRepository, get_user_repository
 from fastapi import Depends
+from fastapi import HTTPException
 from main.domain.user.entity.user import User
 
-class SignUpUseCase:
-    def __init__(self, user_service: UserService = Depends()):
-        self.user_service = user_service
+class UserProfileUseCase:
+    def __init__(self, user_repo: UserRepository = Depends(get_user_repository)):
+        self.user_repo = user_repo
 
-    def execute(self, request_dto: UserSignUpRequestDto):
-        domain_dto = UserCreateDomainDto(
-            email=request_dto.email,
-            nickname=request_dto.nickname,
-            phone_number=request_dto.phone_number
-        )
+    async def update_info(self, user_id: int, req: UserInfoRequestDto):
+        user = await self.user_repo.find_by_id(user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="유저를 찾을 수 없습니다.")
 
-        created_user = self.user_service.create_user(domain_dto)
-
-        return created_user
+        user.nickname = req.name 
+        user.phone_num = req.phone_num
+        user.email = req.email
+        
+        await self.user_repo.save(user)
+        return {"msg": "초기 정보 입력 완료"}
     
 class KakaoLoginUseCase:
     def __init__(self, user_repo: UserRepository = Depends(get_user_repository)):
         self.user_repo = user_repo
 
-    def execute(self, kakao_id: str, kakao_user_info: dict):
+    async def execute(self, kakao_id: str, kakao_user_info: dict):
 
         user = self.user_repo.find_by_kakao_id(kakao_id)
         
@@ -42,5 +45,5 @@ class KakaoLoginUseCase:
             email=email,
             nickname=nickname,
         )
-        saved_user = self.user_repo.save(new_user)
-        return saved_user            
+        saved_user = await self.user_repo.save(new_user)
+        return saved_user

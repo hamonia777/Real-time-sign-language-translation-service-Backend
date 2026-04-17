@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from main.api.user import user_routes
 from main.api.learning import learning_routes
+from main.api.survey import survey_routes
 
 api_router = APIRouter()
 
@@ -8,6 +9,12 @@ api_router.include_router(
     user_routes.router,
     prefix="/api/v1/users",
     tags=["Users"]
+)
+
+api_router.include_router(
+    survey_routes.router,
+    prefix="/api/v1/users",
+    tags=["Surveys"]
 )
 
 api_router.include_router(

@@ -3,24 +3,22 @@ from fastapi import APIRouter, Depends, Response, HTTPException
 from fastapi.responses import RedirectResponse
 
 from main.core.config import settings
-from main.domain.user.dto.user_request_dto import UserSignUpRequestDto
+from main.domain.user.dto.user_request_dto import UserSignUpRequestDto, UserInfoRequestDto
 from main.domain.user.dto.user_response_dto import UserSignUpResponseDto, KakaoLoginResponseDto
-from main.domain.user.usecase.user_usecase import SignUpUseCase, KakaoLoginUseCase
+from main.domain.user.usecase.user_usecase import KakaoLoginUseCase, UserProfileUseCase
 
 from main.core.security import create_tokens, get_current_user_id, save_refresh_token, delete_refresh_token
 
 router = APIRouter()
 
-@router.post("/info", response_model=UserSignUpResponseDto)
-def create_user(
-        user_req: UserSignUpRequestDto,
-        usecase: SignUpUseCase = Depends()
+@router.post("/info")
+async def update_user_info(
+        user_info_req: UserInfoRequestDto,
+        usecase: UserProfileUseCase = Depends(),
+        user_id: int = Depends(get_current_user_id)
 ):
-    result_user = usecase.execute(user_req)
-    return UserSignUpResponseDto(
-        message="회원가입이 완료되었습니다.",
-        nickname=result_user.nickname
-    )
+    result = await usecase.update_info(user_id, user_info_req)
+    return result
 
 
 @router.get("/login/kakao")
@@ -63,7 +61,7 @@ async def kakao_callback(code: str, response: Response, usecase: KakaoLoginUseCa
 
     kakao_id = str(user_info.get("id"))
 
-    user = usecase.execute(kakao_id, user_info)
+    user = await usecase.execute(kakao_id, user_info)
     my_access_token, my_refresh_token = create_tokens(user.id)
     await save_refresh_token(user.id, my_refresh_token)
     response.headers["Authorization"] = f"Bearer {my_access_token}"

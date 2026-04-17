@@ -10,4 +10,4 @@ class KakaoLoginResponseDto(BaseModel):
     is_first: bool
 
 class KakaoLogoutResponseDto(BaseModel):
-    message: str    
+    message: str   
