@@ -56,4 +56,6 @@ def get_current_user_id(
         raise HTTPException(status_code=401, detail="토큰 검증에 실패했습니다.")
 
 
-async def delete_refresh_token(user_
+async def delete_refresh_token(user_id: int):
+    redis_key = f"RT:{user_id}"
+    await redis_client.delete(redis_key)
