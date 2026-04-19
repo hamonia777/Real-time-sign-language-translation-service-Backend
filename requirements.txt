@@ -1,30 +1,46 @@
+# === Core Framework ===
 fastapi==0.135.3
 uvicorn==0.42.0
+
+# === Database & ORM ===
 sqlmodel==0.0.38
+SQLAlchemy==2.0.49
+pymysql==1.1.2
+alembic==1.14.0
+
+# === Data Validation & Configuration ===
 pydantic==2.12.5
 pydantic-settings==2.13.1
 pydantic[email]
-SQLAlchemy==2.0.49
-pymysql==1.1.2
-python-dotenv==1.2.2
 email-validator==2.3.0
 
-# Authentication & Security
+# === Authentication & Security ===
 python-jose[cryptography]==3.5.0
+PyJWT==2.9.0
 cryptography==46.0.6
 passlib[bcrypt]==1.7.4
 bcrypt==5.0.0
 python-multipart==0.0.22
 
-# Logging
-loguru==0.7.3
+# === HTTP Client ===
+httpx>=0.27.0
 
-# Real-time recognition (fingerspell learning)
-# 주의: torch / mediapipe / opencv 는 플랫폼별 버전이 까다로워
-# 이미 conda py311_env에 설치되어 있는 전제로 버전을 고정하지 않음.
-torch
-mediapipe
-opencv-python
-Pillow
-numpy
-websockets
+# === Real-time Communication ===
+websockets==12.0
+
+# === Machine Learning & Image Processing ===
+# 가령: 26/04/19 수정내용: Python 3.11 환경(py311_env) 기준으로 버전 고정.
+#       Python 3.13 의 mediapipe 0.10.22+ 에는 mp.solutions 가 제거돼있어 지문자 인식이 실패함.
+#       공동 개발 시 `conda create -n py311_env python=3.11` 후 `pip install -r requirements.txt` 권장.
+torch==2.9.1
+mediapipe==0.10.21
+opencv-python==4.11.0.86
+Pillow==12.0.0
+numpy==1.26.4
+
+# === Caching & Session Management ===
+redis>=5.0.0
+
+# === Environment & Logging ===
+python-dotenv==1.2.2
+loguru==0.7.3

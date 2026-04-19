@@ -1,4 +1,5 @@
-const API_BASE = "/api/learning";
+// 가령: 26/04/19 수정내용: 라우터 prefix 가 /api/v1/learning 으로 변경된 것에 맞춰 API_BASE 수정
+const API_BASE = "/api/v1/learning";
 const PASS_THRESHOLD = 80.0;
 const MAX_ATTEMPTS = 3;
 const FRAME_INTERVAL_MS = 300; // 초당 약 3프레임
@@ -204,21 +205,35 @@ function startFrameSender() {
   }, FRAME_INTERVAL_MS);
 }
 
+// 가령: 26/04/19 수정내용: access_token 쿠키 읽어 Authorization 헤더로 전송, DB 에 결과 저장 연결
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
 async function onConfirmStep3() {
   const score = state.maxScore;
   state.lastScore = score;
 
-  // 결과 저장 (DB엔 아직 저장하지 않고 판정만)
+  const token = getCookie("access_token");
+  const headers = { "Content-Type": "application/json" };
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+
   try {
     const res = await fetch(`${API_BASE}/results`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: headers,
       body: JSON.stringify({
         lesson_id: lessonId,
         score: score,
         attempt: state.attempt,
       }),
     });
+    if (res.status === 401) {
+      alert("로그인이 필요합니다. 로그인 후 다시 시도해주세요.");
+      location.href = "login.html";
+      return;
+    }
     const data = await res.json();
     finishStep3(data);
   } catch (e) {

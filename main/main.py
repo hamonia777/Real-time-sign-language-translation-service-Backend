@@ -10,8 +10,10 @@ from main.api.router import api_router
 from main.core.config import settings
 from main.core.database import engine
 
-from main.domain.user.entity.user import User
+from main.domain.user.entity.user import User  # noqa: F401
 from main.domain.learning.entity.lesson import Lesson  # noqa: F401
+# 가령: 26/04/19 수정내용: SQLModel.metadata.create_all 이 user_lesson_progress 테이블을 생성할 수 있도록 import
+from main.domain.UserLessonProgress.entity.user_lesson_progress import UserLessonProgress  # noqa: F401
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -37,6 +39,11 @@ frontend_dir = Path(__file__).resolve().parent.parent / "frontend"
 app.mount("/css", StaticFiles(directory=frontend_dir / "css"), name="css")
 app.mount("/js", StaticFiles(directory=frontend_dir / "js"), name="js")
 app.mount("/images", StaticFiles(directory=frontend_dir / "images"), name="images")
+
+# 가령: 26/04/19 수정내용: frontend/logo.png 를 루트 경로로 서빙 (HTML 에서 ../logo.png 참조 대응)
+@app.get("/logo.png")
+def serve_logo():
+    return FileResponse(frontend_dir / "logo.png")
 
 # [수정] 기존 JSON 응답 대신 home.html을 메인 페이지로 반환하도록 변경
 @app.get("/")
