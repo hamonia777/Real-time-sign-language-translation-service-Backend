@@ -27,18 +27,6 @@ from main.domain.user.usecase.user_usecase import (
 router = APIRouter()
 
 
-@router.post("/sign-up", response_model=UserSignUpResponseDto)
-def create_user(
-    user_req: UserSignUpRequestDto,
-    usecase: SignUpUseCase = Depends(),
-):
-    result_user = usecase.execute(user_req)
-    return UserSignUpResponseDto(
-        message="회원가입이 완료되었습니다.",
-        nickname=result_user.nickname,
-    )
-
-
 @router.post("/info")
 async def update_user_info(
     user_info_req: UserInfoRequestDto,

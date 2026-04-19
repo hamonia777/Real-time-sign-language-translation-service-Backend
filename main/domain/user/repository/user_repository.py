@@ -1,4 +1,4 @@
-# 가령: 26/04/19 수정내용: Kakao 로그인/초기정보 입력 지원을 위해 find_by_kakao_id, find_by_id 복원
+# 가령: 26/04/19 수정내용: Kakao 로그인 지원(learning) + Survey 저장 기능(master) 병합 및 async 오용 버그 수정
 from abc import ABC, abstractmethod
 from sqlmodel import Session, select
 from fastapi import Depends
@@ -23,6 +23,10 @@ class UserRepository(ABC):
     @abstractmethod
     def find_by_id(self, user_id: int) -> User | None:
         pass
+        
+    @abstractmethod
+    def save_survey(self, survey) -> None:
+        pass
 
 
 class SqlUserRepository(UserRepository):
@@ -46,6 +50,10 @@ class SqlUserRepository(UserRepository):
     def find_by_id(self, user_id: int) -> User | None:
         statement = select(User).where(User.id == user_id)
         return self.db.exec(statement).first()
+
+    def save_survey(self, survey) -> None:
+        self.db.add(survey)
+        self.db.commit()
 
 
 def get_user_repository(db: Session = Depends(get_db)) -> UserRepository:
