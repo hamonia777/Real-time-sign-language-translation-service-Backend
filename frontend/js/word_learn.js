@@ -1,6 +1,9 @@
 // 가령: 26/04/19 수정내용: 단어 학습 Step 3 에 model_word.pt WebSocket 연결 + 세그먼트 기반 채점 구현
 // 가령: 26/04/19 수정내용: 시작 버튼으로 녹화 트리거 / 녹화 중에는 예측 숨기고 진행바 표시
 const API_BASE = "/api/v1/learning";
+
+// 진웅 : live 서버에서는 CORS 문제로 인해 API_BASE 를 상대경로로 설정. 개발 시에는 필요에 따라 주석 처리된 라인을 사용 가능.
+// const API_BASE = "http://127.0.0.1:8080/api/v1/learning"; 
 const PASS_THRESHOLD = 80.0;
 const MAX_ATTEMPTS = 3;
 // 가령: 26/04/19 수정내용: 인식률 개선을 위해 프레임 전송 주기 200ms → 100ms (5fps → 10fps)
