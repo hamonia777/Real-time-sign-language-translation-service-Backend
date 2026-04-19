@@ -1,24 +1,39 @@
+# 가령: 26/04/19 수정내용: git 충돌 해결 — 기존 /sign-up (upstream) + Kakao 로그인/콜백/로그아웃 (stash) 양쪽 모두 유지
 import httpx
 from fastapi import APIRouter, Depends, Response, HTTPException
 from fastapi.responses import RedirectResponse
 
 from main.core.config import settings
-from main.domain.user.dto.user_request_dto import UserSignUpRequestDto, UserInfoRequestDto
-from main.domain.user.dto.user_response_dto import UserSignUpResponseDto, KakaoLoginResponseDto
-from main.domain.user.usecase.user_usecase import KakaoLoginUseCase, UserProfileUseCase
-
-from main.core.security import create_tokens, get_current_user_id, save_refresh_token, delete_refresh_token
+from main.core.security import (
+    create_tokens,
+    get_current_user_id,
+    save_refresh_token,
+    delete_refresh_token,
+)
+from main.domain.user.dto.user_request_dto import (
+    UserSignUpRequestDto,
+    UserInfoRequestDto,
+)
+from main.domain.user.dto.user_response_dto import (
+    UserSignUpResponseDto,
+    KakaoLoginResponseDto,
+)
+from main.domain.user.usecase.user_usecase import (
+    SignUpUseCase,
+    KakaoLoginUseCase,
+    UserProfileUseCase,
+)
 
 router = APIRouter()
 
+
 @router.post("/info")
 async def update_user_info(
-        user_info_req: UserInfoRequestDto,
-        usecase: UserProfileUseCase = Depends(),
-        user_id: int = Depends(get_current_user_id)
+    user_info_req: UserInfoRequestDto,
+    usecase: UserProfileUseCase = Depends(),
+    user_id: int = Depends(get_current_user_id),
 ):
-    result = await usecase.update_info(user_id, user_info_req)
-    return result
+    return await usecase.update_info(user_id, user_info_req)
 
 
 @router.get("/login/kakao")
@@ -31,14 +46,18 @@ def kakao_login():
 
 
 @router.get("/kakao/auth", response_model=KakaoLoginResponseDto)
-async def kakao_callback(code: str, response: Response, usecase: KakaoLoginUseCase = Depends()):
+async def kakao_callback(
+    code: str,
+    response: Response,
+    usecase: KakaoLoginUseCase = Depends(),
+):
     token_url = "https://kauth.kakao.com/oauth/token"
     token_data = {
         "grant_type": "authorization_code",
         "client_id": settings.KAKAO_REST_API_KEY,
         "redirect_uri": settings.KAKAO_REDIRECT_URI,
         "code": code,
-        "client_secret": settings.KAKAO_CLIENT_SECRET
+        "client_secret": settings.KAKAO_CLIENT_SECRET,
     }
     token_headers = {"Content-type": "application/x-www-form-urlencoded;charset=utf-8"}
 
@@ -53,9 +72,8 @@ async def kakao_callback(code: str, response: Response, usecase: KakaoLoginUseCa
         user_info_url = "https://kapi.kakao.com/v2/user/me"
         user_info_headers = {
             "Authorization": f"Bearer {access_token}",
-            "Content-type": "application/x-www-form-urlencoded;charset=utf-8"
+            "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
         }
-
         user_response = await client.get(user_info_url, headers=user_info_headers)
         user_info = user_response.json()
 
@@ -66,10 +84,7 @@ async def kakao_callback(code: str, response: Response, usecase: KakaoLoginUseCa
     await save_refresh_token(user.id, my_refresh_token)
     response.headers["Authorization"] = f"Bearer {my_access_token}"
 
-    if(user.phone_num == None):
-        check =  True
-    else:
-        check = False
+    is_first = user.phone_num is None or user.phone_num == ""
 
     response.set_cookie(
         key="refresh_token",
@@ -77,27 +92,36 @@ async def kakao_callback(code: str, response: Response, usecase: KakaoLoginUseCa
         httponly=True,
         secure=False,
         samesite="lax",
-        max_age=1209600
+        max_age=1209600,
+    )
+
+    # 가령: 26/04/19 수정내용: 프론트엔드 JS 가 읽을 수 있도록 access_token 을 non-httpOnly 쿠키로 저장
+    response.set_cookie(
+        key="access_token",
+        value=my_access_token,
+        httponly=False,
+        secure=False,
+        samesite="lax",
+        max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
     )
 
     return KakaoLoginResponseDto(
         message="로그인 성공",
         email=user.email,
-        is_first=check
+        is_first=is_first,
     )
+
 
 @router.get("/logout")
 async def logout(
-        response: Response,
-        user_id: int = Depends(get_current_user_id)
+    response: Response,
+    user_id: int = Depends(get_current_user_id),
 ):
     await delete_refresh_token(user_id)
-
     response.delete_cookie(
         key="refresh_token",
         httponly=True,
         secure=True,
-        samesite="lax"
+        samesite="lax",
     )
-
     return {"message": "성공적으로 로그아웃 되었습니다."}

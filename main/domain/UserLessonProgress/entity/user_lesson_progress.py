@@ -1,7 +1,6 @@
-from typing import Optional, List
-from datetime import datetime, date
+from typing import Optional
+from datetime import datetime
 from sqlmodel import SQLModel, Field, Relationship
-from sqlalchemy import Column, TEXT
 
 class UserLessonProgress(SQLModel, table=True):
     __tablename__ = "user_lesson_progress"
@@ -13,6 +12,6 @@ class UserLessonProgress(SQLModel, table=True):
     attempt: int = Field(default=0)
     updated_at: datetime = Field(default_factory=datetime.now)
 
-    # Relationships
-    user: "User" = Relationship(back_populates="progress")
-    lesson: "Lesson" = Relationship(back_populates="progress")
+    # 문자열로 "User", "Lesson"을 넣어 순환 참조 방지
+    user: Optional["User"] = Relationship(back_populates="progress")
+    lesson: Optional["Lesson"] = Relationship(back_populates="progress")

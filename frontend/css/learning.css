@@ -70,6 +70,60 @@
   color: #4a6cf7;
 }
 
+/* 가령: 26/04/19 수정내용: 단어 학습 섹션용 탭/카드 스타일 추가 */
+.word-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.word-tab {
+  padding: 8px 14px;
+  border-radius: 20px;
+  background: #eef0f7;
+  border: 1px solid #e6e8f0;
+  color: #3b3f55;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.word-tab:hover { background: #dfe3f1; }
+.word-tab.active {
+  background: #2C3E63;
+  color: #fff;
+  border-color: #2C3E63;
+}
+.lesson-card.word-card {
+  aspect-ratio: auto;
+  padding: 18px 14px;
+  font-size: 16px;
+  font-weight: 600;
+  min-height: 56px;
+}
+
+/* 가령: 26/04/19 수정내용: 단어 학습 녹화 진행바 */
+.progress-wrap {
+  margin-top: 8px;
+  width: 100%;
+  height: 10px;
+  background: #eef0f7;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #4a6cf7, #2c3e63);
+  transition: width 0.15s linear;
+}
+.progress-time {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #4a6cf7;
+  font-weight: 600;
+  text-align: right;
+}
+
 /* ─── sign_learn page ─── */
 .learn-wrap {
   max-width: 960px;

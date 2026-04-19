@@ -1,7 +1,9 @@
+# 가령: 26/04/19 수정내용: 병합으로 날아간 JWT/Kakao/Redis 필드 복구 및 Pydantic V2 문법 적용
 from pydantic_settings import BaseSettings
 from pydantic import ConfigDict
 
 class Settings(BaseSettings):
+    # 팀원분의 Pydantic V2 최신 문법 채택
     model_config = ConfigDict(env_file=".env", case_sensitive=False)
     
     PROJECT_NAME: str = "Sign Language Translator API"

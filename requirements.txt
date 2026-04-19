@@ -11,24 +11,32 @@ alembic==1.14.0
 # === Data Validation & Configuration ===
 pydantic==2.12.5
 pydantic-settings==2.13.1
+pydantic[email]
 email-validator==2.3.0
 
 # === Authentication & Security ===
 python-jose[cryptography]==3.5.0
+PyJWT==2.9.0
 cryptography==46.0.6
 passlib[bcrypt]==1.7.4
 bcrypt==5.0.0
 python-multipart==0.0.22
 
+# === HTTP Client ===
+httpx>=0.27.0
+
 # === Real-time Communication ===
 websockets==12.0
 
 # === Machine Learning & Image Processing ===
-torch>=2.0.0
-mediapipe>=0.10.0
-opencv-python>=4.8.0
-Pillow>=10.0.0
-numpy>=1.24.0
+# 가령: 26/04/19 수정내용: Python 3.11 환경(py311_env) 기준으로 버전 고정.
+#       Python 3.13 의 mediapipe 0.10.22+ 에는 mp.solutions 가 제거돼있어 지문자 인식이 실패함.
+#       공동 개발 시 `conda create -n py311_env python=3.11` 후 `pip install -r requirements.txt` 권장.
+torch==2.9.1
+mediapipe==0.10.21
+opencv-python==4.11.0.86
+Pillow==12.0.0
+numpy==1.26.4
 
 # === Caching & Session Management ===
 redis>=5.0.0
@@ -41,4 +49,3 @@ loguru==0.7.3
 # pytest==7.4.0
 # black==23.10.0
 # flake8==6.1.0
-

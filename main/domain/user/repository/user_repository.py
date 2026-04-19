@@ -1,12 +1,15 @@
+# 가령: 26/04/19 수정내용: Kakao 로그인 지원(learning) + Survey 저장 기능(master) 병합 및 async 오용 버그 수정
 from abc import ABC, abstractmethod
 from sqlmodel import Session, select
 from fastapi import Depends
 
 from main.domain.user.entity.user import User
 from main.core.database import get_db
+
+
 class UserRepository(ABC):
     @abstractmethod
-    async def save(self, user: User) -> User:
+    def save(self, user: User) -> User:
         pass
 
     @abstractmethod
@@ -18,18 +21,19 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    async def find_by_id(self, user_id: int) -> User | None:
+    def find_by_id(self, user_id: int) -> User | None:
         pass
         
     @abstractmethod
-    async def save_survey(self, survey) -> None:
+    def save_survey(self, survey) -> None:
         pass
+
 
 class SqlUserRepository(UserRepository):
     def __init__(self, db: Session):
         self.db = db
 
-    async def save(self, user: User) -> User:
+    def save(self, user: User) -> User:
         self.db.add(user)
         self.db.commit()
         self.db.refresh(user)
@@ -37,22 +41,20 @@ class SqlUserRepository(UserRepository):
 
     def find_by_email(self, email: str) -> User | None:
         statement = select(User).where(User.email == email)
-        result = self.db.execute(statement)
-        return result.scalars().first()
+        return self.db.exec(statement).first()
 
     def find_by_kakao_id(self, kakao_id: str) -> User | None:
         statement = select(User).where(User.kakao_id == kakao_id)
-        result = self.db.execute(statement)
-        return result.scalars().first()
+        return self.db.exec(statement).first()
 
-    async def find_by_id(self, user_id: int) -> User | None:
+    def find_by_id(self, user_id: int) -> User | None:
         statement = select(User).where(User.id == user_id)
-        result = self.db.execute(statement)
-        return result.scalars().first()
+        return self.db.exec(statement).first()
 
-    async def save_survey(self, survey) -> None:
+    def save_survey(self, survey) -> None:
         self.db.add(survey)
         self.db.commit()
+
 
 def get_user_repository(db: Session = Depends(get_db)) -> UserRepository:
     return SqlUserRepository(db)
