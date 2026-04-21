@@ -105,11 +105,23 @@ async def kakao_callback(
         max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
     )
 
-    return KakaoLoginResponseDto(
-        message="로그인 성공",
-        email=user.email,
-        is_first=is_first,
-    )
+    #return KakaoLoginResponseDto(
+    #    message="로그인 성공",
+    #    email=user.email,
+    #    is_first=is_first,
+    #)
+
+    # 혜미 : 26/04/20 수정내용 : 사용자 입장에서는 JSON 응답보다 로그인 후 리다이렉트가 더 자연스러울 것 같아서, 로그인 성공 시 프론트엔드의 /register.html (전화번호 입력 페이지) 또는 / (메인 페이지)로 리다이렉트하도록 변경
+    if is_first:
+        redirect = RedirectResponse(url="/register.html", status_code=302)
+    else:
+        redirect = RedirectResponse(url="/", status_code=302)
+
+    redirect.set_cookie(key="refresh_token", value=my_refresh_token, httponly=True, secure=False, samesite="lax", max_age=1209600)
+    redirect.set_cookie(key="access_token", value=my_access_token, httponly=False, secure=False, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
+    redirect.headers["Authorization"] = f"Bearer {my_access_token}"
+    return redirect
+
 
 
 @router.get("/logout")

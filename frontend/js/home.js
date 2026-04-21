@@ -36,14 +36,18 @@ document.addEventListener('DOMContentLoaded', () => {
        2. 로그인 / 로그아웃 상태 관리 (공통)
     ----------------------------------------------------------- */
     const authBtn = document.getElementById('headerAuthBtn') || document.querySelector('.login-btn');
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    function getCookie(name) {
+        const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+        return match ? decodeURIComponent(match[1]) : null;
+    }
+    const isLoggedIn = !!getCookie('access_token');
 
     if (authBtn) {
         if (isLoggedIn) {
             authBtn.innerText = "로그아웃";
             authBtn.classList.add('logout-style');
-            authBtn.onclick = () => {
-                localStorage.removeItem('isLoggedIn');
+            authBtn.onclick = async () => {
+                await fetch('/api/v1/auth/logout', { method: 'GET', credentials: 'include' });
                 alert("로그아웃 되었습니다.");
                 location.href = 'home.html';
             };
