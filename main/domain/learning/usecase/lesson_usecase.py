@@ -14,6 +14,11 @@ from main.domain.learning.dto.lesson_dto import (
     SaveResultRequestDto,
     SaveResultResponseDto,
     SeedResponseDto,
+    # 가령: 260422: 수정 내용 - 문장 시드 응답 DTO import
+    SeedSentencesResponseDto,
+    # 가령: 260422: 수정 내용 - 문장+수어어순단어 조회 응답 DTO import
+    SentenceWithWordsResponseDto,
+    SentenceWordItemDto,
 )
 from main.domain.learning.service.lesson_service import LessonService
 
@@ -82,6 +87,46 @@ class SeedWordsUseCase:
                 f"단어 시드 완료: {result['inserted']}개 추가, "
                 f"{updated}개 카테고리 업데이트, {result['skipped']}개 스킵"
             ),
+        )
+
+
+# 가령: 260422: 수정 내용 - 문장+수어어순단어 조회 usecase. 문장 학습 페이지 진입 시 호출
+class GetSentenceWithWordsUseCase:
+    def __init__(self, service: LessonService = Depends()):
+        self.service = service
+
+    def execute(self, sentence_id: int) -> SentenceWithWordsResponseDto:
+        result = self.service.get_sentence_with_words(sentence_id)
+        return SentenceWithWordsResponseDto(
+            sentence_id=result["sentence_id"],
+            sentence_title=result["sentence_title"],
+            words=[SentenceWordItemDto(**w) for w in result["words"]],
+        )
+
+
+# 가령: 260422: 수정 내용 - 문장 시드 usecase. sentences.txt → lessons(category=sentence) + lesson_word_mappings 일괄 적재
+class SeedSentencesUseCase:
+    def __init__(self, service: LessonService = Depends()):
+        self.service = service
+
+    def execute(self) -> SeedSentencesResponseDto:
+        result = self.service.seed_sentences()
+        missing = result["missing_words"]
+        msg = (
+            f"문장 시드 완료: {result['inserted_sentences']}개 신규, "
+            f"{result['skipped_sentences']}개 재시드(매핑 재생성), "
+            f"매핑 {result['inserted_mappings']}개 insert / {result['deleted_mappings']}개 delete"
+        )
+        if missing:
+            msg += f" — 매칭 실패 단어 {len(missing)}개: {missing[:5]}{'...' if len(missing) > 5 else ''}"
+        return SeedSentencesResponseDto(
+            inserted_sentences=result["inserted_sentences"],
+            skipped_sentences=result["skipped_sentences"],
+            inserted_mappings=result["inserted_mappings"],
+            deleted_mappings=result["deleted_mappings"],
+            missing_words=missing,
+            total_lines=result["total_lines"],
+            message=msg,
         )
 
 

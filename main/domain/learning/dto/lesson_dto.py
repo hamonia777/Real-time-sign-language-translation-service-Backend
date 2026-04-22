@@ -24,6 +24,30 @@ class SeedResponseDto(BaseModel):
     message: str
 
 
+# 가령: 260422: 수정 내용 - 문장 시드 응답 DTO. 매핑 카운트와 매칭 실패 단어 목록을 함께 반환
+class SeedSentencesResponseDto(BaseModel):
+    inserted_sentences: int
+    skipped_sentences: int
+    inserted_mappings: int
+    deleted_mappings: int
+    missing_words: List[str]
+    total_lines: int
+    message: str
+
+
+# 가령: 260422: 수정 내용 - 문장 학습 페이지에서 문장+수어어순단어 한 번에 받기 위한 DTO
+class SentenceWordItemDto(BaseModel):
+    word_order: int
+    lesson_id: int
+    title: str
+
+
+class SentenceWithWordsResponseDto(BaseModel):
+    sentence_id: int
+    sentence_title: str
+    words: List[SentenceWordItemDto]
+
+
 class SaveResultRequestDto(BaseModel):
     lesson_id: int
     score: float
