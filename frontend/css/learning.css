@@ -101,6 +101,56 @@
   min-height: 56px;
 }
 
+/* 가령: 260422: 수정 내용 - 문장 학습 카드: 3열 그리드 정렬 (한 줄에 3개씩, 자동 줄바꿈) */
+.sentence-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.lesson-card.sentence-card {
+  aspect-ratio: auto;
+  padding: 22px 20px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.5;
+  min-height: 110px;
+  text-align: left;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+/* 가령: 260422: 수정 내용 - 문장 학습 페이지: 단어 진행 미니 스테퍼 (Step 3 내부 1/N → N/N) */
+.word-mini-stepper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.word-mini-chip {
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: #eef0f7;
+  border: 1px solid #e6e8f0;
+  color: #6B7280;
+  font-size: 12px;
+  font-weight: 600;
+}
+.word-mini-chip.active {
+  background: #2C3E63;
+  color: #fff;
+  border-color: #2C3E63;
+}
+.word-mini-chip.done {
+  background: #4a6cf7;
+  color: #fff;
+  border-color: #4a6cf7;
+}
+.word-mini-chip.failed {
+  background: #fff;
+  color: #c33;
+  border-color: #c33;
+}
+
 /* 가령: 26/04/19 수정내용: 단어 학습 녹화 진행바 */
 .progress-wrap {
   margin-top: 8px;
