@@ -12,8 +12,13 @@ from main.core.database import engine
 
 from main.domain.user.entity.user import User  # noqa: F401
 from main.domain.learning.entity.lesson import Lesson  # noqa: F401
-# 가령: 26/04/19 수정내용: SQLModel.metadata.create_all 이 user_lesson_progress 테이블을 생성할 수 있도록 import
+# 가령: 26/04/19 수정내용: SQLModel.metadata.create_all 이 모든 테이블을 정상적으로 생성할 수 있도록 모델 import 병합
+from main.domain.Inquiry.entity.inquiry import Inquiry  # noqa: F401
+from main.domain.LearningBasket.entity.learning_basket import LearningBasket  # noqa: F401
+from main.domain.LessonWordMapping.entity.lesson_word_mapping import LessonWordMapping  # noqa: F401
+from main.domain.StudyLog.entity.study_log import StudyLog  # noqa: F401
 from main.domain.UserLessonProgress.entity.user_lesson_progress import UserLessonProgress  # noqa: F401
+from main.domain.UserSurveyProfiles.entity.user_survey_profiles import UserSurveyProfile  # noqa: F401
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -46,6 +51,11 @@ def serve_logo():
     return FileResponse(frontend_dir / "logo.png")
 
 # [수정] 기존 JSON 응답 대신 home.html을 메인 페이지로 반환하도록 변경
+@app.on_event("startup")
+async def startup_event():
+    async with engine.begin() as conn:
+        await conn.run_sync(SQLModel.metadata.create_all)
+
 @app.get("/")
 def read_root():
     return FileResponse(frontend_dir / "html" / "home.html")

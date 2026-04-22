@@ -7,10 +7,10 @@ class UserService:
     def __init__(self, user_repo: UserRepository = Depends(get_user_repository)):
         self.user_repo = user_repo
 
-    def create_user(self, dto: UserCreateDomainDto) -> User:
+    async def create_user(self, dto: UserCreateDomainDto) -> User:
         new_user = User(
             email=dto.email,
             nickname=dto.nickname,
             phone_num=dto.phone_number
         )
-        return self.user_repo.save(new_user)
+        return await self.user_repo.save(new_user)

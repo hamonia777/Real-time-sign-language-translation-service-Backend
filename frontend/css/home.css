@@ -77,6 +77,18 @@ body {
   letter-spacing: 0.01em;
 }
 
+.logout-style {
+  background: #fff;
+  color: #1F2A58;
+  border: 1px solid #1F2A58;
+  border-radius: 99px;
+  width: 75px;
+  height: 28px;
+  font-size: 12px;
+  cursor: pointer;
+  letter-spacing: 0.01em;
+}
+
 /* ── Hero Section ── */
 .hero-section {
     position: relative;

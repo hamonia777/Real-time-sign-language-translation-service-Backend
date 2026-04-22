@@ -3,6 +3,8 @@
 // 가령: 26/04/19 수정내용: 단어 학습 섹션 카테고리 탭 + 단어 렌더링 로직 추가
 const API_BASE = "/api/v1/learning";
 
+// 진웅 : live 서버에서는 CORS 문제로 인해 API_BASE 를 상대경로로 설정. 개발 시에는 필요에 따라 주석 처리된 라인을 사용 가능.
+// const API_BASE = "http://127.0.0.1:8080/api/v1/learning";
 // 가령: 26/04/19 수정내용: fingerspell 모델이 못 알아듣는 쌍자음/이중모음은 word 모델(word_learn.html)로 라우팅
 const WORD_MODEL_FS_CHARS = new Set(["ㄲ", "ㄸ", "ㅃ", "ㅆ", "ㅉ", "ㅘ", "ㅙ", "ㅝ", "ㅞ"]);
 

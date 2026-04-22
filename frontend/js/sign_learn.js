@@ -1,5 +1,9 @@
 // 가령: 26/04/19 수정내용: 라우터 prefix 가 /api/v1/learning 으로 변경된 것에 맞춰 API_BASE 수정
 const API_BASE = "/api/v1/learning";
+
+// 진웅 : live 서버에서는 CORS 문제로 인해 API_BASE 를 상대경로로 설정. 개발 시에는 필요에 따라 주석 처리된 라인을 사용 가능.
+// const API_BASE = "http://127.0.0.1:8080/api/v1/learning";
+
 const PASS_THRESHOLD = 80.0;
 const MAX_ATTEMPTS = 3;
 const FRAME_INTERVAL_MS = 300; // 초당 약 3프레임
@@ -121,6 +125,13 @@ function stopCamera() {
     state.stream = null;
   }
 }
+
+// 진웅 : WebSocket 연결 로직 개선. API_BASE 에 따라 ws/wss 프로토콜 자동 선택
+// function startWebSocket() {  
+//   const wsUrl = API_BASE.replace(/^http/, 'ws') + "/ws/recognition";
+//   state.ws = new WebSocket(wsUrl);
+
+//   state.ws.onopen = () => {
 
 function startWebSocket() {
   const proto = location.protocol === "https:" ? "wss:" : "ws:";
