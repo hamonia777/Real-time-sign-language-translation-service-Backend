@@ -1,0 +1,158 @@
+<!-- 가령: 260422: 수정 내용 - 문장 학습 페이지 신규 추가. 5단계 (단어확인 → 세팅 → 단어학습 → 문장학습 → 완료) -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문장 학습</title>
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/learning.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="main-header">
+        <div class="wide-container header-inner">
+            <div class="logo">
+                <img src="../logo.png" alt="수어 연구소 로고" class="logo-img">
+                <span>수어 연구소</span>
+            </div>
+            <nav class="nav-bar">
+                <a href="learning.html" class="active">수어학습</a>
+                <a href="search.html">수어검색</a>
+                <a href="support.html">고객지원</a>
+                <a href="mypage.html">마이페이지</a>
+            </nav>
+            <button class="login-btn header-auth-btn">로그아웃</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="learn-wrap">
+            <div class="learn-title" id="pageTitle">문장 학습 페이지 - 단계 1</div>
+
+            <div class="stepper-row" id="stepper">
+                <div class="node active" data-step="1"><div class="dot">1</div><span>문장 확인</span></div>
+                <div class="line"></div>
+                <div class="node" data-step="2"><div class="dot">2</div><span>환경 세팅</span></div>
+                <div class="line"></div>
+                <div class="node" data-step="3"><div class="dot">3</div><span>단어 학습</span></div>
+                <div class="line"></div>
+                <div class="node" data-step="4"><div class="dot">4</div><span>문장 학습</span></div>
+                <div class="line"></div>
+                <div class="node" data-step="5"><div class="dot">5</div><span>학습 완료</span></div>
+            </div>
+
+            <!-- Step 1: 문장 확인 -->
+            <section id="step1" class="step-view">
+                <div class="learn-body">
+                    <div class="video-box">
+                        <div class="char-huge" id="sentenceBig" style="font-size: 28px; padding: 20px; text-align:center; line-height:1.5;">로딩 중...</div>
+                    </div>
+                    <aside class="side-info">
+                        <h3>학습 문장</h3>
+                        <div class="target-char" id="sentenceSide" style="font-size: 18px; line-height: 1.5;">-</div>
+                        <div style="margin-top: 12px; font-size: 13px; color: #8c93a8;">수어 어순 단어</div>
+                        <div id="wordOrderBox" style="font-size: 14px; color: #2C3E63; line-height: 1.8;">-</div>
+                        <!-- 가령: 260422: 수정 내용 - 단어 점수 통과 기준 제거. 문장 학습만 60점 기준 -->
+                        <div class="pass-line" style="margin-top: auto;">단어 단계 : 인식만 (점수 무관)<br>문장 단계 : 통과 기준 <b>60점</b></div>
+                    </aside>
+                </div>
+                <div class="learn-footer">
+                    <button class="btn-secondary" onclick="location.href='learning.html'">목록으로</button>
+                    <button class="btn-primary" id="toStep2">다음</button>
+                </div>
+            </section>
+
+            <!-- Step 2: 환경 세팅 -->
+            <section id="step2" class="step-view" style="display:none;">
+                <div class="learn-body">
+                    <div class="camera-box">
+                        <video id="video2" autoplay playsinline muted></video>
+                    </div>
+                    <aside class="side-info">
+                        <h3>세팅 가이드</h3>
+                        <div>👍 주로 사용하는 손으로 진행</div>
+                        <div>🧼 배경 정리</div>
+                        <div>👤 상반신 노출</div>
+                        <div>☀️ 밝은 조명 확보</div>
+                        <div class="status-line" id="cameraStatus2">카메라 상태: 확인 중...</div>
+                    </aside>
+                </div>
+                <div class="learn-footer">
+                    <button class="btn-secondary" id="backTo1">이전</button>
+                    <button class="btn-primary" id="toStep3">다음</button>
+                </div>
+            </section>
+
+            <!-- Step 3: 단어 학습 (1/N → N/N) -->
+            <!-- 가령: 260422: 수정 내용 - 단어 어순 미니 스테퍼(wordMiniStepper) 제거. 진행 표시는 헤더의 "1/N" 라벨로 충분 -->
+            <section id="step3" class="step-view" style="display:none;">
+                <div class="learn-body">
+                    <div class="camera-box">
+                        <video id="video3" autoplay playsinline muted></video>
+                    </div>
+                    <aside class="side-info">
+                        <h3>단어 학습 — <span id="wordIndexLabel">1/?</span></h3>
+                        <div>현재 단어:</div>
+                        <div class="target-char" id="targetChar3">?</div>
+                        <!-- 가령: 260422: 수정 내용 - 단어 단계 점수/통과기준 UI 모두 제거. top3 예측만 시각적 피드백으로 유지 -->
+                        <div class="top3" id="top3Box"></div>
+                        <div class="progress-wrap" id="progressWrap" style="display:none;">
+                            <div class="progress-bar" id="progressBar"></div>
+                        </div>
+                        <div class="progress-time" id="progressTime" style="display:none;">0.0 / 10.0 초</div>
+                        <div class="status-line" id="statusLine3">시작 버튼을 누르면 녹화가 시작됩니다</div>
+                    </aside>
+                </div>
+                <div class="learn-footer">
+                    <button class="btn-secondary" id="backTo2">이전</button>
+                    <button class="btn-primary" id="startRecordBtn">시작</button>
+                    <button class="btn-primary" id="confirmStep3" style="display:none;">확인</button>
+                </div>
+            </section>
+
+            <!-- Step 4: 문장 학습 (전체 인식 — Phase 3 에서 video 모델 연결 예정) -->
+            <section id="step4" class="step-view" style="display:none;">
+                <div class="learn-body">
+                    <div class="camera-box">
+                        <video id="video4" autoplay playsinline muted></video>
+                    </div>
+                    <aside class="side-info">
+                        <h3>문장 학습</h3>
+                        <div>대상 문장:</div>
+                        <div class="target-char" id="targetSentence4" style="font-size: 18px; line-height: 1.4;">-</div>
+                        <div class="pass-line">통과 기준 : <b>60점</b></div>
+                        <div class="pass-line">시도 횟수 : <span id="attemptLabel4">1</span>/3</div>
+                        <div class="gauge"><span id="scoreVal4">0</span>점</div>
+                        <div class="status-line" id="statusLine4" style="color: #c7541f;">⚠️ 문장 인식 모델(model_video.pt) 연동은 Phase 3 예정 — 현재는 통과 처리 버튼으로 다음 단계로 진행합니다</div>
+                    </aside>
+                </div>
+                <div class="learn-footer">
+                    <button class="btn-secondary" id="backTo3From4">이전</button>
+                    <button class="btn-primary" id="passSentenceBtn">통과 처리(임시)</button>
+                </div>
+            </section>
+
+            <!-- Step 5: 학습 완료 -->
+            <section id="step5" class="step-view" style="display:none;">
+                <div class="step4-wrap">
+                    <h2 id="completeMsg">학습을 완료했습니다!</h2>
+                    <div class="step4-card">
+                        <div>학습 문장 : <b id="doneSentence">?</b></div>
+                        <!-- 가령: 260422: 수정 내용 - 단어 평균 점수는 참고용 라벨로 명시 (통과 판정에 사용 안 함) -->
+                        <div style="font-size: 13px; color: #8c93a8;">단어 평균 (참고용) : <span class="score" id="doneWordAvg" style="font-size: 16px;">0</span>점</div>
+                        <div>문장 점수 : <span class="score" id="doneSentenceScore">0</span>점</div>
+                        <div style="display:flex;gap:10px;margin-top:8px;">
+                            <button class="btn-secondary" id="retryBtn">다시 시도</button>
+                            <button class="btn-primary" onclick="location.href='learning.html'">학습 목록</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 가령: 260422: 수정 내용 - 캐시 우회용 버전 쿼리 추가 -->
+    <script src="../js/sentence_learn.js?v=260422b"></script>
+</body>
+</html>

@@ -18,7 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 location.href = 'mypage.html';
             } 
             // 아직 안 만든 페이지들만 알림창 띄우기
-            else if (menuText === "수어학습" || menuText === "수어검색") {
+            // 가령: 260422: 수정 내용 - 수어학습 페이지 구현 완료로 alert 제거, href("learning.html")로 자연스럽게 이동
+            else if (menuText === "수어검색") {
                 alert(`${menuText} 페이지는 준비 중입니다.`);
             }
         };
