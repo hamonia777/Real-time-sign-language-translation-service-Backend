@@ -234,6 +234,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 }
 
 .avatar-circle svg {
@@ -272,6 +273,16 @@ body {
     font-weight: 500;
     color: #424242;
     margin: 4px 0 4px;
+}
+
+.profile-name-editable {
+    cursor: pointer;
+    transition: color 0.2s, text-decoration 0.2s;
+}
+
+#profileName:hover {
+    color: #517AAF;
+    text-decoration: underline;
 }
 
 .status-text {
@@ -327,6 +338,19 @@ body {
 }
 input:checked + .slider { background-color: #AFCEF6; }
 input:checked + .slider:before { transform: translateX(14px); }
+
+.notif-test-btn {
+    margin-top: 6px;
+    background: #F5F5F5;
+    border: 1px solid #D6D6D6;
+    border-radius: 99px;
+    font-size: 10px;
+    color: #474747;
+    padding: 5px 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.notif-test-btn:hover { background: #E8E8E8; }
 
 .kakao-link {
     margin-top: 18px;
@@ -788,3 +812,163 @@ input:checked + .slider:before { transform: translateX(14px); }
 }
 
 .btn-blue:hover { opacity: 0.85; }
+
+/* ──────────────────────────────────────────────────────────
+   7. 프로필 사진 확대 모달
+   ────────────────────────────────────────────────────────── */
+.photo-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+.photo-modal-overlay.active {
+    display: flex;
+}
+
+.photo-modal-img {
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+    animation: zoomIn 0.18s ease;
+    background: #FAEFC9;
+}
+
+@keyframes zoomIn {
+    from { transform: scale(0.75); opacity: 0; }
+    to   { transform: scale(1);    opacity: 1; }
+}
+
+/* ──────────────────────────────────────────────────────────
+   8. 닉네임 수정 모달
+   ────────────────────────────────────────────────────────── */
+.nickname-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+.nickname-modal-overlay.active {
+    display: flex;
+}
+
+.nickname-modal {
+    background: #fff;
+    border-radius: 10px;
+    padding: 28px 28px 22px;
+    width: 340px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    animation: zoomIn 0.16s ease;
+}
+
+.nickname-modal-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #2C2C2C;
+    margin-bottom: 6px;
+}
+
+.nickname-modal-desc {
+    font-size: 12px;
+    color: #717171;
+    margin-bottom: 14px;
+}
+
+.nickname-lock-msg {
+    font-size: 12px;
+    color: #E05252;
+    background: #FFF5F5;
+    border: 1px solid #F5C6C6;
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+}
+
+.nickname-input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.nickname-input {
+    flex: 1;
+    border: 1px solid #D6D6D6;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.nickname-input:focus {
+    border-color: #517AAF;
+}
+
+.nickname-check-btn {
+    background: #517AAF;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+}
+
+.nickname-check-btn:hover { opacity: 0.85; }
+
+.nickname-check-msg {
+    font-size: 11px;
+    min-height: 16px;
+    margin-bottom: 14px;
+}
+
+.nickname-check-msg.ok  { color: #4F854D; }
+.nickname-check-msg.err { color: #E05252; }
+
+.nickname-modal-btns {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.nickname-save-btn {
+    background: #1C4476;
+    color: #fff;
+    border: none;
+    border-radius: 99px;
+    padding: 8px 22px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.nickname-save-btn:hover { opacity: 0.85; }
+.nickname-save-btn:disabled { background: #C0C0C0; cursor: not-allowed; opacity: 1; }
+
+.nickname-cancel-btn {
+    background: #F0F0F0;
+    color: #474747;
+    border: none;
+    border-radius: 99px;
+    padding: 8px 22px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.nickname-cancel-btn:hover { opacity: 0.75; }

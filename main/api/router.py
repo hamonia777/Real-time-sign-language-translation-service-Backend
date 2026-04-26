@@ -3,6 +3,8 @@ from fastapi import APIRouter
 from main.api.user import user_routes
 from main.api.learning import learning_routes
 from main.api.survey import survey_routes
+from main.api.profile import profile_routes
+from main.api.inquiry import inquiry_routes
 
 api_router = APIRouter()
 
@@ -29,4 +31,16 @@ api_router.include_router(
     learning_routes.router,
     prefix="/api/v1/learning",
     tags=["Learning"],
+)
+
+api_router.include_router(
+    profile_routes.router,
+    prefix="/api/v1/profile",
+    tags=["Profile"],
+)
+
+api_router.include_router(
+    inquiry_routes.router,
+    prefix="/api/v1/inquiry",
+    tags=["Inquiry"],
 )
