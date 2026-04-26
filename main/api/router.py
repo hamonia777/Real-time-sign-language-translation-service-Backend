@@ -5,6 +5,7 @@ from main.api.learning import learning_routes
 from main.api.survey import survey_routes
 from main.api.profile import profile_routes
 from main.api.inquiry import inquiry_routes
+from main.api.search import search_routes
 
 api_router = APIRouter()
 
@@ -43,4 +44,10 @@ api_router.include_router(
     inquiry_routes.router,
     prefix="/api/v1/inquiry",
     tags=["Inquiry"],
+)
+
+api_router.include_router(
+    search_routes.router,
+    prefix="/api/v1/search",
+    tags=["Search"],
 )

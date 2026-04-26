@@ -21,6 +21,7 @@ from main.domain.StudyLog.entity.study_log import StudyLog  # noqa: F401
 from main.domain.UserLessonProgress.entity.user_lesson_progress import UserLessonProgress  # noqa: F401
 from main.domain.UserSurveyProfiles.entity.user_survey_profiles import UserSurveyProfile  # noqa: F401
 from main.domain.ProfilePhoto.entity.profile_photo import ProfilePhoto  # noqa: F401
+from main.domain.Search.entity.search_history import SearchHistory  # noqa: F401
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
