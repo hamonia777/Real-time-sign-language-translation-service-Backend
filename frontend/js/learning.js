@@ -120,5 +120,41 @@ function renderWords() {
   }
 }
 
+// 가령: 260422: 수정 내용 - 문장 학습 목록 로드/렌더 함수 추가
+async function loadSentences() {
+  try {
+    const res = await fetch(`${API_BASE}/lessons?category=sentence`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    renderSentences(data.items);
+  } catch (e) {
+    console.error(e);
+    document.getElementById("sentenceList").innerHTML =
+      '<p style="color:#c33;grid-column:1/-1;padding:10px;">문장 목록 불러오기 실패.</p>';
+  }
+}
+
+function renderSentences(items) {
+  const box = document.getElementById("sentenceList");
+  box.innerHTML = "";
+  const completed = getCompletedSet();
+
+  if (!items || items.length === 0) {
+    box.innerHTML =
+      '<p style="color:#8c93a8;grid-column:1/-1;padding:10px;">문장이 없습니다. 시드 API(/seed/sentences) 를 먼저 호출하세요.</p>';
+    return;
+  }
+
+  for (const item of items) {
+    const a = document.createElement("a");
+    a.className = "lesson-card sentence-card";
+    if (completed.has(item.lesson_id)) a.classList.add("completed");
+    a.href = `sentence_learn.html?lesson_id=${item.lesson_id}`;
+    a.textContent = item.title;
+    box.appendChild(a);
+  }
+}
+
 loadLessons();
 loadWords();
+loadSentences();
