@@ -1,6 +1,7 @@
 # 가령: 26/04/19 수정내용: git 충돌 해결 — 기존 /sign-up (upstream) + Kakao 로그인/콜백/로그아웃 (stash) 양쪽 모두 유지
 import httpx
 import traceback
+from typing import List
 from fastapi import APIRouter, Depends, Response, HTTPException
 from fastapi.responses import RedirectResponse
 
@@ -18,11 +19,13 @@ from main.domain.user.dto.user_request_dto import (
 from main.domain.user.dto.user_response_dto import (
     UserSignUpResponseDto,
     KakaoLoginResponseDto,
+    UserRankingDto,
 )
 from main.domain.user.usecase.user_usecase import (
     SignUpUseCase,
     KakaoLoginUseCase,
     UserProfileUseCase,
+    UserRankUseCase,
 )
 
 router = APIRouter()
@@ -206,3 +209,9 @@ async def logout(
         samesite="lax",
     )
     return {"message": "성공적으로 로그아웃 되었습니다."}
+
+@router.get("/ranking", response_model=List[UserRankingDto])
+async def get_user_ranking(
+    usecase: UserRankUseCase = Depends()
+):
+    return await usecase.get_ranking()

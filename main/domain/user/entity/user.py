@@ -2,6 +2,7 @@ from typing import Optional, List
 from datetime import datetime, date
 from sqlmodel import SQLModel, Field, Relationship
 from sqlalchemy import Column, TEXT, Text
+from main.domain.Search.entity.search_history import SearchHistory
 
 # 가령: 26/04/19 수정내용: Kakao 로그인 초기 상태(전화번호 미입력) 대응 위해 phone_num, nickname 을 Optional 로 변경 (+ master의 max_length 제약조건 병합)
 class User(SQLModel, table=True):
@@ -24,9 +25,10 @@ class User(SQLModel, table=True):
     updated_at: datetime = Field(default_factory=datetime.now)
     nickname_updated_at: Optional[datetime] = Field(default=None)
 
-    # Relationships (요청하신 대로 관계성 유지)
+    # Relationships
     survey_profile: Optional["UserSurveyProfile"] = Relationship(back_populates="user")
     study_logs: List["StudyLog"] = Relationship(back_populates="user")
     learning_baskets: List["LearningBasket"] = Relationship(back_populates="user")
     inquiries: List["Inquiry"] = Relationship(back_populates="user")
     progress: List["UserLessonProgress"] = Relationship(back_populates="user")
+    search_histories: List["SearchHistory"] = Relationship(back_populates="user", sa_relationship_kwargs={"cascade": "all, delete-orphan"})
