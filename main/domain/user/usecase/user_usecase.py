@@ -2,7 +2,7 @@
 import uuid
 from datetime import datetime
 from pathlib import Path
-
+from typing import List
 from fastapi import Depends, HTTPException, UploadFile
 
 UPLOADS_DIR = Path(__file__).resolve().parent.parent.parent.parent.parent / "frontend" / "images" / "uploads"
@@ -19,6 +19,7 @@ from main.domain.user.dto.user_response_dto import (
     NicknameResponseDto,
     NicknameCheckResponseDto,
     UserProfileResponseDto,
+    UserRankingDto,
 )
 from main.domain.user.entity.user import User
 from main.domain.user.repository.user_repository import (
@@ -84,6 +85,24 @@ class KakaoLoginUseCase:
         )
         return self.user_repo.save(new_user)
 
+class UserRankUseCase:
+    def __init__(self, user_repo: UserRepository = Depends(get_user_repository)):
+        self.user_repo = user_repo
+
+    async def get_ranking(self) -> List[UserRankingDto]:
+        top_users = self.user_repo.get_top_users_by_complete_count(limit=5)
+        
+        results = [
+            UserRankingDto(
+                rank=index + 1,
+                userId=user.id,
+                nickname=user.nickname or "이름없음",
+                profileImageUrl=user.profile_image_url,
+                completedLearningCount=user.complete_count
+            ) for index, user in enumerate(top_users)
+        ]
+        
+        return results
 
 class UserProfileUseCase:
     def __init__(self, user_repo: UserRepository = Depends(get_user_repository)):

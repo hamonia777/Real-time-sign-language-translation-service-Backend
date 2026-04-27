@@ -82,29 +82,80 @@ document.addEventListener('DOMContentLoaded', () => {
     /* -----------------------------------------------------------
        3. 랭킹 데이터 (홈 화면 전용 - 요소가 있을 때만 실행)
     ----------------------------------------------------------- */
+    // const rankingTable = document.getElementById('ranking-list');
+    // if (rankingTable) {
+    //     const rankingData = [
+    //         { rank: 1, nick: "햄부기", count: 240, color: "#FAEFC9" },
+    //         { rank: 2, nick: "가령밤빵", count: 235, color: "#EAD6E4" },
+    //         { rank: 3, nick: "민영부기", count: 210, color: "#838DBA" },
+    //         { rank: 4, nick: "박진웅", count: 198, color: "#9EB19A" },
+    //         { rank: 5, nick: "신나는 나나밍", count: 184, color: "#B19A9A" }
+    //     ];
+
+    //     rankingData.forEach(item => {
+    //         const row = document.createElement('div');
+    //         row.className = 'rank-row';
+    //         row.innerHTML = `
+    //             <span>${item.rank}등</span>
+    //             <span style="text-align: left; padding-left: 10px;">
+    //                 <i class="p-circle" style="background-color: ${item.color}"></i>
+    //                 ${item.nick}
+    //             </span>
+    //             <span style="color: #34436D; font-weight: 600;">${item.count}개</span>
+    //         `;
+    //         rankingTable.appendChild(row);
+    //     });
+    // }
+    const URL_BASE = "http://127.0.0.1:8080";
     const rankingTable = document.getElementById('ranking-list');
     if (rankingTable) {
-        const rankingData = [
-            { rank: 1, nick: "햄부기", count: 240, color: "#FAEFC9" },
-            { rank: 2, nick: "가령밤빵", count: 235, color: "#EAD6E4" },
-            { rank: 3, nick: "민영부기", count: 210, color: "#838DBA" },
-            { rank: 4, nick: "박진웅", count: 198, color: "#9EB19A" },
-            { rank: 5, nick: "신나는 나나밍", count: 184, color: "#B19A9A" }
-        ];
+        async function fetchRanking() {
+            try {
+                const response = await fetch(`${URL_BASE}/api/v1/users/ranking`);                
+                if (!response.ok) {
+                    throw new Error('랭킹 데이터를 불러오는데 실패했습니다.');
+                }
+                
+                const rankingData = await response.json();
+                const updateTimeSpan = document.getElementById('ranking-update-time');
+                if (updateTimeSpan) {
+                    const now = new Date();
+                    const year = now.getFullYear();
+                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                    const date = String(now.getDate()).padStart(2, '0');
+                    const hours = String(now.getHours()).padStart(2, '0');
+                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                
+                    updateTimeSpan.innerText = `${year}년 ${month}월 ${date}일 ${hours}시 ${minutes}분 기준`;
+                }
 
-        rankingData.forEach(item => {
-            const row = document.createElement('div');
-            row.className = 'rank-row';
-            row.innerHTML = `
-                <span>${item.rank}등</span>
-                <span style="text-align: left; padding-left: 10px;">
-                    <i class="p-circle" style="background-color: ${item.color}"></i>
-                    ${item.nick}
-                </span>
-                <span style="color: #34436D; font-weight: 600;">${item.count}개</span>
-            `;
-            rankingTable.appendChild(row);
-        });
+                rankingTable.innerHTML = '';
+                const defaultColors = ["#FAEFC9", "#EAD6E4", "#838DBA", "#9EB19A", "#B19A9A"];
+                rankingData.forEach((item, index) => {
+                    const row = document.createElement('div');
+                    row.className = 'rank-row';
+                    const profileHtml = item.profileImageUrl 
+                        ? `<img src="${item.profileImageUrl}" alt="프사" class="p-circle" style="object-fit: cover;">`
+                        : `<i class="p-circle" style="background-color: ${defaultColors[index % defaultColors.length]}"></i>`;
+
+                    row.innerHTML = `
+                        <span>${item.rank}등</span>
+                        <span style="text-align: left; padding-left: 10px;">
+                            ${profileHtml}
+                            ${item.nickname}
+                        </span>
+                        <span style="color: #34436D; font-weight: 600;">${item.completedLearningCount}개</span>
+                    `;
+                    rankingTable.appendChild(row);
+                });
+
+            } catch (error) {
+                console.error("랭킹 로드 에러:", error);
+                rankingTable.innerHTML = '<div style="padding: 20px; text-align: center; font-size: 13px; color: #757575;">랭킹 데이터를 불러올 수 없습니다.</div>';
+            }
+        }
+
+        fetchRanking();
     }
 
     // 홈 탭 버튼
