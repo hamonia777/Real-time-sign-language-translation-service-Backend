@@ -10,6 +10,10 @@ from main.domain.learning.dto.lesson_dto import (
     SaveResultRequestDto,
     SaveResultResponseDto,
     SeedResponseDto,
+    # 가령: 260422: 수정 내용 - 문장 시드 응답 DTO import
+    SeedSentencesResponseDto,
+    # 가령: 260422: 수정 내용 - 문장+수어어순단어 응답 DTO import
+    SentenceWithWordsResponseDto,
 )
 from main.domain.learning.usecase.lesson_usecase import (
     GetLessonUseCase,
@@ -17,6 +21,10 @@ from main.domain.learning.usecase.lesson_usecase import (
     SaveResultUseCase,
     SeedFingerspellUseCase,
     SeedWordsUseCase,
+    # 가령: 260422: 수정 내용 - 문장 시드 usecase import
+    SeedSentencesUseCase,
+    # 가령: 260422: 수정 내용 - 문장+단어 조회 usecase import
+    GetSentenceWithWordsUseCase,
 )
 
 router = APIRouter()
@@ -31,6 +39,21 @@ def seed_fingerspell(usecase: SeedFingerspellUseCase = Depends()):
 @router.post("/seed/word", response_model=SeedResponseDto)
 def seed_word(usecase: SeedWordsUseCase = Depends()):
     return usecase.execute()
+
+
+# 가령: 260422: 수정 내용 - 문장 시드 엔드포인트 신규 추가 (sentences.txt → lessons + lesson_word_mappings)
+@router.post("/seed/sentences", response_model=SeedSentencesResponseDto)
+def seed_sentences(usecase: SeedSentencesUseCase = Depends()):
+    return usecase.execute()
+
+
+# 가령: 260422: 수정 내용 - 문장 학습 페이지 진입 시 호출. 문장 + 수어 어순 단어 목록 한 번에 반환
+@router.get("/sentences/{sentence_id}/words", response_model=SentenceWithWordsResponseDto)
+def get_sentence_words(
+    sentence_id: int,
+    usecase: GetSentenceWithWordsUseCase = Depends(),
+):
+    return usecase.execute(sentence_id)
 
 
 @router.get("/lessons", response_model=LessonListResponseDto)

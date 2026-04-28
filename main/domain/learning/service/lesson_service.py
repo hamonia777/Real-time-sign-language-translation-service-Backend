@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import List, Optional
 
 from fastapi import Depends, HTTPException
@@ -6,6 +7,12 @@ from main.domain.learning.entity.lesson import Lesson
 from main.domain.learning.repository.lesson_repository import (
     LessonRepository,
     get_lesson_repository,
+)
+# 가령: 260422: 수정 내용 - 문장 시드(seed_sentences) 에서 lesson_word_mappings 를 사용하기 위해 repository import
+from main.domain.LessonWordMapping.entity.lesson_word_mapping import LessonWordMapping
+from main.domain.LessonWordMapping.repository.lesson_word_mapping_repository import (
+    LessonWordMappingRepository,
+    get_lesson_word_mapping_repository,
 )
 
 
@@ -37,6 +44,8 @@ WORDS_BY_CATEGORY = {
         "가족", "친구", "사람", "사랑", "아버지/아빠", "어머니/엄마",
         "언니/누나", "형/오빠", "남동생", "여동생", "할머니", "할아버지",
         "남편", "아내", "아이", "아들", "딸", "나라", "농인", "장애인",
+        # 가령: 260422: 수정 내용 - 문장 학습 시드(sentences.txt) 단어 추가
+        "상대",
     ],
     "emotion": [  # 감정·기분
         "기쁘다", "슬프다", "화나다", "무섭다", "당황", "행복", "우울",
@@ -44,6 +53,8 @@ WORDS_BY_CATEGORY = {
         "지루하다", "피곤", "힘들다", "이별", "극복", "반성", "좋다", "싫다",
         "만족", "반려(거절)", "예쁘다/멋지다", "귀엽다", "뜨겁다", "기분",
         "모습", "후회", "차별", "편하다",
+        # 가령: 260422: 수정 내용 - 문장 학습 시드(sentences.txt) 단어 추가
+        "신뢰",
     ],
     "body": [  # 신체·건강
         "눈(신체)", "다리(신체)", "발(신체)", "손", "입", "귀", "머리",
@@ -54,6 +65,8 @@ WORDS_BY_CATEGORY = {
         "가수", "간호사", "교수", "선생님", "변호사", "경찰", "군인", "기자",
         "농부", "과학자", "근로자", "근무하다", "의사", "미용사", "소방원",
         "판사", "조종사", "요리사", "운동선수", "화가", "사장", "학생",
+        # 가령: 260422: 수정 내용 - 문장 학습 시드(sentences.txt) 단어 추가. "프로그래머" 는 동의어로 매핑 처리(시드 단계)
+        "개발자",
     ],
     "nature": [  # 자연·날씨·계절
         "산", "바다", "강", "숲", "바위", "하늘", "호수", "섬", "구름",
@@ -68,6 +81,8 @@ WORDS_BY_CATEGORY = {
         "안경", "시험", "약속", "이름", "전화", "전화번호", "주사", "영수증",
         "비행기", "버스", "기차", "가방", "창문", "편의점", "승용차", "과일",
         "생일", "물",
+        # 가령: 260422: 수정 내용 - 문장 학습 시드(sentences.txt) 단어 추가
+        "웹사이트",
     ],
     "action": [  # 동작·상태
         "가다", "오다", "가르치다", "배우다", "가져가다", "기다리다", "끝나다",
@@ -85,6 +100,8 @@ WORDS_BY_CATEGORY = {
         "잃다", "입다", "뛰어나다", "나누다", "겪다", "장점", "하다", "내용",
         "문제", "방법", "기능", "공유", "계약", "광고", "뒤쪽", "많다", "적다",
         "어떻게",
+        # 가령: 260422: 수정 내용 - 문장 학습 시드(sentences.txt) 단어 추가
+        "꿈꾸다", "묻다", "성장", "노력", "서로", "해결", "같이", "인정", "원하다", "보여주다",
     ],
     "place": [  # 장소·시간
         "집", "학교", "화장실", "회사", "도서관", "교실", "공원", "마을",
@@ -93,6 +110,8 @@ WORDS_BY_CATEGORY = {
         "장소", "문화", "휴일", "치과", "오늘", "오전", "오후", "저녁",
         "아침", "지금", "언제", "어제", "내일", "월(달)", "년(해)", "시간",
         "누구", "어디", "출장", "전공",
+        # 가령: 260422: 수정 내용 - 문장 학습 시드(sentences.txt) 단어 추가
+        "매일",
     ],
     "study": [  # 학업·업무·숫자·기타
         "공부,학업", "주제", "이유", "정보", "데이터", "보안", "복구", "대회",
@@ -102,6 +121,8 @@ WORDS_BY_CATEGORY = {
         "셋(3)", "넷(4)", "다섯(5)", "여섯(6)", "일곱(7)", "여덟(8)", "아홉(9)",
         "열(10)", "숫자", "통계", "감속", "쉬다", "휴가", "복지", "부서",
         "화면", "나중에", "송금", "번개",
+        # 가령: 260422: 수정 내용 - 문장 학습 시드(sentences.txt) 단어 추가
+        "경험", "결과", "의견", "능력",
     ],
 }
 
@@ -118,9 +139,30 @@ def _build_word_map():
 WORD_CATEGORY_MAP = _build_word_map()
 
 
+# 가령: 260422: 수정 내용 - 문장(sentences.txt) 단어 → 기존 word lesson title 동의어 매핑 (시드 시점에 정규화)
+SENTENCE_WORD_ALIASES = {
+    "저": "저는",
+    "나": "저는",
+    "감사": "감사합니다",
+    "프로그래머": "개발자",
+}
+
+
+# 가령: 260422: 수정 내용 - sentences.txt 절대 경로 (lesson_service.py 위치 기준)
+SENTENCES_TXT_PATH = (
+    Path(__file__).resolve().parent.parent.parent.parent / "learning_model" / "sentences.txt"
+)
+
+
 class LessonService:
-    def __init__(self, repo: LessonRepository = Depends(get_lesson_repository)):
+    # 가령: 260422: 수정 내용 - 문장 시드를 위해 LessonWordMappingRepository 추가 주입
+    def __init__(
+        self,
+        repo: LessonRepository = Depends(get_lesson_repository),
+        mapping_repo: LessonWordMappingRepository = Depends(get_lesson_word_mapping_repository),
+    ):
         self.repo = repo
+        self.mapping_repo = mapping_repo
 
     def get_lesson(self, lesson_id: int) -> Lesson:
         lesson = self.repo.find_by_id(lesson_id)
@@ -203,4 +245,99 @@ class LessonService:
             "updated": updated,
             "skipped": skipped,
             "total": len(WORD_CATEGORY_MAP),
+        }
+
+    # 가령: 260422: 수정 내용 - sentences.txt 를 읽어 문장 lesson(category=sentence) + lesson_word_mappings 시드
+    def seed_sentences(self) -> dict:
+        if not SENTENCES_TXT_PATH.exists():
+            raise HTTPException(
+                status_code=404,
+                detail=f"sentences.txt not found at {SENTENCES_TXT_PATH}",
+            )
+
+        inserted_sentences = 0
+        skipped_sentences = 0
+        inserted_mappings = 0
+        deleted_mappings = 0
+        missing_words: List[str] = []  # "{문장}: {단어}" 포맷, lesson 매칭 실패한 단어 추적
+        total_lines = 0
+
+        for raw_line in SENTENCES_TXT_PATH.read_text(encoding="utf-8").splitlines():
+            line = raw_line.strip()
+            if not line or line.startswith("#"):
+                continue
+            if "=" not in line:
+                continue
+
+            words_part, sentence_part = line.split("=", 1)
+            sign_words = [w.strip() for w in words_part.split(",") if w.strip()]
+            sentence_title = sentence_part.strip()
+            if not sentence_title or not sign_words:
+                continue
+            total_lines += 1
+
+            # 문장 lesson upsert (있으면 재사용 + 기존 매핑 정리)
+            sentence_lesson = self.repo.find_by_title_and_category(sentence_title, "sentence")
+            if sentence_lesson is None:
+                sentence_lesson = self.repo.save(
+                    Lesson(
+                        title=sentence_title,
+                        category="sentence",
+                        subcategory="business",
+                        level=1,
+                        video_url="",
+                        thumbnail_url=None,
+                    )
+                )
+                inserted_sentences += 1
+            else:
+                skipped_sentences += 1
+                deleted_mappings += self.mapping_repo.delete_by_sentence_id(sentence_lesson.id)
+
+            # 수어 어순대로 매핑 생성 (word_order = 1..N)
+            for order, sign_word in enumerate(sign_words, start=1):
+                canonical = SENTENCE_WORD_ALIASES.get(sign_word, sign_word)
+                word_lesson = self.repo.find_by_title_and_category(canonical, "word")
+                if word_lesson is None:
+                    missing_words.append(f"{sentence_title}: {sign_word}(→{canonical})")
+                    continue
+                self.mapping_repo.save(
+                    LessonWordMapping(
+                        sentence_lesson_id=sentence_lesson.id,
+                        word_lesson_id=word_lesson.id,
+                        word_order=order,
+                    )
+                )
+                inserted_mappings += 1
+
+        return {
+            "inserted_sentences": inserted_sentences,
+            "skipped_sentences": skipped_sentences,
+            "inserted_mappings": inserted_mappings,
+            "deleted_mappings": deleted_mappings,
+            "missing_words": missing_words,
+            "total_lines": total_lines,
+        }
+
+    # 가령: 260422: 수정 내용 - 문장 학습 페이지용. 문장 lesson + 수어어순 단어 lesson 목록 한 번에 조회
+    def get_sentence_with_words(self, sentence_id: int) -> dict:
+        sentence = self.repo.find_by_id(sentence_id)
+        if sentence is None or sentence.category != "sentence":
+            raise HTTPException(status_code=404, detail="sentence lesson not found")
+
+        mappings = self.mapping_repo.find_by_sentence_id(sentence_id)
+        words = []
+        for m in mappings:
+            word_lesson = self.repo.find_by_id(m.word_lesson_id)
+            if word_lesson is None:
+                continue
+            words.append({
+                "word_order": m.word_order,
+                "lesson_id": word_lesson.id,
+                "title": word_lesson.title,
+            })
+        return {
+            "sentence_id": sentence.id,
+            "sentence_title": sentence.title,
+            "words": words,
         }

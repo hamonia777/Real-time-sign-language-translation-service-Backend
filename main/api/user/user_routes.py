@@ -1,5 +1,7 @@
 # 가령: 26/04/19 수정내용: git 충돌 해결 — 기존 /sign-up (upstream) + Kakao 로그인/콜백/로그아웃 (stash) 양쪽 모두 유지
 import httpx
+import traceback
+from typing import List
 from fastapi import APIRouter, Depends, Response, HTTPException
 from fastapi.responses import RedirectResponse
 
@@ -17,11 +19,13 @@ from main.domain.user.dto.user_request_dto import (
 from main.domain.user.dto.user_response_dto import (
     UserSignUpResponseDto,
     KakaoLoginResponseDto,
+    UserRankingDto,
 )
 from main.domain.user.usecase.user_usecase import (
     SignUpUseCase,
     KakaoLoginUseCase,
     UserProfileUseCase,
+    UserRankUseCase,
 )
 
 router = APIRouter()
@@ -40,7 +44,19 @@ async def update_user_info(
 def kakao_login():
     auth_url = (
         f"https://kauth.kakao.com/oauth/authorize?"
-        f"client_id={settings.KAKAO_REST_API_KEY}&redirect_uri={settings.KAKAO_REDIRECT_URI}&response_type=code"
+        f"client_id={settings.KAKAO_REST_API_KEY}&redirect_uri={settings.KAKAO_REDIRECT_URI}"
+        f"&response_type=code"
+    )
+    return RedirectResponse(auth_url)
+
+
+@router.get("/kakao/notification/enable")
+def kakao_notification_enable():
+    """학습 알림 ON 시 talk_message 동의 페이지로 이동"""
+    auth_url = (
+        f"https://kauth.kakao.com/oauth/authorize?"
+        f"client_id={settings.KAKAO_REST_API_KEY}&redirect_uri={settings.KAKAO_REDIRECT_URI}"
+        f"&response_type=code&scope=talk_message&state=notification&prompt=consent"
     )
     return RedirectResponse(auth_url)
 
@@ -50,7 +66,60 @@ async def kakao_callback(
     code: str,
     response: Response,
     usecase: KakaoLoginUseCase = Depends(),
+    state: str = None,
 ):
+    try:
+        if state == "notification":
+            return await _kakao_notification_consent_impl(code, usecase)
+        return await _kakao_callback_impl(code, response, usecase)
+    except Exception as e:
+        print("===== 카카오 콜백 에러 =====")
+        print(traceback.format_exc())
+        print("===========================")
+        raise
+
+
+async def _kakao_notification_consent_impl(code: str, usecase: KakaoLoginUseCase):
+    """토글 ON 후 카카오 동의 완료 → 토큰 저장 + notification_enabled = True"""
+    token_url = "https://kauth.kakao.com/oauth/token"
+    token_data = {
+        "grant_type": "authorization_code",
+        "client_id": settings.KAKAO_REST_API_KEY,
+        "redirect_uri": settings.KAKAO_REDIRECT_URI,
+        "code": code,
+        "client_secret": settings.KAKAO_CLIENT_SECRET,
+    }
+    async with httpx.AsyncClient() as client:
+        token_response = await client.post(
+            token_url,
+            data=token_data,
+            headers={"Content-type": "application/x-www-form-urlencoded;charset=utf-8"},
+        )
+        token_json = token_response.json()
+        access_token = token_json.get("access_token")
+        if not access_token:
+            raise HTTPException(status_code=400, detail="토큰 발급 실패")
+
+        kakao_refresh_token = token_json.get("refresh_token")
+
+        user_info_res = await client.get(
+            "https://kapi.kakao.com/v2/user/me",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+        kakao_id = str(user_info_res.json().get("id"))
+
+    user = usecase.user_repo.find_by_kakao_id(kakao_id)
+    if user:
+        user.kakao_access_token = access_token
+        if kakao_refresh_token:
+            user.kakao_refresh_token = kakao_refresh_token
+        user.kakao_notification_enabled = True
+        usecase.user_repo.save(user)
+
+    return RedirectResponse(url="/mypage.html", status_code=302)
+
+
+async def _kakao_callback_impl(code: str, response: Response, usecase: KakaoLoginUseCase):
     token_url = "https://kauth.kakao.com/oauth/token"
     token_data = {
         "grant_type": "authorization_code",
@@ -67,7 +136,10 @@ async def kakao_callback(
 
         access_token = token_json.get("access_token")
         if not access_token:
-            raise HTTPException(status_code=400, detail="토큰 발급에 실패했습니다.")
+            print(f"[카카오 토큰 실패] 응답: {token_json}")
+            raise HTTPException(status_code=400, detail=f"토큰 발급 실패: {token_json.get('error_code', '')} {token_json.get('error_description', '')}")
+
+        kakao_refresh_token = token_json.get("refresh_token")
 
         user_info_url = "https://kapi.kakao.com/v2/user/me"
         user_info_headers = {
@@ -79,7 +151,7 @@ async def kakao_callback(
 
     kakao_id = str(user_info.get("id"))
 
-    user = await usecase.execute(kakao_id, user_info)
+    user = await usecase.execute(kakao_id, user_info, kakao_access_token=access_token, kakao_refresh_token=kakao_refresh_token)
     my_access_token, my_refresh_token = create_tokens(user.id)
     await save_refresh_token(user.id, my_refresh_token)
     response.headers["Authorization"] = f"Bearer {my_access_token}"
@@ -137,3 +209,9 @@ async def logout(
         samesite="lax",
     )
     return {"message": "성공적으로 로그아웃 되었습니다."}
+
+@router.get("/ranking", response_model=List[UserRankingDto])
+async def get_user_ranking(
+    usecase: UserRankUseCase = Depends()
+):
+    return await usecase.get_ranking()

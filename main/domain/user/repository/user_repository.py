@@ -1,5 +1,6 @@
 # 가령: 26/04/19 수정내용: Kakao 로그인 지원(learning) + Survey 저장 기능(master) 병합 및 async 오용 버그 수정
 from abc import ABC, abstractmethod
+from typing import List
 from sqlmodel import Session, select
 from fastapi import Depends
 
@@ -28,6 +29,13 @@ class UserRepository(ABC):
     def save_survey(self, survey) -> None:
         pass
 
+    @abstractmethod
+    def find_by_nickname(self, nickname: str) -> "User | None":
+        pass
+    
+    @abstractmethod
+    def get_top_users_by_complete_count(self, limit: int = 5) -> List[User]:
+        pass
 
 class SqlUserRepository(UserRepository):
     def __init__(self, db: Session):
@@ -55,6 +63,18 @@ class SqlUserRepository(UserRepository):
         self.db.add(survey)
         self.db.commit()
 
+    def find_by_nickname(self, nickname: str) -> User | None:
+        statement = select(User).where(User.nickname == nickname)
+        return self.db.execute(statement).scalars().first()
 
+    def get_top_users_by_complete_count(self, limit: int = 5) -> List[User]:
+        statement = (
+            select(User)
+            .order_by(User.complete_count.desc())
+            .limit(limit)
+        )
+        result = self.db.execute(statement)
+        return result.scalars().all()
+    
 def get_user_repository(db: Session = Depends(get_db)) -> UserRepository:
     return SqlUserRepository(db)
