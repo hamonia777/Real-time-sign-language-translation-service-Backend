@@ -133,7 +133,7 @@ def test_video(keyword):
     driver = init_driver()
     try:
         url = crawl_word(driver, keyword)
-        print(f"✅ {url}" if url else "❌ 없음")
+        print(f"O {url}" if url else "X 없음")
     finally:
         driver.quit()
 
@@ -161,15 +161,15 @@ def crawl_all():
 
             if video_url:
                 results.append({"word": word, "video_url": video_url})
-                print("✅")
+                print("O")
             else:
                 failed.append(word)
-                print("❌")
+                print("X")
 
             if (i + 1) % 50 == 0:
                 with open(OUT_FILE, "w", encoding="utf-8") as f:
                     json.dump(results, f, ensure_ascii=False, indent=2)
-                print(f"\n💾 중간저장 ({len(results)}개)\n")
+                print(f"\n중간저장 ({len(results)}개)\n")
 
     finally:
         driver.quit()

@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         autocompleteTimer = setTimeout(async () => {
             try {
-                const res = await fetch(`/api/v1/search?word=${encodeURIComponent(q)}`, {
+                const res = await fetch(`/api/v1/search/suggest?word=${encodeURIComponent(q)}`, {
                     headers: authHeader
                 });
                 const data = await res.json();
@@ -121,16 +121,25 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             autocompleteBox.style.display = 'none';
-            doSearch(searchInput.value.trim());
+            const q = searchInput.value.trim();
+            if (!q) {
+                loadAllWords();
+            } else {
+                doSearch(q);
+            }
         }
     });
 
     // 검색 버튼 클릭
     searchBtn.addEventListener('click', () => {
         autocompleteBox.style.display = 'none';
-        doSearch(searchInput.value.trim());
+        const q = searchInput.value.trim();
+        if (!q) {
+            loadAllWords(); // 빈 검색이면 전체 목록
+        } else {
+            doSearch(q);
+        }
     });
-
 
     /* ──────────────────────────────────────────────────────
        검색 실행
@@ -166,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
         results.forEach(item => {
             const li = document.createElement('li');
             li.innerHTML = `
-                <span class="sign-word">${item.word}</span>
+                <span class="sign-word" style="cursor:pointer;" onclick="window.open('https://sldict.korean.go.kr/front/search/searchAllList.do?searchKeyword=${encodeURIComponent(item.word)}', '_blank')">${item.word}</span>
                 <div class="btn-group">
                     <button class="btn-basket">학습바구니 넣기</button>
                     <button class="btn-learn">지금 학습하기</button>
@@ -174,7 +183,6 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             ul.appendChild(li);
         });
-
         resultsList.appendChild(ul);
     }
 
@@ -230,7 +238,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-
+    async function loadAllWords() {
+        try {
+            const res = await fetch('/api/v1/search/all', { headers: authHeader });
+            const data = await res.json();
+            renderResults(data.results || []);
+        } catch {}
+    }
     /* ──────────────────────────────────────────────────────
        인기 검색어
     ────────────────────────────────────────────────────────*/
@@ -265,4 +279,5 @@ document.addEventListener('DOMContentLoaded', () => {
     ────────────────────────────────────────────────────────*/
     loadRecentSearches();
     loadPopularSearches();
+    loadAllWords();
 });

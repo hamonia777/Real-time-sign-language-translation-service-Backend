@@ -23,8 +23,9 @@ class SearchUseCase:
         results = [
             SearchResultItem(
                 id=lesson.id,
-                word=lesson.title, 
-                isInBasket=is_in_basket
+                word=lesson.title,
+                isInBasket=is_in_basket,
+                videoUrl=lesson.video_url if lesson.video_url else None
             ) for lesson, is_in_basket in lessons_data
         ]
         
@@ -54,3 +55,39 @@ class SearchUseCase:
             ) for history in recent_data
         ]
         return RecentSearchResponseDto(recentSearches=results)
+    
+    #26.04.28 혜미 추가 -> 단어 목록 반환용
+    async def suggest_word(self, word: str) -> SearchResponseDto:
+        """save_history 없이 단어 목록만 반환 (자동완성용)"""
+        word = word.strip()
+        if not word:
+            return SearchResponseDto(keyword="", totalCount=0, results=[])
+
+        lessons_data = await self.search_repo.find_lessons_by_word(0, word)
+        results = [
+            SearchResultItem(
+                id=lesson.id,
+                word=lesson.title,
+                isInBasket=is_in_basket,
+                videoUrl=lesson.video_url if lesson.video_url else None
+            ) for lesson, is_in_basket in lessons_data
+        ]
+        return SearchResponseDto(keyword=word, totalCount=len(results), results=results)
+
+    async def get_all_words(self) -> SearchResponseDto:
+            """전체 단어 목록 반환 (가나다순)"""
+            lessons_data = await self.search_repo.find_lessons_by_word(0, "")
+            results = [
+                SearchResultItem(
+                    id=lesson.id,
+                    word=lesson.title,
+                    isInBasket=is_in_basket,
+                    videoUrl=lesson.video_url if lesson.video_url else None
+                ) for lesson, is_in_basket in lessons_data
+            ]
+            return SearchResponseDto(keyword="", totalCount=len(results), results=results)
+    
+    #26.04.28 혜미 추가 -> 최근 검색어 삭제용
+    async def delete_recent(self, user_id: int, history_id: int):
+        await self.search_repo.delete_history(user_id, history_id)
+        return {"message": "삭제 완료"}
