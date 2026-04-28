@@ -1,5 +1,33 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // 26.04.21 혜미 추가 - 로그인 체크 기능 추가
+    // 로그인 체크 & 버튼 처리
+    function getCookie(name) {
+        const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+        return match ? decodeURIComponent(match[1]) : null;
+    }
 
+    const accessToken = getCookie('access_token');
+    if (!accessToken) {
+        alert('로그인이 필요합니다.');
+        location.href = 'login.html';
+        return;
+    }
+
+    // 로그인 됐으면 버튼을 로그아웃으로 변경
+    const authBtn = document.getElementById('headerAuthBtn');
+    if (authBtn) {
+        authBtn.innerText = '로그아웃';
+        authBtn.classList.add('logout-style');
+        authBtn.onclick = async () => {
+            if (confirm('로그아웃 하시겠습니까?')) {
+                document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                document.cookie = "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                await fetch('/api/v1/auth/logout', { method: 'GET', credentials: 'include' });
+                alert('로그아웃 되었습니다.');
+                location.href = 'home.html';
+            }
+        };
+    }
     /* ─────────────────────────────────────────────
        1. 개인정보 연동
        ───────────────────────────────────────────── */
@@ -157,9 +185,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
+        logoutBtn.addEventListener('click', async () => {
             if (confirm('로그아웃 하시겠습니까?')) {
-                localStorage.removeItem('isLoggedIn');
+                document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                document.cookie = "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                await fetch('/api/v1/auth/logout', { method: 'GET', credentials: 'include' });
+                alert('로그아웃 되었습니다.');
                 location.href = 'home.html';
             }
         });
