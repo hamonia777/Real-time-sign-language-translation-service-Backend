@@ -20,7 +20,7 @@
                 <a href="support.html">고객지원</a>
                 <a href="mypage.html">마이페이지</a>
             </nav>
-            <button class="headerAuthBtn logout-style">로그아웃</button>
+            <button class="login-btn" id="headerAuthBtn">로그인</button>
         </div>
     </header>
 
@@ -35,108 +35,22 @@
         <section class="quick-links-section">
             <div class="recent-search">
                 <h4 class="section-sub-title">최근 검색어</h4>
-                <div class="tag-list">
-                    <span class="search-tag">안녕하세요 <i class="close-icon">×</i></span>
-                    <span class="search-tag">사랑 <i class="close-icon">×</i></span>
-                    <span class="search-tag">날씨 <i class="close-icon">×</i></span>
-                    <span class="search-tag">학교 <i class="close-icon">×</i></span>
-                    <span class="search-tag">감사합니다 <i class="close-icon">×</i></span>
-                    <span class="search-tag">다시 <i class="close-icon">×</i></span>
-                    <span class="search-tag">프로그래머 <i class="close-icon">×</i></span>
-                </div>
+                <div class="tag-list"></div>
             </div>
             <div class="popular-search">
                 <h4 class="section-sub-title">인기 검색어</h4>
-                <ol class="rank-list">
-                    <li><span class="rank-num">1</span> 안녕하세요</li>
-                    <li><span class="rank-num">2</span> 똥</li>
-                    <li><span class="rank-num">3</span> 사랑</li>
-                </ol>
+                <ol class="rank-list"></ol>
             </div>
         </section>
 
         <hr class="full-divider">
 
+        <!-- 이거 추가 -->
+        <p class="click-guide">단어를 클릭하면 한국수어사전에서 영상을 확인할 수 있어요.</p>
+
+
         <section class="results-container">
-            <div id="results-list" class="result-state active">
-                <ul class="search-result-list">
-                    <li>
-                        <span class="sign-word">ㄱ</span>
-                        <div class="btn-group">
-                            <button class="btn-basket">학습바구니 넣기</button>
-                            <button class="btn-learn">지금 학습하기</button>
-                        </div>
-                    </li>
-                    <li>
-                        <span class="sign-word">가격경쟁</span>
-                        <div class="btn-group">
-                            <button class="btn-basket">학습바구니 넣기</button>
-                            <button class="btn-learn">지금 학습하기</button>
-                        </div>
-                    </li>
-                    <li>
-                        <span class="sign-word">가격수준</span>
-                        <div class="btn-group">
-                            <button class="btn-basket">학습바구니 넣기</button>
-                            <button class="btn-learn">지금 학습하기</button>
-                        </div>
-                    </li>
-                    <li>
-                        <span class="sign-word">가격정책</span>
-                        <div class="btn-group">
-                            <button class="btn-basket">학습바구니 넣기</button>
-                            <button class="btn-learn">지금 학습하기</button>
-                        </div>
-                    </li>
-                    <li>
-                        <span class="sign-word">가격차이</span>
-                        <div class="btn-group">
-                            <button class="btn-basket">학습바구니 넣기</button>
-                            <button class="btn-learn">지금 학습하기</button>
-                        </div>
-                    </li>
-                    <li>
-                        <span class="sign-word">가경자</span>
-                        <div class="btn-group">
-                            <button class="btn-basket">학습바구니 넣기</button>
-                            <button class="btn-learn">지금 학습하기</button>
-                        </div>
-                    </li>
-                    <li>
-                        <span class="sign-word">가계</span>
-                        <div class="btn-group">
-                            <button class="btn-basket">학습바구니 넣기</button>
-                            <button class="btn-learn">지금 학습하기</button>
-                        </div>
-                    </li>
-                    <li>
-                        <span class="sign-word">가계소득</span>
-                        <div class="btn-group">
-                            <button class="btn-basket">학습바구니 넣기</button>
-                            <button class="btn-learn">지금 학습하기</button>
-                        </div>
-                    </li>
-                    <li>
-                        <span class="sign-word">가계수표</span>
-                        <div class="btn-group">
-                            <button class="btn-basket">학습바구니 넣기</button>
-                            <button class="btn-learn">지금 학습하기</button>
-                        </div>
-                    </li>
-                    <li>
-                        <span class="sign-word">가계약</span>
-                        <div class="btn-group">
-                            <button class="btn-basket">학습바구니 넣기</button>
-                            <button class="btn-learn">지금 학습하기</button>
-                        </div>
-                    </li>
-                    <li><span class="sign-word">가공</span><div class="btn-group"><button class="btn-basket">학습바구니 넣기</button><button class="btn-learn">지금 학습하기</button></div></li>
-                    <li><span class="sign-word">가구</span><div class="btn-group"><button class="btn-basket">학습바구니 넣기</button><button class="btn-learn">지금 학습하기</button></div></li>
-                    <li><span class="sign-word">가깝다</span><div class="btn-group"><button class="btn-basket">학습바구니 넣기</button><button class="btn-learn">지금 학습하기</button></div></li>
-                    <li><span class="sign-word">가난</span><div class="btn-group"><button class="btn-basket">학습바구니 넣기</button><button class="btn-learn">지금 학습하기</button></div></li>
-                    <li><span class="sign-word">가능</span><div class="btn-group"><button class="btn-basket">학습바구니 넣기</button><button class="btn-learn">지금 학습하기</button></div></li>
-                </ul>
-            </div>
+            <div id="results-list" class="result-state"></div>
 
             <div id="results-none" class="result-state">
                 <p class="no-result-msg">사전에 없는 수어입니다.</p>

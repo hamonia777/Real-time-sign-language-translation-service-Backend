@@ -1,11 +1,12 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 from datetime import datetime
 
 class SearchResultItem(BaseModel):
     id: int
     word: str
     isInBasket: bool
+    videoUrl: Optional[str] = None
 
 class SearchResponseDto(BaseModel):
     keyword: str
