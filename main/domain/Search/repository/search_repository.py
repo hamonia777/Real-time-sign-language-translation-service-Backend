@@ -14,7 +14,7 @@ class SearchRepository(ABC):
     @abstractmethod
     async def find_lessons_by_word(self, user_id: int, word: str) -> List[Tuple[Lesson, bool]]: pass
     @abstractmethod
-    async def get_popular_searches(self, limit: int = 10) -> List[Tuple[str, int]]: pass
+    async def get_popular_searches(self, limit: int = 3) -> List[Tuple[str, int]]: pass
     @abstractmethod
     async def get_recent_searches(self, user_id: int, limit: int = 10) -> List[SearchHistory]: pass
 
@@ -36,7 +36,7 @@ class SqlSearchRepository(SearchRepository):
         result = self.db.execute(statement)
         return result.all()
 
-    async def get_popular_searches(self, limit: int = 10) -> List[Tuple[str, int]]:
+    async def get_popular_searches(self, limit: int = 3) -> List[Tuple[str, int]]:
         statement = (
             select(SearchHistory.word, func.count(SearchHistory.id).label("count"))
             .group_by(SearchHistory.word)

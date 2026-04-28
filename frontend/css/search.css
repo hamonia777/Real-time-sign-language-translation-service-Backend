@@ -36,13 +36,13 @@ body.search-page {
     display: flex;
     gap: 12px;
     width: 100%;
-    max-width: 900px;
+    max-width: 920px;
     position: relative;
 }
 
 #searchInput {
     flex: 1;
-    height: 42px;
+    height: 40px;
     background: #FFFFFF;
     border: 1px solid #D6D6D6;
     border-radius: 5px;
@@ -62,14 +62,14 @@ body.search-page {
 }
 
 .main-search-btn {
-    width: 82px;
-    height: 42px;
+    width: 78px;
+    height: 40px;
     background: #1C4476;
     color: #FFFFFF;
     border: none;
     border-radius: 999px;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
     transition: background 0.2s, transform 0.1s;
     display: flex;
@@ -90,8 +90,8 @@ body.search-page {
    ────────────────────────────────────────────────────────── */
 .quick-links-section {
     display: flex;
-    gap: 60px;
-    margin-bottom: 40px;
+    gap: 70px;
+    margin-bottom: 20px;
 }
 
 .recent-search {
@@ -103,8 +103,8 @@ body.search-page {
 }
 
 .section-sub-title {
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 500;
     color: #474747;
     margin-bottom: 20px;
     letter-spacing: -0.01em;
@@ -121,27 +121,25 @@ body.search-page {
     background: #F4F8FD;
     border: 1px solid #EBF4FE;
     color: #34436D;
-    padding: 7px 16px;
+    padding: 5.5px 12px;
     border-radius: 99px;
-    font-size: 11.5px;
+    font-size: 11px;
     font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .search-tag:hover {
     background: #eaf3ff;
-    border-color: #d8eaff;
-    transform: translateY(-1px);
 }
 
 .close-icon {
     color: #8A99C4;
     font-style: normal;
-    font-weight: bold;
+    font-weight: 500;
     font-size: 15px;
     line-height: 1;
 }
@@ -154,7 +152,7 @@ body.search-page {
 }
 
 .rank-list li {
-    padding: 12px 0;
+    padding: 8px 0;
     border-bottom: 1px solid #F0F0F0;
     font-size: 13px;
     color: #474747;
@@ -170,27 +168,26 @@ body.search-page {
 .rank-num {
     background: #EAEAEA;
     color: #474747;
-    width: 28px;
-    height: 28px;
+    width: 25px;
+    height: 25px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
-    font-weight: 700;
+    font-size: 11px;
+    font-weight: 500;
     flex-shrink: 0;
 }
 
 /* ──────────────────────────────────────────────────────────
-   4. 가로 구분선 및 간격 교정 (핵심 수정)
+   4. 가로 구분선 및 간격 교정
    ────────────────────────────────────────────────────────── */
 .full-divider {
     border: none;
     border-top: 1px solid #E7E7E7;
     width: 100%;
     margin-top: 40px;
-    /* 피그마와 같이 구분선 아래에 넓은 공백 확보 */
-    margin-bottom: 80px; 
+    margin-bottom: 50px; 
 }
 
 /* ──────────────────────────────────────────────────────────
@@ -206,7 +203,7 @@ body.search-page {
     margin: 0;
 }
 
-/* 리스트 개별 항목: 'ㄱ'을 포함한 모든 데이터 항목 */
+/* 리스트 개별 항목*/
 .search-result-list li {
     display: flex;
     justify-content: space-between; /* 단어 좌측/중앙, 버튼 우측 끝 정렬 */
@@ -226,16 +223,14 @@ body.search-page {
 
 /* 수어 단어 텍스트: 중앙 쪽으로 위치 고정 */
 .sign-word {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     color: #34436D;
     flex: 1;
     text-align: center;
-    /* 우측 버튼 그룹의 너비만큼 왼쪽 마진을 주어 시각적 균형을 맞춤 */
-    margin-left: 145px; 
 }
 
-/* 우측 버튼 묶음 (마이페이지 btn-sm 규격 적용) */
+/* 우측 버튼 묶음 */
 .btn-group {
     display: flex;
     gap: 12px;
@@ -246,10 +241,10 @@ body.search-page {
     background: #517AAF;
     color: #FFFFFF;
     border: none;
-    padding: 9px 24px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 400;
     cursor: pointer;
     white-space: nowrap;
     transition: opacity 0.2s, background 0.2s;
@@ -259,10 +254,10 @@ body.search-page {
     background: #F0F0F0;
     color: #273356;
     border: none;
-    padding: 9px 24px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 400;
     cursor: pointer;
     white-space: nowrap;
     transition: opacity 0.2s, background 0.2s;
