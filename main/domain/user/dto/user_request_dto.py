@@ -12,3 +12,11 @@ class UserInfoRequestDto(BaseModel):
     name: str
     phone_num: str
     email: str
+
+
+class NicknameUpdateRequestDto(BaseModel):
+    nickname: str = Field(..., min_length=2, max_length=8)
+
+
+class PhotoUpdateRequestDto(BaseModel):
+    photo_id: int

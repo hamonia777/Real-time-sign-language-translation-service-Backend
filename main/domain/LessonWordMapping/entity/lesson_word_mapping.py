@@ -1,3 +1,4 @@
+
 from typing import Optional, List
 from datetime import datetime, date
 from sqlmodel import SQLModel, Field, Relationship
@@ -10,3 +11,4 @@ class LessonWordMapping(SQLModel, table=True):
     sentence_lesson_id: int = Field(foreign_key="lessons.id")
     word_lesson_id: int = Field(foreign_key="lessons.id")
     word_order: Optional[int] = Field(default=None)
+

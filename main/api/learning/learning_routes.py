@@ -10,7 +10,8 @@ from main.domain.learning.dto.lesson_dto import (
     SaveResultRequestDto,
     SaveResultResponseDto,
     SeedResponseDto,
-        # 가령: 260422: 수정 내용 - 문장 시드 응답 DTO import
+
+
     SeedSentencesResponseDto,
     # 가령: 260422: 수정 내용 - 문장+수어어순단어 응답 DTO import
     SentenceWithWordsResponseDto,
@@ -21,7 +22,9 @@ from main.domain.learning.usecase.lesson_usecase import (
     SaveResultUseCase,
     SeedFingerspellUseCase,
     SeedWordsUseCase,
-       # 가령: 260422: 수정 내용 - 문장 시드 usecase import
+
+    # 가령: 260422: 수정 내용 - 문장 시드 usecase import
+
     SeedSentencesUseCase,
     # 가령: 260422: 수정 내용 - 문장+단어 조회 usecase import
     GetSentenceWithWordsUseCase,
@@ -54,7 +57,6 @@ def get_sentence_words(
     usecase: GetSentenceWithWordsUseCase = Depends(),
 ):
     return usecase.execute(sentence_id)
-
 
 
 

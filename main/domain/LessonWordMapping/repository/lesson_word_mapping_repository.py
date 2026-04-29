@@ -52,4 +52,6 @@ class SqlLessonWordMappingRepository(LessonWordMappingRepository):
 def get_lesson_word_mapping_repository(
     db: Session = Depends(get_db),
 ) -> LessonWordMappingRepository:
+
     return SqlLessonWordMappingRepository(db)
+

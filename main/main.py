@@ -9,6 +9,7 @@ from sqlmodel import SQLModel
 from main.api.router import api_router
 from main.core.config import settings
 from main.core.database import engine
+from main.core.scheduler import start_scheduler, scheduler
 
 from main.domain.user.entity.user import User  # noqa: F401
 from main.domain.learning.entity.lesson import Lesson  # noqa: F401
@@ -19,14 +20,17 @@ from main.domain.LessonWordMapping.entity.lesson_word_mapping import LessonWordM
 from main.domain.StudyLog.entity.study_log import StudyLog  # noqa: F401
 from main.domain.UserLessonProgress.entity.user_lesson_progress import UserLessonProgress  # noqa: F401
 from main.domain.UserSurveyProfiles.entity.user_survey_profiles import UserSurveyProfile  # noqa: F401
+from main.domain.ProfilePhoto.entity.profile_photo import ProfilePhoto  # noqa: F401
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     SQLModel.metadata.create_all(engine)
     print("테이블 생성 완료")
+    start_scheduler()
     yield
+    scheduler.shutdown()
 
-app = FastAPI(title=settings.PROJECT_NAME, lifespan=lifespan)
+app = FastAPI(title=settings.PROJECT_NAME, lifespan=lifespan, debug=True)
 
 # CORS 설정
 app.add_middleware(
@@ -49,12 +53,6 @@ app.mount("/images", StaticFiles(directory=frontend_dir / "images"), name="image
 @app.get("/logo.png")
 def serve_logo():
     return FileResponse(frontend_dir / "logo.png")
-
-# [수정] 기존 JSON 응답 대신 home.html을 메인 페이지로 반환하도록 변경
-@app.on_event("startup")
-async def startup_event():
-    async with engine.begin() as conn:
-        await conn.run_sync(SQLModel.metadata.create_all)
 
 @app.get("/")
 def read_root():

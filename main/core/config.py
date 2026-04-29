@@ -26,6 +26,9 @@ class Settings(BaseSettings):
     REDIS_HOST: str
     REDIS_PORT: int = 6379
 
+    EMAIL_SENDER: str = ""
+    EMAIL_PASSWORD: str = ""
+
     @property
     def DATABASE_URL(self) -> str:
         return f"mysql+pymysql://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"

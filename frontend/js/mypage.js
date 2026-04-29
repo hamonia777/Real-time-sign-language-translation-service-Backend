@@ -1,4 +1,271 @@
+/* ─────────────────────────────────────────────
+   쿠키 헬퍼
+   ───────────────────────────────────────────── */
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
+
+/* ─────────────────────────────────────────────
+   프로필 이미지 표시 헬퍼
+   ───────────────────────────────────────────── */
+function showProfileImage(url) {
+    const img = document.getElementById('userAvatar');
+    const svg = document.getElementById('avatarSvg');
+    if (!img || !url) return;
+    img.src = url;
+    img.style.display = 'block';
+    if (svg) svg.style.display = 'none';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+
+    /* ─────────────────────────────────────────────
+       0. 프로필 사진 모달 (클릭 시 확대)
+       ───────────────────────────────────────────── */
+    const photoModal = document.getElementById('photoModal');
+    const photoModalImg = document.getElementById('photoModalImg');
+    const avatarCircle = document.getElementById('avatarCircle');
+
+    if (avatarCircle && photoModal) {
+        avatarCircle.addEventListener('click', () => {
+            const userAvatar = document.getElementById('userAvatar');
+            const photoModalSvg = document.getElementById('photoModalSvg');
+            const hasPhoto = userAvatar && userAvatar.style.display !== 'none' && userAvatar.src;
+
+            if (hasPhoto) {
+                photoModalImg.src = userAvatar.src;
+                photoModalImg.style.display = 'block';
+                if (photoModalSvg) photoModalSvg.style.display = 'none';
+            } else {
+                photoModalImg.style.display = 'none';
+                if (photoModalSvg) photoModalSvg.style.display = 'block';
+            }
+            photoModal.classList.add('active');
+        });
+
+        photoModal.addEventListener('click', () => {
+            photoModal.classList.remove('active');
+        });
+    }
+
+    /* ─────────────────────────────────────────────
+       0. 프로필 사진 로드 및 카메라 버튼
+       ───────────────────────────────────────────── */
+    const token = getCookie('access_token');
+
+    // 현재 저장된 프로필 사진 및 닉네임 불러오기
+    if (token) {
+        fetch('/api/v1/profile/photo', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        })
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+            if (data && data.photo_url) showProfileImage(data.photo_url);
+        })
+        .catch(() => {});
+
+        fetch('/api/v1/profile/me', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        })
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+            if (data && data.nickname) {
+                const el = document.getElementById('profileName');
+                if (el) el.textContent = data.nickname;
+                localStorage.setItem('kakaoNickname', data.nickname);
+            }
+        })
+        .catch(() => {});
+    }
+
+    // 카메라 버튼 → 파일 탐색기 열기
+    const avatarEditBtn = document.getElementById('avatarEditBtn');
+    const photoInput    = document.getElementById('photoInput');
+
+    if (avatarEditBtn && photoInput) {
+        avatarEditBtn.addEventListener('click', () => photoInput.click());
+
+        photoInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (!token) {
+                alert('로그인이 필요합니다.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const res = await fetch('/api/v1/profile/photo', {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData,
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    showProfileImage(data.photo_url);
+                } else {
+                    alert('사진 변경에 실패했습니다.');
+                }
+            } catch (err) {
+                console.error('사진 업로드 오류:', err);
+                alert('사진 업로드 중 오류가 발생했습니다.');
+            }
+
+            photoInput.value = '';
+        });
+    }
+
+    /* ─────────────────────────────────────────────
+       0-1. 닉네임 수정 모달
+       ───────────────────────────────────────────── */
+    const nicknameModal   = document.getElementById('nicknameModal');
+    const nicknameInput   = document.getElementById('nicknameInput');
+    const nicknameCheckBtn = document.getElementById('nicknameCheckBtn');
+    const nicknameCheckMsg = document.getElementById('nicknameCheckMsg');
+    const nicknameSaveBtn  = document.getElementById('nicknameSaveBtn');
+    const nicknameCancelBtn = document.getElementById('nicknameCancelBtn');
+    const nicknameLockMsg  = document.getElementById('nicknameLockMsg');
+    const nicknameInputRow = document.getElementById('nicknameInputRow');
+    const profileNameEl    = document.getElementById('profileName');
+
+    let nicknameCheckPassed = false;
+
+    function openNicknameModal() {
+        nicknameInput.value = '';
+        nicknameCheckMsg.textContent = '';
+        nicknameCheckMsg.className = 'nickname-check-msg';
+        nicknameLockMsg.style.display = 'none';
+        nicknameInputRow.style.display = 'flex';
+        nicknameSaveBtn.disabled = false;
+        nicknameCheckPassed = false;
+        nicknameModal.classList.add('active');
+
+        // 7일 제한 여부 서버에서 확인
+        if (token) {
+            fetch('/api/v1/profile/nickname/check?nickname=__dummy_check__', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            }).catch(() => {});
+
+            // 현재 프로필 조회로 nickname_updated_at 확인
+            fetch('/api/v1/profile/me', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            .then(res => res.ok ? res.json() : null)
+            .then(data => {
+                if (data && data.nickname_updated_at) {
+                    const updatedAt = new Date(data.nickname_updated_at);
+                    const now = new Date();
+                    const daysPassed = Math.floor((now - updatedAt) / (1000 * 60 * 60 * 24));
+                    if (daysPassed < 7) {
+                        const daysLeft = 7 - daysPassed;
+                        const nextDate = new Date(updatedAt.getTime() + 7 * 24 * 60 * 60 * 1000);
+                        const nextStr = `${nextDate.getMonth() + 1}월 ${nextDate.getDate()}일`;
+                        nicknameLockMsg.textContent = `닉네임은 변경 후 7일이 지나야 다시 변경할 수 있습니다. (${nextStr} 이후 가능, ${daysLeft}일 남음)`;
+                        nicknameLockMsg.style.display = 'block';
+                        nicknameInputRow.style.display = 'none';
+                        nicknameSaveBtn.disabled = true;
+                    }
+                }
+            })
+            .catch(() => {});
+        }
+    }
+
+    if (profileNameEl) {
+        profileNameEl.addEventListener('click', openNicknameModal);
+        profileNameEl.addEventListener('mouseenter', () => {
+            profileNameEl.style.color = '#517AAF';
+            profileNameEl.style.textDecoration = 'underline';
+            profileNameEl.style.cursor = 'pointer';
+        });
+        profileNameEl.addEventListener('mouseleave', () => {
+            profileNameEl.style.color = '';
+            profileNameEl.style.textDecoration = '';
+        });
+    }
+
+    if (nicknameCancelBtn) {
+        nicknameCancelBtn.addEventListener('click', () => {
+            nicknameModal.classList.remove('active');
+        });
+    }
+
+    nicknameModal && nicknameModal.addEventListener('click', (e) => {
+        if (e.target === nicknameModal) nicknameModal.classList.remove('active');
+    });
+
+    if (nicknameCheckBtn) {
+        nicknameCheckBtn.addEventListener('click', async () => {
+            const val = nicknameInput.value.trim();
+            if (val.length < 2 || val.length > 8) {
+                nicknameCheckMsg.textContent = '닉네임은 2~8자로 입력해주세요.';
+                nicknameCheckMsg.className = 'nickname-check-msg err';
+                nicknameCheckPassed = false;
+                return;
+            }
+            try {
+                const res = await fetch(`/api/v1/profile/nickname/check?nickname=${encodeURIComponent(val)}`);
+                const data = await res.json();
+                if (data.is_available) {
+                    nicknameCheckMsg.textContent = '사용 가능한 닉네임입니다.';
+                    nicknameCheckMsg.className = 'nickname-check-msg ok';
+                    nicknameCheckPassed = true;
+                } else {
+                    nicknameCheckMsg.textContent = '이미 사용 중인 닉네임입니다.';
+                    nicknameCheckMsg.className = 'nickname-check-msg err';
+                    nicknameCheckPassed = false;
+                }
+            } catch {
+                nicknameCheckMsg.textContent = '중복 확인 중 오류가 발생했습니다.';
+                nicknameCheckMsg.className = 'nickname-check-msg err';
+                nicknameCheckPassed = false;
+            }
+        });
+    }
+
+    if (nicknameSaveBtn) {
+        nicknameSaveBtn.addEventListener('click', async () => {
+            if (!nicknameCheckPassed) {
+                nicknameCheckMsg.textContent = '중복 확인을 먼저 해주세요.';
+                nicknameCheckMsg.className = 'nickname-check-msg err';
+                return;
+            }
+            const val = nicknameInput.value.trim();
+            if (!token) { alert('로그인이 필요합니다.'); return; }
+
+            try {
+                const res = await fetch('/api/v1/profile/nickname', {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ nickname: val }),
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (profileNameEl) profileNameEl.textContent = data.nickname;
+                    localStorage.setItem('kakaoNickname', data.nickname);
+                    nicknameModal.classList.remove('active');
+                } else {
+                    const err = await res.json();
+                    nicknameCheckMsg.textContent = err.detail || '닉네임 변경에 실패했습니다.';
+                    nicknameCheckMsg.className = 'nickname-check-msg err';
+                }
+            } catch {
+                nicknameCheckMsg.textContent = '닉네임 변경 중 오류가 발생했습니다.';
+                nicknameCheckMsg.className = 'nickname-check-msg err';
+            }
+        });
+    }
 
     /* ─────────────────────────────────────────────
        1. 개인정보 연동
@@ -136,22 +403,65 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const notifToggle = document.getElementById('kakaoNotif');
-    if (notifToggle) {
-        notifToggle.checked = localStorage.getItem('kakaoNotifEnabled') === 'true';
-        notifToggle.addEventListener('change', (e) => {
-            localStorage.setItem('kakaoNotifEnabled', e.target.checked);
-            alert(e.target.checked ? '학습 알림이 설정되었습니다! 🔔' : '학습 알림이 해제되었습니다.');
+    if (notifToggle && token) {
+        // 현재 알림 상태 서버에서 조회
+        fetch('/api/v1/profile/notification/status', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        })
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+            if (data) notifToggle.checked = data.enabled;
+        })
+        .catch(() => {});
+
+        notifToggle.addEventListener('change', async (e) => {
+            if (e.target.checked) {
+                // ON: 카카오 talk_message 동의 페이지로 이동
+                if (confirm('카카오톡 학습 알림을 받으려면 카카오 메시지 권한 동의가 필요합니다.\n동의 페이지로 이동하시겠습니까?')) {
+                    location.href = '/api/v1/auth/kakao/notification/enable';
+                } else {
+                    e.target.checked = false;
+                }
+            } else {
+                // OFF: 알림 비활성화 API 호출
+                try {
+                    const res = await fetch('/api/v1/profile/notification/disable', {
+                        method: 'PATCH',
+                        headers: { 'Authorization': `Bearer ${token}` },
+                    });
+                    if (!res.ok) e.target.checked = true;
+                } catch {
+                    e.target.checked = true;
+                }
+            }
+        });
+    }
+
+    const notifTestBtn = document.getElementById('notifTestBtn');
+    if (notifTestBtn) {
+        notifTestBtn.addEventListener('click', async () => {
+            if (!token) { alert('로그인이 필요합니다.'); return; }
+            notifTestBtn.textContent = '발송 중...';
+            notifTestBtn.disabled = true;
+            try {
+                const res = await fetch('/api/v1/profile/notification/test', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                });
+                const data = await res.json();
+                alert(data.result || data.detail);
+            } catch {
+                alert('테스트 발송 중 오류가 발생했습니다.');
+            }
+            notifTestBtn.textContent = '알림 테스트';
+            notifTestBtn.disabled = false;
         });
     }
 
     const kakaoBtn = document.getElementById('kakaoBtn');
     if (kakaoBtn) {
         kakaoBtn.addEventListener('click', () => {
-            if (window.Kakao && Kakao.isInitialized()) {
-                Kakao.Channel.chat({ channelPublicId: '_수어연구소' });
-            } else {
-                window.open('https://pf.kakao.com/_xxxx', '_blank');
-            }
+            window.open('http://pf.kakao.com/_GxoDEX', '_blank');
         });
     }
 

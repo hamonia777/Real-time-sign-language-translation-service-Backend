@@ -29,13 +29,15 @@ def create_tokens(user_id: str | int) -> tuple[str, str]:
 
 
 async def save_refresh_token(user_id: str | int, refresh_token: str):
-    # 14일
-    expire_seconds = 14 * 24 * 60 * 60
-    await redis_client.set(
-        name=f"RT:{user_id}",
-        value=refresh_token,
-        ex=expire_seconds,
-    )
+    try:
+        expire_seconds = 14 * 24 * 60 * 60
+        await redis_client.set(
+            name=f"RT:{user_id}",
+            value=refresh_token,
+            ex=expire_seconds,
+        )
+    except Exception:
+        pass
 
 
 def get_current_user_id(
@@ -57,5 +59,8 @@ def get_current_user_id(
 
 
 async def delete_refresh_token(user_id: int):
-    redis_key = f"RT:{user_id}"
-    await redis_client.delete(redis_key)
+    try:
+        redis_key = f"RT:{user_id}"
+        await redis_client.delete(redis_key)
+    except Exception:
+        pass

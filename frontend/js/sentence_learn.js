@@ -366,4 +366,6 @@ function markLessonCompleted(id) {
   }
 }
 
+
 init();
+

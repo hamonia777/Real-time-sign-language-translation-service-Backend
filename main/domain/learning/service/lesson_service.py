@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import List, Optional
 from pathlib import Path
 
@@ -7,6 +8,12 @@ from main.domain.learning.entity.lesson import Lesson
 from main.domain.learning.repository.lesson_repository import (
     LessonRepository,
     get_lesson_repository,
+)
+# 가령: 260422: 수정 내용 - 문장 시드(seed_sentences) 에서 lesson_word_mappings 를 사용하기 위해 repository import
+from main.domain.LessonWordMapping.entity.lesson_word_mapping import LessonWordMapping
+from main.domain.LessonWordMapping.repository.lesson_word_mapping_repository import (
+    LessonWordMappingRepository,
+    get_lesson_word_mapping_repository,
 )
 
 
@@ -81,7 +88,9 @@ WORDS_BY_CATEGORY = {
         "노래", "영상", "소리", "냉장고", "수어", "음식", "사전", "상", "상식",
         "안경", "시험", "약속", "이름", "전화", "전화번호", "주사", "영수증",
         "비행기", "버스", "기차", "가방", "창문", "편의점", "승용차", "과일",
-        "생일", "물",# 가령: 260422: 수정 내용 - 문장 학습 시드(sentences.txt) 단어 추가
+
+        "생일", "물",
+        # 가령: 260422: 수정 내용 - 문장 학습 시드(sentences.txt) 단어 추가
         "웹사이트",
     ],
     "action": [  # 동작·상태
@@ -110,6 +119,8 @@ WORDS_BY_CATEGORY = {
         "장소", "문화", "휴일", "치과", "오늘", "오전", "오후", "저녁",
         "아침", "지금", "언제", "어제", "내일", "월(달)", "년(해)", "시간",
         "누구", "어디", "출장", "전공",
+        # 가령: 260422: 수정 내용 - 문장 학습 시드(sentences.txt) 단어 추가
+        "매일",
     ],
     "study": [  # 학업·업무·숫자·기타
         "공부,학업", "주제", "이유", "정보", "데이터", "보안", "복구", "대회",
@@ -118,7 +129,9 @@ WORDS_BY_CATEGORY = {
         "대출금", "등록비", "연차", "취소", "순서", "협의", "하나(1)", "둘(2)",
         "셋(3)", "넷(4)", "다섯(5)", "여섯(6)", "일곱(7)", "여덟(8)", "아홉(9)",
         "열(10)", "숫자", "통계", "감속", "쉬다", "휴가", "복지", "부서",
-        "화면", "나중에", "송금", "번개", 
+
+        "화면", "나중에", "송금", "번개",
+
         # 가령: 260422: 수정 내용 - 문장 학습 시드(sentences.txt) 단어 추가
         "경험", "결과", "의견", "능력",
     ],
@@ -152,6 +165,21 @@ SENTENCES_TXT_PATH = (
 
 
 
+# 가령: 260422: 수정 내용 - 문장(sentences.txt) 단어 → 기존 word lesson title 동의어 매핑 (시드 시점에 정규화)
+SENTENCE_WORD_ALIASES = {
+    "저": "저는",
+    "나": "저는",
+    "감사": "감사합니다",
+    "프로그래머": "개발자",
+}
+
+
+# 가령: 260422: 수정 내용 - sentences.txt 절대 경로 (lesson_service.py 위치 기준)
+SENTENCES_TXT_PATH = (
+    Path(__file__).resolve().parent.parent.parent.parent / "learning_model" / "sentences.txt"
+)
+
+
 class LessonService:
     # 가령: 260422: 수정 내용 - 문장 시드를 위해 LessonWordMappingRepository 추가 주입
     def __init__(
@@ -161,7 +189,6 @@ class LessonService:
     ):
         self.repo = repo
         self.mapping_repo = mapping_repo
-
 
 
 
@@ -247,7 +274,10 @@ class LessonService:
             "skipped": skipped,
             "total": len(WORD_CATEGORY_MAP),
         }
-# 가령: 260422: 수정 내용 - sentences.txt 를 읽어 문장 lesson(category=sentence) + lesson_word_mappings 시드
+
+
+    # 가령: 260422: 수정 내용 - sentences.txt 를 읽어 문장 lesson(category=sentence) + lesson_word_mappings 시드
+
     def seed_sentences(self) -> dict:
         if not SENTENCES_TXT_PATH.exists():
             raise HTTPException(
@@ -340,4 +370,6 @@ class LessonService:
             "sentence_id": sentence.id,
             "sentence_title": sentence.title,
             "words": words,
+
         }
+

@@ -155,7 +155,6 @@ function renderSentences(items) {
   }
 }
 
-
 loadLessons();
 loadWords();
 loadSentences();

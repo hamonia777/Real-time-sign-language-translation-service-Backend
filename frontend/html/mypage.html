@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>수어 연구소 - 마이페이지</title>
-    <link rel="stylesheet" href="../css/home.css">
-    <link rel="stylesheet" href="../css/mypage.css">
+    <link rel="stylesheet" href="../css/home.css?v=3">
+    <link rel="stylesheet" href="../css/mypage.css?v=3">
 </head>
 <body class="mypage-page">
     <header class="main-header">
@@ -30,21 +30,22 @@
             <aside class="profile-card">
                 <div class="profile-img-wrap">
                     <div class="avatar-circle" id="avatarCircle">
-                        <svg viewBox="0 0 60 60" width="60" height="60" xmlns="http://www.w3.org/2000/svg">
+                        <svg id="avatarSvg" viewBox="0 0 60 60" width="60" height="60" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="30" cy="30" r="30" fill="#FAEFC9"/>
                             <circle cx="30" cy="22" r="10" fill="#C8A94E" opacity="0.7"/>
                             <ellipse cx="30" cy="46" rx="16" ry="12" fill="#C8A94E" opacity="0.7"/>
                         </svg>
-                        <img src="../images/user_avatar.png" alt="프로필" id="userAvatar" onload="this.style.display='block'; document.getElementById('avatarCircle').querySelector('svg').style.display='none';" onerror="this.style.display='none';">
+                        <img src="" alt="프로필" id="userAvatar" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:50%;">
                     </div>
-                    <button class="avatar-edit-btn">
+                    <button class="avatar-edit-btn" id="avatarEditBtn">
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2.5">
                             <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
                             <circle cx="12" cy="13" r="4"/>
                         </svg>
                     </button>
+                    <input type="file" id="photoInput" accept="image/*" style="display:none;">
                 </div>
-                <h2 id="profileName">정혜미</h2>
+                <h2 id="profileName" class="profile-name-editable" title="클릭하여 닉네임 변경">정혜미</h2>
                 <p id="profileStatus" class="status-text">비수어인 / Lv1. 초급</p>
                 <div class="info-details">
                     <p id="profileEmail">gim02673@gmail.com</p>
@@ -245,6 +246,34 @@
         </section>
     </main>
 
-    <script src="../js/mypage.js"></script>
+    <!-- 닉네임 수정 모달 -->
+    <div class="nickname-modal-overlay" id="nicknameModal">
+        <div class="nickname-modal">
+            <h3 class="nickname-modal-title">이름 수정</h3>
+            <p class="nickname-modal-desc">수정할 닉네임을 입력해주세요. (2~8자)</p>
+            <div id="nicknameLockMsg" class="nickname-lock-msg" style="display:none;"></div>
+            <div class="nickname-input-row" id="nicknameInputRow">
+                <input type="text" id="nicknameInput" class="nickname-input" placeholder="닉네임 입력" maxlength="8" minlength="2">
+                <button class="nickname-check-btn" id="nicknameCheckBtn">중복 확인</button>
+            </div>
+            <p class="nickname-check-msg" id="nicknameCheckMsg"></p>
+            <div class="nickname-modal-btns">
+                <button class="nickname-save-btn" id="nicknameSaveBtn">저장</button>
+                <button class="nickname-cancel-btn" id="nicknameCancelBtn">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 프로필 사진 확대 모달 -->
+    <div class="photo-modal-overlay" id="photoModal">
+        <img class="photo-modal-img" id="photoModalImg" src="" alt="프로필 사진" style="display:none;">
+        <svg id="photoModalSvg" class="photo-modal-img" style="display:none;" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="30" cy="30" r="30" fill="#FAEFC9"/>
+            <circle cx="30" cy="22" r="10" fill="#C8A94E" opacity="0.7"/>
+            <ellipse cx="30" cy="46" rx="16" ry="12" fill="#C8A94E" opacity="0.7"/>
+        </svg>
+    </div>
+
+    <script src="../js/mypage.js?v=3"></script>
 </body>
 </html>

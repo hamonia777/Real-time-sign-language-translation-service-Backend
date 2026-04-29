@@ -28,6 +28,10 @@ class UserRepository(ABC):
     def save_survey(self, survey) -> None:
         pass
 
+    @abstractmethod
+    def find_by_nickname(self, nickname: str) -> "User | None":
+        pass
+
 
 class SqlUserRepository(UserRepository):
     def __init__(self, db: Session):
@@ -54,6 +58,10 @@ class SqlUserRepository(UserRepository):
     def save_survey(self, survey) -> None:
         self.db.add(survey)
         self.db.commit()
+
+    def find_by_nickname(self, nickname: str) -> User | None:
+        statement = select(User).where(User.nickname == nickname)
+        return self.db.execute(statement).scalars().first()
 
 
 def get_user_repository(db: Session = Depends(get_db)) -> UserRepository:
