@@ -5,6 +5,13 @@ const API_BASE = "/api/v1/learning";
 const SENTENCE_PASS_THRESHOLD = 60.0;
 const FRAME_INTERVAL_MS = 100;
 const RECORD_MAX_MS = 10000;
+const STEP_TITLES = {
+  1: "단어 확인",
+  2: "환경 세팅",
+  3: "단어 학습",
+  4: "문장 학습",
+  5: "학습 완료",
+};
 
 const params = new URLSearchParams(location.search);
 const sentenceId = parseInt(params.get("lesson_id") || "0", 10);
@@ -32,6 +39,15 @@ function getCookie(name) {
   return match ? decodeURIComponent(match[1]) : null;
 }
 
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 async function init() {
   if (!sentenceId) {
     alert("lesson_id 가 없습니다.");
@@ -53,13 +69,14 @@ async function init() {
   }
 
   state.wordScores = new Array(state.sentence.words.length).fill(0);
+  const wordOrderHtml = state.sentence.words
+    .map((w) => `${w.word_order}. ${escapeHtml(w.title)}`)
+    .join("<br>");
 
   // Step 1 화면 채우기
-  document.getElementById("sentenceBig").textContent = state.sentence.sentence_title;
+  document.getElementById("sentenceBig").innerHTML = wordOrderHtml;
   document.getElementById("sentenceSide").textContent = state.sentence.sentence_title;
-  document.getElementById("wordOrderBox").innerHTML = state.sentence.words
-    .map((w) => `${w.word_order}. ${w.title}`)
-    .join("<br>");
+  document.getElementById("wordOrderBox").innerHTML = wordOrderHtml;
 
   // Step 4 화면
   document.getElementById("targetSentence4").textContent = state.sentence.sentence_title;
@@ -96,7 +113,7 @@ function gotoStep(n) {
   for (let i = 1; i <= 5; i++) {
     document.getElementById(`step${i}`).style.display = i === n ? "block" : "none";
   }
-  document.getElementById("pageTitle").textContent = `문장 학습 페이지 - 단계 ${n}`;
+  document.getElementById("pageTitle").textContent = `문장 학습 페이지 - ${STEP_TITLES[n]}`;
 
   const nodes = document.querySelectorAll("#stepper .node");
   const lines = document.querySelectorAll("#stepper .line");
@@ -117,6 +134,8 @@ function gotoStep(n) {
   if (n === 4) {
     document.getElementById("attemptLabel4").textContent = state.attemptSentence;
     document.getElementById("scoreVal4").textContent = "0";
+    document.getElementById("statusLine4").textContent = "문장을 카메라에 맞춰 따라한 뒤 완료를 누르세요.";
+    document.getElementById("statusLine4").style.color = "#6B7280";
     startCameraForStep(4);
   }
   if (n === 5) {
