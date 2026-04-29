@@ -61,21 +61,25 @@ function getCompletedSet() {
   }
 }
 
+// 26.4.30 : 가령 : 수정 내용 - 지문자 카드 생성 로직 공통 함수로 분리
+function createLessonCard(item) {
+  const a = document.createElement("a");
+  a.className = "lesson-card";
+  if (getCompletedSet().has(item.lesson_id)) a.classList.add("completed");
+  const page = WORD_MODEL_FS_CHARS.has(item.title) ? "word_learn.html" : "sign_learn.html";
+  a.href = `${page}?lesson_id=${item.lesson_id}`;
+  a.textContent = item.title;
+  return a;
+}
+
 function renderFingerspell(items) {
   const consonantBox = document.getElementById("consonantList");
   const vowelBox = document.getElementById("vowelList");
   consonantBox.innerHTML = "";
   vowelBox.innerHTML = "";
 
-  const completed = getCompletedSet();
-
   for (const item of items) {
-    const a = document.createElement("a");
-    a.className = "lesson-card";
-    if (completed.has(item.lesson_id)) a.classList.add("completed");
-    const page = WORD_MODEL_FS_CHARS.has(item.title) ? "word_learn.html" : "sign_learn.html";
-    a.href = `${page}?lesson_id=${item.lesson_id}`;
-    a.textContent = item.title;
+    const a = createLessonCard(item);
     if (item.subcategory === "vowel") vowelBox.appendChild(a);
     else consonantBox.appendChild(a);
   }

@@ -133,33 +133,10 @@
         <section class="basket-section">
             <h3 class="section-title">학습 바구니</h3>
             <div class="content-box">
-                <div class="box-header">학습 바구니 총 항목 : 11개</div>
-                <div class="basket-grid">
-                    <div class="basket-col">
-                        
-                        <ul class="item-list">
-                            <li><div class="flex-center"><i class="green-dot"></i><span>날씨</span></div><button class="btn-blue">학습하기</button></li>
-                            <li><div class="flex-center"><i class="green-dot"></i><span>교실</span></div><button class="btn-blue">학습하기</button></li>
-                            <li><div class="flex-center"><i class="green-dot"></i><span>다시</span></div><button class="btn-blue">학습하기</button></li>
-                            <li><div class="flex-center"><i class="green-dot"></i><span>계절</span></div><button class="btn-blue">학습하기</button></li>
-                        </ul>
-                    </div>
-                    <div class="basket-col">
-                        <ul class="item-list">
-                            <li><div class="flex-center"><i class="green-dot"></i><span>저</span></div><button class="btn-blue">학습하기</button></li>
-                            <li><div class="flex-center"><i class="green-dot"></i><span>오늘</span></div><button class="btn-blue">학습하기</button></li>
-                            <li><div class="flex-center"><i class="green-dot"></i><span>점심</span></div><button class="btn-blue">학습하기</button></li>
-                            <li><div class="flex-center"><i class="green-dot"></i><span>약속</span></div><button class="btn-blue">학습하기</button></li>
-                        </ul>
-                    </div>
-                    <div class="basket-col">
-                        <ul class="item-list">
-                            <li><div class="flex-center"><i class="green-dot"></i><span>사랑</span></div><button class="btn-blue">학습하기</button></li>
-                            <li><div class="flex-center"><i class="green-dot"></i><span>노력</span></div><button class="btn-blue">학습하기</button></li>
-                            <li><div class="flex-center"><i class="green-dot"></i><span>관심</span></div><button class="btn-blue">학습하기</button></li>
-                            <li><div class="flex-center"><i class="green-dot"></i><span>행복</span></div><button class="btn-blue">학습하기</button></li>
-                        </ul>
-                    </div>
+                <!-- 26.4.30 : 가령 : 수정 내용 - 학습 바구니를 DB 데이터로 렌더링하기 위해 id 추가 -->
+                <div class="box-header" id="basketCount">학습 바구니 총 항목 : 0개</div>
+                <div class="basket-grid" id="basketGrid">
+                    <div class="empty-learning">학습 바구니를 불러오는 중입니다.</div>
                 </div>
             </div>
         </section>
@@ -193,6 +170,7 @@
         </svg>
     </div>
 
-    <script src="../js/mypage.js?v=4"></script>
+    <!-- 26.4.30 : 가령 : 수정 내용 - 마이페이지 학습 바구니 JS 캐시 갱신 -->
+    <script src="../js/mypage.js?v=5"></script>
 </body>
 </html>

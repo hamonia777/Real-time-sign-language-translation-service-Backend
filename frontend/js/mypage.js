@@ -456,6 +456,102 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadLearningProgress();
 
+    /* ─────────────────────────────────────────────
+       1-2. 학습 바구니 DB 연동
+       26.4.30 : 가령 : 수정 내용 - DB 바구니 항목을 category 기준 3열 UI로 렌더링
+       ───────────────────────────────────────────── */
+    function renderLearningBasket(items) {
+        const countEl = document.getElementById('basketCount');
+        const gridEl = document.getElementById('basketGrid');
+        if (countEl) countEl.textContent = `학습 바구니 총 항목 : ${items.length}개`;
+        if (!gridEl) return;
+
+        gridEl.innerHTML = '';
+        const groups = [
+            // 26.4.30 : 가령 : 수정 내용 - lessons.category 기준으로 지문자/단어/문장 컬럼 분리
+            { key: 'fingerspell', label: '지문자' },
+            { key: 'word', label: '단어' },
+            { key: 'sentence', label: '문장' },
+        ];
+        const columns = {};
+
+        groups.forEach(group => {
+            const col = document.createElement('div');
+            col.className = 'basket-col';
+            const list = document.createElement('ul');
+            list.className = 'item-list';
+            list.dataset.category = group.key;
+            col.appendChild(list);
+            gridEl.appendChild(col);
+            columns[group.key] = list;
+        });
+
+        if (!items.length) {
+            groups.forEach(group => {
+                columns[group.key].innerHTML = '';
+            });
+            return;
+        }
+
+        items.forEach(item => {
+            const list = columns[item.category];
+            if (!list) return;
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <div class="flex-center"><i class="green-dot"></i><span></span></div>
+                <button class="btn-blue learn-btn" type="button">학습하기</button>
+            `;
+            li.querySelector('span').textContent = item.title;
+            li.querySelector('.learn-btn').addEventListener('click', () => {
+                location.href = getLessonUrl(item);
+            });
+            list.appendChild(li);
+        });
+
+        groups.forEach(group => {
+            if (!columns[group.key].children.length) {
+                columns[group.key].innerHTML = '';
+            }
+        });
+    }
+
+    // 26.4.30 : 가령 : 수정 내용 - 마이페이지 진입 시 서버에서 학습 바구니 목록 조회
+    async function loadLearningBasket() {
+        try {
+            const res = await fetch('/api/v1/profile/basket', {
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+            if (res.status === 401) {
+                alert('로그인이 필요합니다.');
+                location.href = 'login.html';
+                return;
+            }
+            if (!res.ok) throw new Error(`basket HTTP ${res.status}`);
+            const data = await res.json();
+            renderLearningBasket(data.items || []);
+        } catch (err) {
+            console.error('학습 바구니 로드 실패:', err);
+            renderLearningBasket([]);
+        }
+    }
+
+    async function removeLearningBasket(basketId) {
+        if (!confirm('학습 바구니에서 삭제하시겠습니까?')) return;
+        try {
+            const res = await fetch(`/api/v1/learning/basket/${basketId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+            if (!res.ok) throw new Error(`basket delete HTTP ${res.status}`);
+            await loadLearningBasket();
+        } catch (err) {
+            console.error('학습 바구니 삭제 실패:', err);
+            alert('학습 바구니 삭제 중 오류가 발생했습니다.');
+        }
+    }
+
+    loadLearningBasket();
+
 
 /* ──────────────────────────────────────────────────────────
    2. 성취도 잔디 그래프 생성 (가변 그리드 대응 교정본)
