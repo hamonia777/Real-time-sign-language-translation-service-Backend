@@ -323,6 +323,139 @@ document.addEventListener('DOMContentLoaded', () => {
     if (elEmail)  elEmail.innerText  = kakaoEmail;
     if (elPhone)  elPhone.innerText  = userPhone;
 
+    /* ─────────────────────────────────────────────
+       1-1. 완료/진행 중인 학습 DB 연동
+       ───────────────────────────────────────────── */
+    function formatDate(value) {
+        if (!value) return '';
+        const d = new Date(value);
+        if (Number.isNaN(d.getTime())) return '';
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}.${m}.${day}`;
+    }
+
+    function getLessonUrl(item) {
+        if (item.category === 'sentence') return `sentence_learn.html?lesson_id=${item.lesson_id}`;
+        if (item.category === 'fingerspell') {
+            const wordModelFsChars = new Set(['ㄲ', 'ㄸ', 'ㅃ', 'ㅆ', 'ㅉ', 'ㅘ', 'ㅙ', 'ㅝ', 'ㅞ']);
+            return `${wordModelFsChars.has(item.title) ? 'word_learn.html' : 'sign_learn.html'}?lesson_id=${item.lesson_id}`;
+        }
+        return `word_learn.html?lesson_id=${item.lesson_id}`;
+    }
+
+    function renderCompletedLearning(items, totalCount) {
+        const countEl = document.getElementById('completedCount');
+        const recentEl = document.getElementById('completedRecent');
+        const listEl = document.getElementById('completedLearningList');
+        if (countEl) countEl.textContent = `${totalCount}개`;
+        if (recentEl) {
+            const recent = items[0];
+            recentEl.textContent = recent
+                ? `최근 완료 : ${recent.title} (${formatDate(recent.updated_at)})`
+                : '최근 완료 : 없음';
+        }
+        if (!listEl) return;
+        listEl.innerHTML = '';
+        if (!items.length) {
+            listEl.innerHTML = '<li class="empty-learning">완료된 학습이 없습니다.</li>';
+            return;
+        }
+        items.forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <i class="check-dot"></i>
+                <span></span>
+                <span class="date"></span>
+                <button class="btn-sm" type="button">다시 학습</button>
+            `;
+            li.querySelector('span').textContent = item.title;
+            li.querySelector('.date').textContent = formatDate(item.updated_at);
+            li.querySelector('button').addEventListener('click', () => {
+                location.href = getLessonUrl(item);
+            });
+            listEl.appendChild(li);
+        });
+    }
+
+    function renderInProgressLearning(items, totalCount) {
+        const countEl = document.getElementById('inProgressCount');
+        const recentEl = document.getElementById('inProgressRecent');
+        const listEl = document.getElementById('inProgressLearningList');
+        if (countEl) countEl.textContent = `진행 중인 학습 : ${totalCount}개 단어/문장`;
+        if (recentEl) {
+            const recent = items[0];
+            recentEl.textContent = recent
+                ? `최근 진행 : ${recent.title} (${formatDate(recent.updated_at)})`
+                : '최근 진행 : 없음';
+        }
+        if (!listEl) return;
+        listEl.innerHTML = '';
+        if (!items.length) {
+            listEl.innerHTML = '<div class="empty-learning">진행 중인 학습이 없습니다.</div>';
+            return;
+        }
+        items.forEach(item => {
+            const pct = Math.max(0, Math.min(100, item.progress_percent || 0));
+            const row = document.createElement('div');
+            row.className = 'progress-item';
+            row.innerHTML = `
+                <div class="item-left">
+                    <div class="custom-radio active"><div class="radio-inner"></div></div>
+                    <span class="word-text"></span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="bar-bg"><div class="bar-fill"></div></div>
+                    <span class="percent-text"></span>
+                </div>
+                <span class="date-text"></span>
+                <button class="resume-btn" type="button">이어하기</button>
+            `;
+            row.querySelector('.word-text').textContent = item.title;
+            row.querySelector('.bar-fill').style.width = `${pct}%`;
+            row.querySelector('.percent-text').textContent = `${pct}% 완료`;
+            row.querySelector('.date-text').textContent = formatDate(item.updated_at);
+            row.querySelector('button').addEventListener('click', () => {
+                location.href = getLessonUrl(item);
+            });
+            listEl.appendChild(row);
+        });
+    }
+
+    async function loadLearningProgress() {
+        try {
+            const authHeaders = { 'Authorization': `Bearer ${token}` };
+            const [completedRes, inProgressRes] = await Promise.all([
+                fetch('/api/v1/profile/learning/completed', { headers: authHeaders }),
+                fetch('/api/v1/profile/learning/in-progress', { headers: authHeaders }),
+            ]);
+            if (completedRes.status === 401 || inProgressRes.status === 401) {
+                alert('로그인이 필요합니다.');
+                location.href = 'login.html';
+                return;
+            }
+            if (!completedRes.ok) throw new Error(`completed HTTP ${completedRes.status}`);
+            if (!inProgressRes.ok) throw new Error(`in-progress HTTP ${inProgressRes.status}`);
+
+            const completedData = await completedRes.json();
+            const inProgressData = await inProgressRes.json();
+            const completedItems = completedData.items || [];
+            const inProgressItems = inProgressData.items || [];
+            renderCompletedLearning(completedItems, completedData.total_count || 0);
+            renderInProgressLearning(inProgressItems, inProgressData.total_count || 0);
+
+            const completedIds = completedItems.map(item => item.lesson_id);
+            localStorage.setItem('learning_completed_lessons', JSON.stringify(completedIds));
+        } catch (err) {
+            console.error('학습 진행 현황 로드 실패:', err);
+            renderCompletedLearning([], 0);
+            renderInProgressLearning([], 0);
+        }
+    }
+
+    loadLearningProgress();
+
 
 /* ──────────────────────────────────────────────────────────
    2. 성취도 잔디 그래프 생성 (가변 그리드 대응 교정본)

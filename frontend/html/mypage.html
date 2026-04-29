@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>수어 연구소 - 마이페이지</title>
     <link rel="stylesheet" href="../css/home.css?v=3">
-    <link rel="stylesheet" href="../css/mypage.css?v=3">
+    <link rel="stylesheet" href="../css/mypage.css?v=4">
 </head>
 <body class="mypage-page">
     <header class="main-header">
@@ -105,16 +105,11 @@
             <div id="tab-completed" class="tab-content active">
                 <div class="content-box">
                     <div class="box-header">
-                        <span>총 완료 학습 : <strong>153개</strong> 단어/문장</span>
-                        <span class="recent">최근 완료 : 안녕하세요 (2026.03.20)</span>
+                        <span>총 완료 학습 : <strong id="completedCount">0개</strong> 단어/문장</span>
+                        <span class="recent" id="completedRecent">최근 완료 : 없음</span>
                     </div>
-                    <ul class="learning-list">
-                        <li><i class="check-dot"></i> <span>안녕하세요</span> <span class="date">2026.03.20</span> <button class="btn-sm">학습바구니 담기</button></li>
-                        <li><i class="check-dot"></i> <span>감사합니다</span> <span class="date">2026.03.20</span> <button class="btn-sm">학습바구니 담기</button></li>
-                        <li><i class="check-dot"></i> <span>학교</span> <span class="date">2026.03.15</span> <button class="btn-sm">학습바구니 담기</button></li>
-                        <li><i class="check-dot"></i> <span>가족</span> <span class="date">2026.03.15</span> <button class="btn-sm">학습바구니 담기</button></li>
-                        <li><i class="check-dot"></i> <span>친구</span> <span class="date">2026.03.15</span> <button class="btn-sm">학습바구니 담기</button></li>
-                        <li><i class="check-dot"></i> <span>반갑습니다</span> <span class="date">2026.03.15</span> <button class="btn-sm">학습바구니 담기</button></li>
+                    <ul class="learning-list" id="completedLearningList">
+                        <li class="empty-learning">학습 기록을 불러오는 중입니다.</li>
                     </ul>
                 </div>
             </div>
@@ -122,88 +117,12 @@
             <div id="tab-inprogress" class="tab-content" style="display: none;">
                 <div class="content-box no-border"> <div class="progress-tab-content">
                         <div class="summary-header">
-                            <span class="summary-title">진행 중인 학습 : 10개 단어/문장</span>
-                            <span class="summary-recent">최근 진행 : 오전 (2026.03.20)</span>
+                            <span class="summary-title" id="inProgressCount">진행 중인 학습 : 0개 단어/문장</span>
+                            <span class="summary-recent" id="inProgressRecent">최근 진행 : 없음</span>
                         </div>
 
-                        <div class="progress-list">
-                            <div class="progress-item">
-                                <div class="item-left">
-                                    <div class="custom-radio active"><div class="radio-inner"></div></div>
-                                    <span class="word-text">오전</span>
-                                </div>
-                                <div class="progress-bar-container">
-                                    <div class="bar-bg"><div class="bar-fill" style="width: 70%;"></div></div>
-                                    <span class="percent-text">70% 완료</span>
-                                </div>
-                                <span class="date-text">2026.03.20</span>
-                                <button class="resume-btn">이어하기</button>
-                            </div>
-
-                            <div class="progress-item">
-                                <div class="item-left">
-                                    <div class="custom-radio active"><div class="radio-inner"></div></div>
-                                    <span class="word-text">프로그래머</span>
-                                </div>
-                                <div class="progress-bar-container">
-                                    <div class="bar-bg"><div class="bar-fill" style="width: 40%;"></div></div>
-                                    <span class="percent-text">40% 완료</span>
-                                </div>
-                                <span class="date-text">2026.03.20</span>
-                                <button class="resume-btn">이어하기</button>
-                            </div>
-
-                            <div class="progress-item">
-                                <div class="item-left">
-                                    <div class="custom-radio active"><div class="radio-inner"></div></div>
-                                    <span class="word-text">동료</span>
-                                </div>
-                                <div class="progress-bar-container">
-                                    <div class="bar-bg"><div class="bar-fill" style="width: 20%;"></div></div>
-                                    <span class="percent-text">20% 완료</span>
-                                </div>
-                                <span class="date-text">2026.03.20</span>
-                                <button class="resume-btn">이어하기</button>
-                            </div>
-
-                            <div class="progress-item">
-                                <div class="item-left">
-                                    <div class="custom-radio active"><div class="radio-inner"></div></div>
-                                    <span class="word-text">어머니</span>
-                                </div>
-                                <div class="progress-bar-container">
-                                    <div class="bar-bg"><div class="bar-fill" style="width: 45%;"></div></div>
-                                    <span class="percent-text">45% 완료</span>
-                                </div>
-                                <span class="date-text">2026.03.20</span>
-                                <button class="resume-btn">이어하기</button>
-                            </div>
-
-                            <div class="progress-item">
-                                <div class="item-left">
-                                    <div class="custom-radio active"><div class="radio-inner"></div></div>
-                                    <span class="word-text">아버지</span>
-                                </div>
-                                <div class="progress-bar-container">
-                                    <div class="bar-bg"><div class="bar-fill" style="width: 80%;"></div></div>
-                                    <span class="percent-text">80% 완료</span>
-                                </div>
-                                <span class="date-text">2026.03.19</span>
-                                <button class="resume-btn">이어하기</button>
-                            </div>
-
-                            <div class="progress-item">
-                                <div class="item-left">
-                                    <div class="custom-radio active"><div class="radio-inner"></div></div>
-                                    <span class="word-text">좋아한다</span>
-                                </div>
-                                <div class="progress-bar-container">
-                                    <div class="bar-bg"><div class="bar-fill" style="width: 90%;"></div></div>
-                                    <span class="percent-text">90% 완료</span>
-                                </div>
-                                <span class="date-text">2026.03.18</span>
-                                <button class="resume-btn">이어하기</button>
-                            </div>
+                        <div class="progress-list" id="inProgressLearningList">
+                            <div class="empty-learning">학습 기록을 불러오는 중입니다.</div>
                         </div>
                     </div>
                 </div>
@@ -274,6 +193,6 @@
         </svg>
     </div>
 
-    <script src="../js/mypage.js?v=3"></script>
+    <script src="../js/mypage.js?v=4"></script>
 </body>
 </html>

@@ -7,6 +7,7 @@ from main.core.security import get_current_user_id
 from main.domain.learning.dto.lesson_dto import (
     LessonListResponseDto,
     LessonResponseDto,
+    MyLearningProgressResponseDto,
     SaveResultRequestDto,
     SaveResultResponseDto,
     SeedResponseDto,
@@ -17,6 +18,7 @@ from main.domain.learning.dto.lesson_dto import (
 )
 from main.domain.learning.usecase.lesson_usecase import (
     GetLessonUseCase,
+    GetMyLearningProgressUseCase,
     ListLessonsUseCase,
     SaveResultUseCase,
     SeedFingerspellUseCase,
@@ -67,6 +69,14 @@ def list_lessons(
 @router.get("/lessons/{lesson_id}", response_model=LessonResponseDto)
 def get_lesson(lesson_id: int, usecase: GetLessonUseCase = Depends()):
     return usecase.execute(lesson_id)
+
+
+@router.get("/my-progress", response_model=MyLearningProgressResponseDto)
+def get_my_learning_progress(
+    usecase: GetMyLearningProgressUseCase = Depends(),
+    user_id: int = Depends(get_current_user_id),
+):
+    return usecase.execute(user_id)
 
 
 # 가령: 26/04/19 수정내용: /results 엔드포인트에 JWT 인증 필수로 변경 + user_id 를 usecase 에 전달

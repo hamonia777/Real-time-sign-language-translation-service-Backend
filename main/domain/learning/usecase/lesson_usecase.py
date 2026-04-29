@@ -9,8 +9,10 @@ from main.domain.UserLessonProgress.repository.user_lesson_progress_repository i
     get_user_lesson_progress_repository,
 )
 from main.domain.learning.dto.lesson_dto import (
+    LessonProgressItemDto,
     LessonListResponseDto,
     LessonResponseDto,
+    MyLearningProgressResponseDto,
     SaveResultRequestDto,
     SaveResultResponseDto,
     SeedResponseDto,
@@ -24,6 +26,7 @@ from main.domain.learning.service.lesson_service import LessonService
 
 
 PASS_THRESHOLD = 80.0
+MAX_ATTEMPTS = 3
 
 
 def _to_response(lesson) -> LessonResponseDto:
@@ -172,3 +175,50 @@ class SaveResultUseCase:
             attempt=req.attempt,
             pass_threshold=PASS_THRESHOLD,
         )
+
+
+class GetMyLearningProgressUseCase:
+    def __init__(
+        self,
+        progress_repo: UserLessonProgressRepository = Depends(
+            get_user_lesson_progress_repository
+        ),
+    ):
+        self.progress_repo = progress_repo
+
+    def execute(self, user_id: int) -> MyLearningProgressResponseDto:
+        completed: list[LessonProgressItemDto] = []
+        in_progress: list[LessonProgressItemDto] = []
+
+        for progress, lesson in self.progress_repo.find_by_user_with_lessons(user_id):
+            is_completed = progress.status == "passed" or progress.attempt >= MAX_ATTEMPTS
+            progress_percent = 100 if is_completed else self._in_progress_percent(progress.attempt)
+            item = LessonProgressItemDto(
+                lesson_id=lesson.id,
+                title=lesson.title,
+                category=lesson.category,
+                subcategory=lesson.subcategory,
+                level=lesson.level,
+                status=progress.status or "in_progress",
+                attempt=progress.attempt,
+                progress_percent=progress_percent,
+                updated_at=progress.updated_at,
+            )
+
+            if is_completed:
+                completed.append(item)
+            else:
+                in_progress.append(item)
+
+        return MyLearningProgressResponseDto(
+            completed_count=len(completed),
+            in_progress_count=len(in_progress),
+            completed=completed,
+            in_progress=in_progress,
+        )
+
+    @staticmethod
+    def _in_progress_percent(attempt: int) -> int:
+        if attempt <= 0:
+            return 0
+        return min(90, max(10, round((attempt / MAX_ATTEMPTS) * 100)))

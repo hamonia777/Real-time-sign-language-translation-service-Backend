@@ -340,7 +340,7 @@ function onPassSentence() {
 }
 
 // 가령: 260422: 수정 내용 - 단어 점수 통과 기준 제거. 문장 점수 60점 만으로 통과 판정
-function finishLearning() {
+async function finishLearning() {
   const wordAvg = state.wordScores.length
     ? Math.round(state.wordScores.reduce((a, b) => a + b, 0) / state.wordScores.length)
     : 0;
@@ -351,7 +351,32 @@ function finishLearning() {
     ? "축하합니다!<br>문장 학습을 완료했습니다!"
     : `학습 종료<br>문장 점수 ${state.sentenceScore}점 (통과 기준 ${SENTENCE_PASS_THRESHOLD}점)`;
   document.getElementById("completeMsg").innerHTML = msg;
+  await saveSentenceResult(state.sentenceScore);
   markLessonCompleted(sentenceId);
+}
+
+async function saveSentenceResult(score) {
+  const token = getCookie("access_token");
+  const headers = { "Content-Type": "application/json" };
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+
+  try {
+    const res = await fetch(`${API_BASE}/results`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        lesson_id: sentenceId,
+        score,
+        attempt: state.attemptSentence,
+      }),
+    });
+    if (res.status === 401) {
+      alert("로그인이 필요합니다.");
+      location.href = "login.html";
+    }
+  } catch (e) {
+    console.warn("문장 학습 결과 저장 실패", e);
+  }
 }
 
 function markLessonCompleted(id) {

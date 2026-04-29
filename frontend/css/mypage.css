@@ -541,6 +541,14 @@ input:checked + .slider:before { transform: translateX(14px); }
 
 .learning-list li:last-child { border-bottom: none; }
 
+.learning-list .empty-learning,
+.progress-list .empty-learning {
+    padding: 18px 20px;
+    color: #717171;
+    font-size: 12px;
+    font-weight: 500;
+}
+
 .check-dot {
     width: 16px;
     height: 16px;

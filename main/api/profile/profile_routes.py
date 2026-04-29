@@ -1,6 +1,8 @@
-from fastapi import APIRouter, Depends, Query, UploadFile, File
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 
 from main.core.security import get_current_user_id
+from main.domain.learning.dto.lesson_dto import LearningProgressListResponseDto
+from main.domain.learning.usecase.lesson_usecase import GetMyLearningProgressUseCase
 from main.domain.user.dto.user_request_dto import NicknameUpdateRequestDto
 from main.domain.user.dto.user_response_dto import (
     ProfilePhotoResponseDto,
@@ -69,6 +71,30 @@ def get_notification_status(
     user_id: int = Depends(get_current_user_id),
 ):
     return usecase.execute(user_id)
+
+
+@router.get("/learning/completed", response_model=LearningProgressListResponseDto)
+def get_completed_learning(
+    usecase: GetMyLearningProgressUseCase = Depends(),
+    user_id: int = Depends(get_current_user_id),
+):
+    result = usecase.execute(user_id)
+    return LearningProgressListResponseDto(
+        total_count=result.completed_count,
+        items=result.completed,
+    )
+
+
+@router.get("/learning/in-progress", response_model=LearningProgressListResponseDto)
+def get_in_progress_learning(
+    usecase: GetMyLearningProgressUseCase = Depends(),
+    user_id: int = Depends(get_current_user_id),
+):
+    result = usecase.execute(user_id)
+    return LearningProgressListResponseDto(
+        total_count=result.in_progress_count,
+        items=result.in_progress,
+    )
 
 
 @router.patch("/notification/disable")
