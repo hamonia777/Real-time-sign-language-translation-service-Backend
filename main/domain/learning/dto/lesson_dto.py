@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Optional
 from pydantic import BaseModel
 
@@ -60,3 +61,29 @@ class SaveResultResponseDto(BaseModel):
     is_passed: bool
     attempt: int
     pass_threshold: float = 80.0
+
+
+class LessonProgressItemDto(BaseModel):
+    lesson_id: int
+    title: str
+    category: str
+    subcategory: Optional[str] = None
+    level: int
+    status: str
+    attempt: int
+    progress_percent: int
+    updated_at: datetime
+
+
+class MyLearningProgressResponseDto(BaseModel):
+    completed_count: int
+    in_progress_count: int
+    completed: List[LessonProgressItemDto]
+    in_progress: List[LessonProgressItemDto]
+
+
+class LearningProgressListResponseDto(BaseModel):
+    total_count: int
+    items: List[LessonProgressItemDto]
+    next_cursor: Optional[int] = None
+    has_more: bool = False

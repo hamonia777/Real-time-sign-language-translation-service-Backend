@@ -1,12 +1,13 @@
 # 가령: 26/04/19 수정내용: 학습 결과를 user_lesson_progress 테이블에 저장/조회하는 repository 신규 추가
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import List, Optional, Tuple
 
 from fastapi import Depends
 from sqlmodel import Session, select
 
 from main.core.database import get_db
 from main.domain.UserLessonProgress.entity.user_lesson_progress import UserLessonProgress
+from main.domain.learning.entity.lesson import Lesson
 
 
 class UserLessonProgressRepository(ABC):
@@ -18,6 +19,12 @@ class UserLessonProgressRepository(ABC):
 
     @abstractmethod
     def save(self, progress: UserLessonProgress) -> UserLessonProgress:
+        pass
+
+    @abstractmethod
+    def find_by_user_with_lessons(
+        self, user_id: int
+    ) -> List[Tuple[UserLessonProgress, Lesson]]:
         pass
 
 
@@ -39,6 +46,17 @@ class SqlUserLessonProgressRepository(UserLessonProgressRepository):
         self.db.commit()
         self.db.refresh(progress)
         return progress
+
+    def find_by_user_with_lessons(
+        self, user_id: int
+    ) -> List[Tuple[UserLessonProgress, Lesson]]:
+        statement = (
+            select(UserLessonProgress, Lesson)
+            .join(Lesson, UserLessonProgress.lesson_id == Lesson.id)
+            .where(UserLessonProgress.user_id == user_id)
+            .order_by(UserLessonProgress.updated_at.desc())
+        )
+        return list(self.db.execute(statement).all())
 
 
 def get_user_lesson_progress_repository(

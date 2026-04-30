@@ -40,6 +40,7 @@ numpy==1.26.4
 
 # === Caching & Session Management ===
 redis>=5.0.0
+APScheduler==3.10.4
 
 # === Environment & Logging ===
 python-dotenv==1.2.2

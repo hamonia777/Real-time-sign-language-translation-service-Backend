@@ -4,9 +4,21 @@ import json
 from fastapi import APIRouter, Depends, Query, WebSocket, WebSocketDisconnect
 
 from main.core.security import get_current_user_id
+# 26.4.30 : 가령 : 수정 내용 - 학습 바구니 API DTO/UseCase import 추가
+from main.domain.LearningBasket.dto.learning_basket_dto import (
+    LearningBasketAddRequestDto,
+    LearningBasketListResponseDto,
+    LearningBasketMutationResponseDto,
+)
+from main.domain.LearningBasket.usecase.learning_basket_usecase import (
+    AddLearningBasketUseCase,
+    ListLearningBasketUseCase,
+    RemoveLearningBasketUseCase,
+)
 from main.domain.learning.dto.lesson_dto import (
     LessonListResponseDto,
     LessonResponseDto,
+    MyLearningProgressResponseDto,
     SaveResultRequestDto,
     SaveResultResponseDto,
     SeedResponseDto,
@@ -17,6 +29,7 @@ from main.domain.learning.dto.lesson_dto import (
 )
 from main.domain.learning.usecase.lesson_usecase import (
     GetLessonUseCase,
+    GetMyLearningProgressUseCase,
     ListLessonsUseCase,
     SaveResultUseCase,
     SeedFingerspellUseCase,
@@ -67,6 +80,43 @@ def list_lessons(
 @router.get("/lessons/{lesson_id}", response_model=LessonResponseDto)
 def get_lesson(lesson_id: int, usecase: GetLessonUseCase = Depends()):
     return usecase.execute(lesson_id)
+
+
+@router.get("/my-progress", response_model=MyLearningProgressResponseDto)
+def get_my_learning_progress(
+    usecase: GetMyLearningProgressUseCase = Depends(),
+    user_id: int = Depends(get_current_user_id),
+):
+    return usecase.execute(user_id)
+
+
+# 26.4.30 : 가령 : 수정 내용 - 학습 바구니 목록 조회 엔드포인트 신규 추가
+@router.get("/basket", response_model=LearningBasketListResponseDto)
+def list_learning_basket(
+    usecase: ListLearningBasketUseCase = Depends(),
+    user_id: int = Depends(get_current_user_id),
+):
+    return usecase.execute(user_id)
+
+
+# 26.4.30 : 가령 : 수정 내용 - 학습 바구니 항목 추가 엔드포인트 신규 추가
+@router.post("/basket", response_model=LearningBasketMutationResponseDto)
+def add_learning_basket(
+    body: LearningBasketAddRequestDto,
+    usecase: AddLearningBasketUseCase = Depends(),
+    user_id: int = Depends(get_current_user_id),
+):
+    return usecase.execute(user_id, body.lesson_id, body.source)
+
+
+# 26.4.30 : 가령 : 수정 내용 - 학습 바구니 항목 삭제 엔드포인트 신규 추가
+@router.delete("/basket/{basket_id}", response_model=LearningBasketMutationResponseDto)
+def remove_learning_basket(
+    basket_id: int,
+    usecase: RemoveLearningBasketUseCase = Depends(),
+    user_id: int = Depends(get_current_user_id),
+):
+    return usecase.execute(user_id, basket_id)
 
 
 # 가령: 26/04/19 수정내용: /results 엔드포인트에 JWT 인증 필수로 변경 + user_id 를 usecase 에 전달

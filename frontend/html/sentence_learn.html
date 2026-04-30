@@ -28,10 +28,10 @@
 
     <main>
         <div class="learn-wrap">
-            <div class="learn-title" id="pageTitle">문장 학습 페이지 - 단계 1</div>
+            <div class="learn-title" id="pageTitle">문장 학습 페이지 - 단어 확인</div>
 
             <div class="stepper-row" id="stepper">
-                <div class="node active" data-step="1"><div class="dot">1</div><span>문장 확인</span></div>
+                <div class="node active" data-step="1"><div class="dot">1</div><span>단어 확인</span></div>
                 <div class="line"></div>
                 <div class="node" data-step="2"><div class="dot">2</div><span>환경 세팅</span></div>
                 <div class="line"></div>
@@ -42,19 +42,19 @@
                 <div class="node" data-step="5"><div class="dot">5</div><span>학습 완료</span></div>
             </div>
 
-            <!-- Step 1: 문장 확인 -->
+            <!-- Step 1: 단어 확인 -->
             <section id="step1" class="step-view">
                 <div class="learn-body">
                     <div class="video-box">
-                        <div class="char-huge" id="sentenceBig" style="font-size: 28px; padding: 20px; text-align:center; line-height:1.5;">로딩 중...</div>
+                        <div class="char-huge" id="sentenceBig" style="font-size: 24px; padding: 20px; text-align:center; line-height:1.8;">로딩 중...</div>
                     </div>
                     <aside class="side-info">
-                        <h3>학습 문장</h3>
+                        <h3>최종 문장</h3>
                         <div class="target-char" id="sentenceSide" style="font-size: 18px; line-height: 1.5;">-</div>
                         <div style="margin-top: 12px; font-size: 13px; color: #8c93a8;">수어 어순 단어</div>
                         <div id="wordOrderBox" style="font-size: 14px; color: #2C3E63; line-height: 1.8;">-</div>
                         <!-- 가령: 260422: 수정 내용 - 단어 점수 통과 기준 제거. 문장 학습만 60점 기준 -->
-                        <div class="pass-line" style="margin-top: auto;">단어 단계 : 인식만 (점수 무관)<br>문장 단계 : 통과 기준 <b>60점</b></div>
+                        <div class="pass-line" style="margin-top: auto;">단어를 순서대로 익힌 뒤<br>문장 전체를 학습합니다.</div>
                     </aside>
                 </div>
                 <div class="learn-footer">
@@ -124,12 +124,12 @@
                         <div class="pass-line">통과 기준 : <b>60점</b></div>
                         <div class="pass-line">시도 횟수 : <span id="attemptLabel4">1</span>/3</div>
                         <div class="gauge"><span id="scoreVal4">0</span>점</div>
-                        <div class="status-line" id="statusLine4" style="color: #c7541f;">⚠️ 문장 인식 모델(model_video.pt) 연동은 Phase 3 예정 — 현재는 통과 처리 버튼으로 다음 단계로 진행합니다</div>
+                        <div class="status-line" id="statusLine4">문장을 카메라에 맞춰 따라한 뒤 완료를 누르세요.</div>
                     </aside>
                 </div>
                 <div class="learn-footer">
                     <button class="btn-secondary" id="backTo3From4">이전</button>
-                    <button class="btn-primary" id="passSentenceBtn">통과 처리(임시)</button>
+                    <button class="btn-primary" id="passSentenceBtn">완료하기</button>
                 </div>
             </section>
 
@@ -153,6 +153,6 @@
     </main>
 
     <!-- 가령: 260422: 수정 내용 - 캐시 우회용 버전 쿼리 추가 -->
-    <script src="../js/sentence_learn.js?v=260422b"></script>
+    <script src="../js/sentence_learn.js?v=260429b"></script>
 </body>
 </html>
