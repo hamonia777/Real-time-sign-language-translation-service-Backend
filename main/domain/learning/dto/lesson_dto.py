@@ -1,4 +1,5 @@
 from datetime import datetime
+from datetime import date
 from typing import List, Optional
 from pydantic import BaseModel
 
@@ -87,3 +88,14 @@ class LearningProgressListResponseDto(BaseModel):
     items: List[LessonProgressItemDto]
     next_cursor: Optional[int] = None
     has_more: bool = False
+
+
+class AchievementDayDto(BaseModel):
+    date: date
+    count: int
+
+
+class AchievementResponseDto(BaseModel):
+    start_date: date
+    end_date: date
+    days: List[AchievementDayDto]

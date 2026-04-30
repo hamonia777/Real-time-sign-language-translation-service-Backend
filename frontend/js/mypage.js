@@ -574,7 +574,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 오늘부터 52주 전 계산
     const today = new Date();
     const startDate = new Date(today);
-    startDate.setDate(today.getDate() - 52 * 7 - today.getDay());
+    startDate.setDate(today.getDate() - 370);
 
     // 2. 월 라벨 생성 (CSS 그리드 칼럼 시스템 활용)
     if (monthContainer) {
@@ -607,36 +607,54 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 3. 잔디 그리드 채우기 (데이터 정합성 및 시뮬레이션 보완)
-    if (grassGrid) {
-        grassGrid.innerHTML = '';
-        let learningData = [];
+    function toIsoDate(date) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
 
-        try {
-            const raw = localStorage.getItem('learningHistory');
-            learningData = JSON.parse(raw);
-            if (!Array.isArray(learningData)) learningData = null;
-        } catch (e) {
-            learningData = null;
-        }
+    function renderAchievement(days, startDateValue) {
+        if (!grassGrid) return;
+        grassGrid.innerHTML = '';
+        const countMap = new Map((days || []).map(day => [day.date, day.count || 0]));
+        const graphStartDate = startDateValue ? new Date(`${startDateValue}T00:00:00`) : startDate;
 
         // 371개(53주 * 7일) 박스 생성
         for (let i = 0; i < 371; i++) {
             const square = document.createElement('div');
             square.className = 'grass-square';
-
-            // 데이터가 없으면 랜덤하게 테스트용 색칠
-            let count = (learningData && learningData[i] !== undefined) 
-                        ? learningData[i] 
-                        : (Math.random() > 0.6 ? Math.floor(Math.random() * 6) : 0);
-
+            const currentDate = new Date(graphStartDate.getTime());
+            currentDate.setDate(graphStartDate.getDate() + i);
+            const dateKey = toIsoDate(currentDate);
+            const count = countMap.get(dateKey) || 0;
             const level = getGrassLevel(count);
-            square.classList.add(level); // lv0~lv4 클래스 부여
-            
-            square.title = `학습량: ${count}개`;
+            square.classList.add(level);
+            square.title = `${dateKey} 학습량: ${count}개`;
             grassGrid.appendChild(square);
         }
     }
+
+    async function loadAchievement() {
+        try {
+            const res = await fetch('/api/v1/profile/achievement', {
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+            if (res.status === 401) {
+                alert('로그인이 필요합니다.');
+                location.href = 'login.html';
+                return;
+            }
+            if (!res.ok) throw new Error(`achievement HTTP ${res.status}`);
+            const data = await res.json();
+            renderAchievement(data.days || [], data.start_date);
+        } catch (err) {
+            console.error('성취도 로드 실패:', err);
+            renderAchievement([]);
+        }
+    }
+
+    loadAchievement();
 
     // 레벨 판별 함수 (수치 조정)
     function getGrassLevel(count) {

@@ -1,5 +1,5 @@
 # 가령: 26/04/19 수정내용: SaveResultUseCase 가 user_id 를 받아 user_lesson_progress 에 upsert 하도록 변경
-from datetime import datetime
+from datetime import date, datetime, timedelta
 
 from fastapi import Depends
 
@@ -9,6 +9,8 @@ from main.domain.UserLessonProgress.repository.user_lesson_progress_repository i
     get_user_lesson_progress_repository,
 )
 from main.domain.learning.dto.lesson_dto import (
+    AchievementDayDto,
+    AchievementResponseDto,
     LessonProgressItemDto,
     LessonListResponseDto,
     LessonResponseDto,
@@ -222,3 +224,39 @@ class GetMyLearningProgressUseCase:
         if attempt <= 0:
             return 0
         return min(90, max(10, round((attempt / MAX_ATTEMPTS) * 100)))
+
+
+class GetMyAchievementUseCase:
+    def __init__(
+        self,
+        progress_repo: UserLessonProgressRepository = Depends(
+            get_user_lesson_progress_repository
+        ),
+    ):
+        self.progress_repo = progress_repo
+
+    def execute(self, user_id: int) -> AchievementResponseDto:
+        today = date.today()
+        start_date = today - timedelta(days=(53 * 7 - 1))
+        count_by_date = {
+            day: count
+            for day, count in self.progress_repo.count_by_user_grouped_by_date(
+                user_id, start_date
+            )
+        }
+
+        days = []
+        for offset in range(53 * 7):
+            current_date = start_date + timedelta(days=offset)
+            days.append(
+                AchievementDayDto(
+                    date=current_date,
+                    count=count_by_date.get(current_date, 0),
+                )
+            )
+
+        return AchievementResponseDto(
+            start_date=start_date,
+            end_date=today,
+            days=days,
+        )
