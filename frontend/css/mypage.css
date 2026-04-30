@@ -113,13 +113,13 @@ body {
     align-items: flex-start; 
 }
 
-/* 2. 성취도 전체 섹션  */
+/* 성취도 전체 섹션  */
 .achievement-section {
     flex: 1;
     min-width: 0;
 }
 
-/* 3. 성취도 제목*/
+/* 성취도 제목*/
 .achievement-section .section-title {
     font-size: 14px;
     font-weight: 500;
@@ -128,7 +128,7 @@ body {
     padding-left: 2px;
 }
 
-/* 4. 성취도 흰색 박스 */
+/* 성취도 흰색 박스 */
 .achievement-card {
     background: #FFF;
     border: 1px solid #EEEEEE; 
@@ -141,24 +141,8 @@ body {
     flex-direction: column;
 }
 
-/* 5. 잔디 요일 라벨 */
-.day-labels {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 89px; /* (11px * 7행) + (2px * 6개 간격) = 약 89px */
-    margin-right: 12px;
-    padding-top: 2px; 
-}
 
-.day-labels span {
-    font-size: 10px;
-    color: #999;
-    height: 11px;
-    line-height: 11px;
-}
-
-/* 6. 잔디 범례위치 조정 */
+/* 잔디 범례위치 조정 */
 .grass-legend {
     display: flex;
     align-items: center;
@@ -170,13 +154,6 @@ body {
     padding-top: 24px;
     font-size: 10px;
     color: #999;
-}
-
-.grass-flex {
-    display: flex;
-    margin-top: 10px; 
-    gap: 12px; 
-    align-items: flex-start;
 }
 
 /* 잔디 그리드 간격 유지 */
@@ -195,14 +172,50 @@ body {
     background: #EFF2F5;
 }
 
+/* 월 라벨 컨테이너 */
 .month-labels {
     display: grid;
-    grid-template-columns: 22px repeat(53, 1fr); 
+    grid-template-columns: 26px repeat(53, 1fr); 
     width: 100%;
-    margin-left: 0;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    height: 15px;
+    align-items: center;
 }
 
+/* 개별 월 글자 스타일 */
+.month-label-item {
+    grid-row: 1;
+    font-size: 10px;
+    color: #999;
+    white-space: nowrap; /* 글자 줄바꿈 방지 */
+    text-align: left; 
+    padding-left: 1px; 
+}
+
+/* 요일 라벨과 잔디 사이의 간격 */
+.grass-flex {
+    display: flex;
+    gap: 4px; /* 요일 라벨과 잔디 그리드 사이 간격 */
+    align-items: flex-start;
+    width: 100%;
+}
+
+.day-labels {
+    width: 22px;
+    display: flex;
+    flex-direction: column;
+    height: 89px; 
+    justify-content: space-between;
+    font-size: 10px;
+    color: #999;
+    padding: 2px 0;
+    flex-shrink: 0;
+}
+
+.grass-graph-wrapper {
+    position: relative;
+    top: 15px; /* 박스 안에서 그래프 세트를 15px만큼 아래로 이동 */
+}
 /* ──────────────────────────────────────────────────────────
    3. 프로필 카드
    ────────────────────────────────────────────────────────── */
@@ -362,7 +375,7 @@ input:checked + .slider:before { transform: translateX(14px); }
     border-radius: 8px;
 }
 /* ──────────────────────────────────────────────────────────
-   4. 성취도 잔디 (최종 교정본)
+   4. 성취도 잔디
    ────────────────────────────────────────────────────────── */
 .achievement-card {
     flex: 1;
@@ -492,7 +505,7 @@ input:checked + .slider:before { transform: translateX(14px); }
     border-bottom: 2px solid transparent;
     background: transparent;
     color: #717171;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
     cursor: pointer;
     transition: color 0.2s, border-color 0.2s;
@@ -864,7 +877,7 @@ input:checked + .slider:before { transform: translateX(14px); }
 
 .nickname-modal {
     background: #fff;
-    border-radius: 10px;
+    border-radius: 6px;
     padding: 28px 28px 22px;
     width: 340px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.18);
@@ -872,8 +885,8 @@ input:checked + .slider:before { transform: translateX(14px); }
 }
 
 .nickname-modal-title {
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 500;
     color: #2C2C2C;
     margin-bottom: 6px;
 }
@@ -889,7 +902,7 @@ input:checked + .slider:before { transform: translateX(14px); }
     color: #E05252;
     background: #FFF5F5;
     border: 1px solid #F5C6C6;
-    border-radius: 6px;
+    border-radius: 5px;
     padding: 8px 12px;
     margin-bottom: 12px;
 }
@@ -903,7 +916,7 @@ input:checked + .slider:before { transform: translateX(14px); }
 .nickname-input {
     flex: 1;
     border: 1px solid #D6D6D6;
-    border-radius: 6px;
+    border-radius: 4px;
     padding: 8px 12px;
     font-size: 13px;
     outline: none;
@@ -918,10 +931,10 @@ input:checked + .slider:before { transform: translateX(14px); }
     background: #517AAF;
     color: #fff;
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;
     padding: 8px 12px;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 400;
     cursor: pointer;
     white-space: nowrap;
     transition: opacity 0.2s;
@@ -930,9 +943,9 @@ input:checked + .slider:before { transform: translateX(14px); }
 .nickname-check-btn:hover { opacity: 0.85; }
 
 .nickname-check-msg {
-    font-size: 11px;
+    font-size: 10px;
     min-height: 16px;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
 }
 
 .nickname-check-msg.ok  { color: #4F854D; }
@@ -949,9 +962,9 @@ input:checked + .slider:before { transform: translateX(14px); }
     color: #fff;
     border: none;
     border-radius: 99px;
-    padding: 8px 22px;
+    padding: 6px 20px;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 400;
     cursor: pointer;
     transition: opacity 0.2s;
 }

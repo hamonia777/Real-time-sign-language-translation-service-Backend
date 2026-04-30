@@ -325,7 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 /* ──────────────────────────────────────────────────────────
-   2. 성취도 잔디 그래프 생성 (가변 그리드 대응 교정본)
+   2. 성취도 잔디 그래프 생성 (방법 A & 날짜 툴팁 반영)
    ────────────────────────────────────────────────────────── */
     const monthContainer = document.getElementById('monthLabels');
     const grassGrid      = document.getElementById('grassGrid');
@@ -345,19 +345,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // 오늘부터 52주 전 계산
     const today = new Date();
     const startDate = new Date(today);
+    // 이번 주 일요일(0)로 맞추기
     startDate.setDate(today.getDate() - 52 * 7 - today.getDay());
 
-    // 2. 월 라벨 생성 (CSS 그리드 칼럼 시스템 활용)
+    // 2. 월 라벨 생성 (방법 A: 첫 주 자투리 생략 및 중첩 방지)
     if (monthContainer) {
         monthContainer.innerHTML = '';
         
-        // 첫 번째 칸(요일 라벨 너비 26px 대응) 비워두기용 스페이서 생성
+        // 첫 번째 칸 스페이서 생성
         const spacer = document.createElement('div');
         spacer.className = 'month-spacer'; 
         monthContainer.appendChild(spacer);
 
         const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
         let lastMonth = -1;
+        let lastLabelColumn = -5; // 이전 라벨 위치 기록용
 
         for (let w = 0; w < 53; w++) {
             const d = new Date(startDate.getTime());
@@ -365,20 +367,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const m = d.getMonth();
 
             if (m !== lastMonth) {
-                lastMonth = m;
-                const lbl = document.createElement('span');
-                lbl.className = 'month-label-item';
-                lbl.textContent = monthNames[m];
-                
-                // 핵심: px 계산 대신 grid-column 속성 사용
-                // 첫 칸이 spacer이므로 (w + 2)번째 칼럼에 위치시킴
-                lbl.style.gridColumn = w + 2; 
-                monthContainer.appendChild(lbl);
+                const currentColumn = w + 2; 
+
+                // [방법 A] 첫 번째 주(w > 0)는 건너뛰고, 이전 라벨과 간격이 충분할 때만 생성
+                if (w > 0 && (currentColumn - lastLabelColumn > 2)) {
+                    lastMonth = m;
+                    lastLabelColumn = currentColumn;
+                    
+                    const lbl = document.createElement('span');
+                    lbl.className = 'month-label-item';
+                    lbl.textContent = monthNames[m];
+                    lbl.style.gridColumn = currentColumn; 
+                    monthContainer.appendChild(lbl);
+                }
             }
         }
     }
 
-    // 3. 잔디 그리드 채우기 (데이터 정합성 및 시뮬레이션 보완)
+    // 3. 잔디 그리드 채우기 (날짜 기반 툴팁 강화)
     if (grassGrid) {
         grassGrid.innerHTML = '';
         let learningData = [];
@@ -386,9 +392,9 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const raw = localStorage.getItem('learningHistory');
             learningData = JSON.parse(raw);
-            if (!Array.isArray(learningData)) learningData = null;
+            if (!Array.isArray(learningData)) learningData = [];
         } catch (e) {
-            learningData = null;
+            learningData = [];
         }
 
         // 371개(53주 * 7일) 박스 생성
@@ -396,20 +402,27 @@ document.addEventListener('DOMContentLoaded', () => {
             const square = document.createElement('div');
             square.className = 'grass-square';
 
-            // 데이터가 없으면 랜덤하게 테스트용 색칠
-            let count = (learningData && learningData[i] !== undefined) 
+            // [추가] 해당 칸의 실제 날짜 계산
+            const cellDate = new Date(startDate.getTime());
+            cellDate.setDate(startDate.getDate() + i);
+            const dateStr = `${cellDate.getFullYear()}년 ${cellDate.getMonth() + 1}월 ${cellDate.getDate()}일`;
+
+            // 데이터 할당 (실제 데이터 없으면 랜덤 시뮬레이션)
+            let count = (learningData[i] !== undefined) 
                         ? learningData[i] 
                         : (Math.random() > 0.6 ? Math.floor(Math.random() * 6) : 0);
 
             const level = getGrassLevel(count);
-            square.classList.add(level); // lv0~lv4 클래스 부여
+            square.classList.add(level); 
             
-            square.title = `학습량: ${count}개`;
+            // [수정] 호버 툴팁에 날짜와 학습량 병합 표시
+            square.title = `${dateStr} : 학습량 ${count}개`;
+            
             grassGrid.appendChild(square);
         }
     }
 
-    // 레벨 판별 함수 (수치 조정)
+    // 레벨 판별 함수 (기존 유지)
     function getGrassLevel(count) {
         if (!count || count === 0) return 'lv0';
         if (count === 1) return 'lv1';
@@ -417,7 +430,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (count <= 5)  return 'lv3';
         return 'lv4';
     }
-
 
     /* ─────────────────────────────────────────────
        3. 탭 전환 / 알림 / 카카오 / 로그아웃 (기존 동일)

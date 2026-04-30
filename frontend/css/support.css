@@ -1,15 +1,17 @@
 .support-page { background-color: #FFFFFF; }
 .support-main { 
-    max-width: 792px; 
+    max-width: 960px; 
     margin: 0 auto;
-    padding: 33px 16px; 
+    margin-bottom : 40px;
+    padding: 0px 20px; 
 }
 
-/* 섹션 타이틀 (19px -> 21px) */
+/* 섹션 타이틀 */
 .section-title {
-    font-size: 19px;
+    font-size: 17px;
     font-weight: 600;
     color: #474747;
+    margin-top:22px;
     margin-bottom: 22px;
 }
 
@@ -30,42 +32,45 @@
     width: 100%;                   
 }
 
-/* 칩 스타일 (폰트 12px -> 13px) */
+/* 칩 스타일 */
 .chip {
-    padding: 8px 15px;
+    padding: 6px 14px;
     border-radius: 999px;
-    border: 1px solid #517AAF;
+    border: 1px solid #1C4476;
+    font-weight: 500;
     background: #FFFFFF;
-    color: #34436D;
-    font-size: 12px;
+    color: #1C4476;
+    font-size: 11px;
     cursor: pointer;
     white-space: nowrap;           
 }
 
 .chip.active {
-    background: #34436D;
+    background: #1C4476;
     color: #FFFFFF;
 }
 
 .faq-box {
-    border: 1px solid #D6D6D6;
-    border-radius: 11px;
+    border: 1px solid #ebebeb;
+    border-radius: 7px;
     padding: 22px;
     margin-bottom: 44px;
 }
 
 .faq-box h2 {
-    font-size: 20px;
+    font-size: 17px;
+    color: #474747;
     margin-bottom: 13px;
 }
 
-.faq-content h3 { font-size: 16px; margin-bottom: 9px; }
+.faq-content h3 { font-size: 15px; margin-bottom: 9px; color:#34436D; }
 .faq-content p, .faq-content li { 
-    font-size: 14px; 
+    font-size: 13px; 
+    color: #474747;
     line-height: 1.5; 
 }
 
-.section-divider { border: none; border-top: 1px solid #F0F0F0; margin: 33px 0; }
+.section-divider { border: none; border-top: 1px solid #F0F0F0; margin: 0px 0; }
 
 /* 3. 게시판 섹션 */
 .form-group { margin-bottom: 16px; }
@@ -91,14 +96,14 @@
 
 .label-row label {
     font-size: 14px; 
-    font-weight: 600;
+    font-weight: 500;
     color: #474747;
 }
 
 .required-tag, .optional-tag {
     font-size: 14px;
     color: #517AAF;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 /* 입력창 (높이 38px -> 42px) */
@@ -106,7 +111,7 @@
     width: 100%;
     background: #FAFAFA;
     border: 1px solid #D6D6D6;
-    border-radius: 2px;
+    border-radius: 5px;
     padding: 11px;
     font-size: 13px;
     box-sizing: border-box;
@@ -139,6 +144,7 @@
     display: block;
     width: 140px; 
     height: 38px; 
+    border-radius: 4px;
     background: #517AAF;
     color: #FFFFFF;
     font-size: 14px;
