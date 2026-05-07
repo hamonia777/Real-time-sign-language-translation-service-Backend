@@ -1,5 +1,5 @@
 // 가령: 260422: 수정 내용 - 문장 학습 페이지 신규 JS. word_learn.js 의 단일 단어 루프를 N개 단어 + 1개 문장 흐름으로 확장
-// Phase 3 작업 (model_video.pt 연결) 전까지 Step 4(문장 인식) 는 임시 통과 처리 버튼으로 대체
+// 26.05.07 : 가령 : 수정 내용 - Step 4 문장 인식은 model_video.pt 문장 모델 WebSocket으로 연결
 // 가령: 260422: 수정 내용 - 단어 학습 60점 통과 기준 제거 (단어는 연습용, 문장만 60점 기준 적용)
 const API_BASE = "/api/v1/learning";
 const SENTENCE_PASS_THRESHOLD = 60.0;
@@ -27,15 +27,26 @@ const state = {
   attemptSentence: 1,         // Step 4 문장 시도 횟수
   wordScores: [],             // 단어별 최고 점수 (length = words.length)
   sentenceScore: 0,
+  sentenceDetected: [],
+  sentenceMatched: [],
+  sentenceTop3: [],
   maxScore: 0,
   stream: null,
   ws: null,
+  sentenceWs: null,
   sendTimer: null,
+  sentenceSendTimer: null,
+  sentenceRecordTimer: null,
   progressTimer: null,
   recordStartAt: 0,
+  sentenceRecordStartAt: 0,
   recording: false,
+  sentenceRecording: false,
+  sentenceWaitingResult: false,
   hasAnalysisResult: false,
+  hasSentenceAnalysisResult: false,
   captureCanvas: null,
+  sentenceCaptureCanvas: null,
 };
 
 function getCookie(name) {
@@ -144,7 +155,8 @@ function bindNav() {
   document.getElementById("startRecordBtn").addEventListener("click", onStartRecord);
   document.getElementById("confirmStep3").addEventListener("click", onConfirmStep3);
   document.getElementById("backTo3From4").addEventListener("click", () => gotoStep(3));
-  document.getElementById("passSentenceBtn").addEventListener("click", onPassSentence);
+  document.getElementById("startSentenceRecordBtn").addEventListener("click", onStartSentenceRecord);
+  document.getElementById("confirmSentenceBtn").addEventListener("click", onConfirmSentence);
   document.getElementById("retryBtn").addEventListener("click", () => {
     state.currentWordIdx = 0;
     state.attempt = 1;
@@ -159,6 +171,7 @@ function bindNav() {
 function gotoStep(n) {
   if (state.step === 2 || state.step === 3 || state.step === 4) stopCamera();
   if (state.step === 3) stopWebSocket();
+  if (state.step === 4) stopSentenceWebSocket();
 
   state.step = n;
   for (let i = 1; i <= 5; i++) {
@@ -185,9 +198,14 @@ function gotoStep(n) {
   if (n === 4) {
     document.getElementById("attemptLabel4").textContent = state.attemptSentence;
     document.getElementById("scoreVal4").textContent = "0";
-    document.getElementById("statusLine4").textContent = "문장을 카메라에 맞춰 따라한 뒤 완료를 누르세요.";
+    document.getElementById("sentenceTop3Box").innerHTML = "";
+    state.sentenceTop3 = [];
+    state.sentenceWaitingResult = false;
+    document.getElementById("startSentenceRecordBtn").style.display = "inline-block";
+    document.getElementById("confirmSentenceBtn").style.display = "none";
+    document.getElementById("statusLine4").textContent = "시작 버튼을 누르면 문장 인식이 시작됩니다.";
     document.getElementById("statusLine4").style.color = "#6B7280";
-    startCameraForStep(4);
+    startCameraForStep(4).then(() => startSentenceWebSocket());
   }
   if (n === 5) {
     finishLearning();
@@ -296,6 +314,189 @@ function stopWebSocket() {
   if (state.ws) { try { state.ws.close(); } catch {} state.ws = null; }
 }
 
+// 26.05.07 : 가령 : 수정 내용 - 문장 학습 Step 4 전체 영상 인식 WebSocket 연결
+function startSentenceWebSocket() {
+  const proto = location.protocol === "https:" ? "wss:" : "ws:";
+  const url = `${proto}//${location.host}${API_BASE}/ws/video_recognition`;
+  state.sentenceWs = new WebSocket(url);
+
+  state.sentenceWs.onopen = () => {
+    document.getElementById("statusLine4").textContent = "준비 완료 — 시작 버튼을 누르세요";
+    document.getElementById("statusLine4").style.color = "#6B7280";
+  };
+  state.sentenceWs.onmessage = (ev) => {
+    let msg;
+    try { msg = JSON.parse(ev.data); } catch { return; }
+
+    if (msg.type === "error") {
+      document.getElementById("statusLine4").textContent = "오류: " + msg.message;
+      document.getElementById("statusLine4").style.color = "#c33";
+      stopSentenceRecording();
+      return;
+    }
+
+    if (msg.type === "sentence_status") {
+      if (!state.sentenceRecording) return;
+      if (!msg.hand_detected) {
+        document.getElementById("statusLine4").textContent = "손을 감지하는 중...";
+        return;
+      }
+      if (typeof msg.buffer_count === "number") {
+        document.getElementById("statusLine4").textContent =
+          `녹화 중 — 수집 프레임 ${msg.buffer_count}개`;
+      }
+      return;
+    }
+
+    if (msg.type === "sentence_result") {
+      state.sentenceWaitingResult = false;
+      state.hasSentenceAnalysisResult = true;
+      state.sentenceScore = Math.round(msg.score || 0);
+      state.sentenceTop3 = msg.top3 || [];
+      renderSentenceResult(msg);
+    }
+  };
+  state.sentenceWs.onerror = () => {
+    document.getElementById("statusLine4").textContent = "WebSocket 오류";
+    document.getElementById("statusLine4").style.color = "#c33";
+    stopSentenceRecording();
+  };
+  state.sentenceWs.onclose = () => stopSentenceRecording();
+}
+
+function stopSentenceWebSocket() {
+  stopSentenceRecording();
+  if (state.sentenceWs) { try { state.sentenceWs.close(); } catch {} state.sentenceWs = null; }
+}
+
+function onStartSentenceRecord() {
+  if (!state.sentenceWs || state.sentenceWs.readyState !== WebSocket.OPEN) {
+    alert("WebSocket 연결 대기 중입니다. 잠시 후 다시 시도하세요.");
+    return;
+  }
+  state.sentenceRecording = true;
+  state.hasSentenceAnalysisResult = false;
+  state.sentenceScore = 0;
+  state.sentenceDetected = [];
+  state.sentenceMatched = [];
+  state.sentenceTop3 = [];
+  state.sentenceWaitingResult = false;
+  state.sentenceRecordStartAt = Date.now();
+  state.sentenceWs.send(JSON.stringify({
+    type: "reset",
+    target_sentence: state.sentence.sentence_title,
+  }));
+  document.getElementById("scoreVal4").textContent = "0";
+  document.getElementById("sentenceTop3Box").innerHTML = "";
+  setSentenceProgress(0);
+  showSentenceProgress(true);
+  document.getElementById("startSentenceRecordBtn").style.display = "none";
+  document.getElementById("confirmSentenceBtn").style.display = "none";
+  document.getElementById("statusLine4").textContent = "녹화 중 — 문장을 수어 어순대로 수행하세요.";
+  document.getElementById("statusLine4").style.color = "#c7541f";
+  startSentenceFrameSender();
+  state.sentenceRecordTimer = setInterval(() => {
+    const elapsed = Date.now() - state.sentenceRecordStartAt;
+    const pct = Math.min(100, (elapsed / RECORD_MAX_MS) * 100);
+    setSentenceProgress(pct, elapsed);
+    if (elapsed >= RECORD_MAX_MS) {
+      finishSentenceRecording();
+    }
+  }, 150);
+}
+
+function finishSentenceRecording() {
+  state.sentenceRecording = false;
+  state.sentenceWaitingResult = true;
+  if (state.sentenceSendTimer) { clearInterval(state.sentenceSendTimer); state.sentenceSendTimer = null; }
+  if (state.sentenceRecordTimer) { clearInterval(state.sentenceRecordTimer); state.sentenceRecordTimer = null; }
+  showSentenceProgress(false);
+
+  document.getElementById("statusLine4").textContent = "녹화 완료 — 문장을 분석 중입니다.";
+  document.getElementById("statusLine4").style.color = "#2C3E63";
+
+  if (state.sentenceWs && state.sentenceWs.readyState === WebSocket.OPEN) {
+    state.sentenceWs.send(JSON.stringify({
+      type: "finish",
+      target_sentence: state.sentence.sentence_title,
+    }));
+  } else {
+    state.sentenceWaitingResult = false;
+    document.getElementById("startSentenceRecordBtn").style.display = "inline-block";
+    document.getElementById("startSentenceRecordBtn").textContent = "다시 녹화";
+    document.getElementById("statusLine4").textContent = "WebSocket 연결이 끊겼습니다. 다시 시도하세요.";
+    document.getElementById("statusLine4").style.color = "#c33";
+  }
+}
+
+function renderSentenceResult(msg) {
+  document.getElementById("scoreVal4").textContent = state.sentenceScore;
+
+  const top3Html = state.sentenceTop3.length
+    ? state.sentenceTop3
+        .map((p, i) => `${i + 1}위 : ${escapeHtml(p.label)} (${Number(p.prob || 0).toFixed(1)}%)`)
+        .join("<br>")
+    : "판독 후보 없음";
+
+  const matched = msg.matched_label
+    ? `정답 라벨 : ${escapeHtml(msg.matched_label)}`
+    : "정답 라벨 : 모델 후보에서 찾지 못함";
+
+  // 26.05.07 : 가령 : 수정 내용 - 문장 학습 Step 4는 15초 녹화 종료 후 전체 문장 Top-3를 표시
+  document.getElementById("sentenceTop3Box").innerHTML =
+    `정답 점수 : ${state.sentenceScore}점<br>${matched}<br>${top3Html}`;
+  document.getElementById("startSentenceRecordBtn").style.display = "inline-block";
+  document.getElementById("startSentenceRecordBtn").textContent = "다시 녹화";
+  document.getElementById("confirmSentenceBtn").style.display = "inline-block";
+  document.getElementById("statusLine4").textContent = "분석 완료 — 확인 버튼을 누르거나 다시 녹화하세요.";
+  document.getElementById("statusLine4").style.color = "#2C3E63";
+}
+
+function stopSentenceRecording() {
+  state.sentenceRecording = false;
+  state.sentenceWaitingResult = false;
+  if (state.sentenceSendTimer) { clearInterval(state.sentenceSendTimer); state.sentenceSendTimer = null; }
+  if (state.sentenceRecordTimer) { clearInterval(state.sentenceRecordTimer); state.sentenceRecordTimer = null; }
+  showSentenceProgress(false);
+}
+
+function setSentenceProgress(pct, elapsedMs) {
+  document.getElementById("progressBar4").style.width = pct + "%";
+  if (typeof elapsedMs === "number") {
+    const sec = (elapsedMs / 1000).toFixed(1);
+    const total = (RECORD_MAX_MS / 1000).toFixed(1);
+    document.getElementById("progressTime4").textContent = `${sec} / ${total} 초`;
+  }
+}
+
+function showSentenceProgress(show) {
+  document.getElementById("progressWrap4").style.display = show ? "block" : "none";
+  document.getElementById("progressTime4").style.display = show ? "block" : "none";
+}
+
+function startSentenceFrameSender() {
+  const video = document.getElementById("video4");
+  if (!state.sentenceCaptureCanvas) {
+    state.sentenceCaptureCanvas = document.createElement("canvas");
+    state.sentenceCaptureCanvas.width = 640;
+    state.sentenceCaptureCanvas.height = 480;
+  }
+  const canvas = state.sentenceCaptureCanvas;
+  const ctx = canvas.getContext("2d");
+  state.sentenceSendTimer = setInterval(() => {
+    if (!state.sentenceWs || state.sentenceWs.readyState !== WebSocket.OPEN) return;
+    if (!video.videoWidth) return;
+    // 26.05.07 : 가령 : 수정 내용 - 화면만 CSS로 반전하고 문장 모델에는 원본 프레임 전송
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const b64 = canvas.toDataURL("image/jpeg", 0.85);
+    state.sentenceWs.send(JSON.stringify({
+      type: "frame",
+      image: b64,
+      target_sentence: state.sentence.sentence_title,
+    }));
+  }, FRAME_INTERVAL_MS);
+}
+
 function onStartRecord() {
   if (!state.ws || state.ws.readyState !== WebSocket.OPEN) {
     alert("WebSocket 연결 대기 중입니다. 잠시 후 다시 시도하세요.");
@@ -335,11 +536,8 @@ function startFrameSender() {
   state.sendTimer = setInterval(() => {
     if (!state.ws || state.ws.readyState !== WebSocket.OPEN) return;
     if (!video.videoWidth) return;
-    ctx.save();
-    ctx.translate(canvas.width, 0);
-    ctx.scale(-1, 1);
+    // 26.05.08 : 가령 : 수정 내용 - 문장 3단계 단어 학습도 서버에는 원본 프레임 전송
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    ctx.restore();
     const b64 = canvas.toDataURL("image/jpeg", 0.85);
     const w = state.sentence.words[state.currentWordIdx];
     state.ws.send(JSON.stringify({
@@ -347,7 +545,8 @@ function startFrameSender() {
       image: b64,
       target: w.title,
       category: "word",
-      // subcategory 는 서버 측 카테고리 필터에 사용. 단어 학습과 동일한 동작을 위해 omit (전체 word 모델 라벨 대상)
+      // 26.05.07 : 가령 : 수정 내용 - 문장 학습 Step 3에서는 현재 학습 중인 정답 단어만 인식 후보로 전송
+      allowed_targets: [w.title],
     }));
   }, FRAME_INTERVAL_MS);
 }
@@ -411,11 +610,30 @@ function onConfirmStep3() {
   }
 }
 
-// 가령: 260422: 수정 내용 - Step 4 임시 통과 버튼. Phase 3 에서 model_video.pt WebSocket 연결로 교체 예정
-function onPassSentence() {
-  // 임시: 80점으로 통과 처리. 실제 인식 연결 시 score 는 모델 응답에서 받음
-  state.sentenceScore = 80;
-  document.getElementById("scoreVal4").textContent = state.sentenceScore;
+// 26.05.07 : 가령 : 수정 내용 - Step 4 문장 전체 영상 인식 결과로 완료/재시도 판단
+function onConfirmSentence() {
+  if (!state.hasSentenceAnalysisResult) {
+    alert("분석이 완료된 녹화만 문장 학습 결과에 반영됩니다.");
+    return;
+  }
+
+  const passed = state.sentenceScore >= SENTENCE_PASS_THRESHOLD;
+  if (!passed && state.attemptSentence < 3) {
+    state.attemptSentence += 1;
+    document.getElementById("attemptLabel4").textContent = state.attemptSentence;
+    state.sentenceScore = 0;
+    state.hasSentenceAnalysisResult = false;
+    document.getElementById("scoreVal4").textContent = "0";
+    document.getElementById("sentenceTop3Box").innerHTML = "";
+    document.getElementById("startSentenceRecordBtn").style.display = "inline-block";
+    document.getElementById("startSentenceRecordBtn").textContent = "다시 녹화";
+    document.getElementById("confirmSentenceBtn").style.display = "none";
+    document.getElementById("statusLine4").textContent =
+      `점수가 부족합니다. 다시 시도하세요. (${state.attemptSentence}/3)`;
+    document.getElementById("statusLine4").style.color = "#c33";
+    return;
+  }
+
   gotoStep(5);
 }
 

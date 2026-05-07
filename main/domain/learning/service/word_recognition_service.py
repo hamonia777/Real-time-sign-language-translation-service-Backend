@@ -22,6 +22,11 @@ _MODEL_PATH = (
 )
 
 HAND_FEAT_DIM = 114
+MODEL_WORD_ALIASES = {
+    # 26.05.07 : 가령 : 수정 내용 - 문장 시드 단어명과 model_word.pt 라벨명 차이 보정
+    "꿈꾸다": "꿈",
+    "개발자": "프로그래머",
+}
 
 
 class WordRecognitionService:
@@ -224,10 +229,31 @@ class WordRecognitionService:
         base = self.aggregate_base(probs)
         return sorted(base.items(), key=lambda x: -x[1])[:3]
 
+    @staticmethod
+    def _filter_base_by_allowed(
+        base: Dict[str, float], allowed: set | None
+    ) -> Dict[str, float]:
+        if not allowed:
+            return base
+        return {label: prob for label, prob in base.items() if label in allowed}
+
+    def _build_allowed_from_targets(self, targets: list | None) -> set | None:
+        if not targets:
+            return None
+        allowed: set[str] = set()
+        for target in targets:
+            if not isinstance(target, str):
+                continue
+            allowed.update(self._target_variants(target))
+        return allowed or None
+
     # 가령: 26/04/19 수정내용: target 과 모델 라벨의 표기 차이 (슬래시 / 언더스코어 / 괄호 / 쉼표) 흡수
     @staticmethod
     def _target_variants(target: str) -> List[str]:
         variants = {target}
+        alias = MODEL_WORD_ALIASES.get(target)
+        if alias:
+            variants.add(alias)
         if "/" in target:
             parts = [p.strip() for p in target.split("/") if p.strip()]
             variants.update(parts)
@@ -355,6 +381,7 @@ class WordSession:
         target: str | None,
         category: str | None = None,
         subcategory: str | None = None,
+        allowed_targets: list | None = None,
     ) -> dict:
         rh = self.service.detect_hands(bgr_frame)
         dom_label = self.dom_trk.update(rh)
@@ -365,9 +392,23 @@ class WordSession:
             "motion": None,
         }
 
+        allowed: set | None = None
+        if allowed_targets:
+            # 26.05.07 : 가령 : 수정 내용 - 문장 학습 Step 3에서는 문장 정답 단어만 인식 후보로 사용
+            allowed = self.service._build_allowed_from_targets(allowed_targets)
+        if category and subcategory:
+            allowed = allowed or self.service.category_allowed.get(f"{category}:{subcategory}")
+        if allowed is None and category:
+            allowed = self.service.category_allowed.get(category)
+
         if hand_rel is not None:
             probs = self.service.predict_probs(hand_rel)
-            base = self.service.aggregate_base(probs)
+            # 26.05.07 : 가령 : 수정 내용 - 단어 실시간 후보도 같은 카테고리 단어만 참여하도록 제한
+            base = self.service._filter_base_by_allowed(
+                self.service.aggregate_base(probs), allowed
+            )
+            if not base:
+                base = self.service.aggregate_base(probs)
             top_lbl, top_conf = max(base.items(), key=lambda x: x[1])
             self.live_window.append((top_lbl, top_conf))
 
@@ -395,18 +436,15 @@ class WordSession:
         if motion_state == "ready" and self.seg_probs:
             peak_base: Dict[str, float] = {}
             for p in self.seg_probs:
-                base_p = self.service.aggregate_base(p)
+                # 26.05.07 : 가령 : 수정 내용 - 단어 최종 Top-3 후보도 같은 카테고리 단어만 참여하도록 제한
+                base_p = self.service._filter_base_by_allowed(
+                    self.service.aggregate_base(p), allowed
+                )
+                if not base_p:
+                    base_p = self.service.aggregate_base(p)
                 for lbl, v in base_p.items():
                     if v > peak_base.get(lbl, 0.0):
                         peak_base[lbl] = v
-
-            allowed: set | None = None
-            if category and subcategory:
-                allowed = self.service.category_allowed.get(f"{category}:{subcategory}")
-            if allowed is None and category:
-                allowed = self.service.category_allowed.get(category)
-            if allowed:
-                peak_base = {l: v for l, v in peak_base.items() if l in allowed}
 
             top3 = sorted(peak_base.items(), key=lambda x: -x[1])[:3]
             result["segment_top3"] = [
