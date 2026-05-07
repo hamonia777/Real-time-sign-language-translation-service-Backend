@@ -286,11 +286,8 @@ function startFrameSender() {
   state.sendTimer = setInterval(() => {
     if (!state.ws || state.ws.readyState !== WebSocket.OPEN) return;
     if (!video.videoWidth) return;
-    ctx.save();
-    ctx.translate(canvas.width, 0);
-    ctx.scale(-1, 1);
+    // 26.05.08 : 가령 : 수정 내용 - 사용자 화면만 CSS로 반전하고 단어 모델에는 원본 프레임 전송
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    ctx.restore();
     // 가령: 26/04/19 수정내용: MediaPipe 손 검출 안정성을 위해 JPEG 품질 0.6 → 0.85
     const b64 = canvas.toDataURL("image/jpeg", 0.85);
     // 가령: 26/04/19 수정내용: Top-3 를 카테고리 내부로 필터링하기 위해 category/subcategory 동반 전송

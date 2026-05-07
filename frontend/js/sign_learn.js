@@ -253,11 +253,14 @@ function startFrameSender() {
     if (!video.videoWidth) return;
     // 26.05.06 : 가령 : 수정 내용 - 사용자 화면은 CSS로만 반전하고 서버 전송 프레임은 원본 방향 유지
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const b64 = canvas.toDataURL("image/jpeg", 0.6);
+    // 26.05.07 : 가령 : 수정 내용 - 지문자 손가락 윤곽 보존을 위해 JPEG 품질 0.6 → 0.85
+    const b64 = canvas.toDataURL("image/jpeg", 0.85);
     state.ws.send(JSON.stringify({
       type: "frame",
       image: b64,
       target: state.lesson.title,
+      // 26.05.07 : 가령 : 수정 내용 - 지문자 자음/모음 후보군 필터링을 위해 subcategory 전달
+      subcategory: state.lesson.subcategory,
     }));
   }, FRAME_INTERVAL_MS);
 }
