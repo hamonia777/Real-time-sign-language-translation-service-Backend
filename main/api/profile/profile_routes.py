@@ -8,8 +8,14 @@ from main.domain.LearningBasket.dto.learning_basket_dto import (
 from main.domain.LearningBasket.usecase.learning_basket_usecase import (
     ListLearningBasketUseCase,
 )
-from main.domain.learning.dto.lesson_dto import LearningProgressListResponseDto
-from main.domain.learning.usecase.lesson_usecase import GetMyLearningProgressUseCase
+from main.domain.learning.dto.lesson_dto import (
+    AchievementResponseDto,
+    LearningProgressListResponseDto,
+)
+from main.domain.learning.usecase.lesson_usecase import (
+    GetMyAchievementUseCase,
+    GetMyLearningProgressUseCase,
+)
 from main.domain.user.dto.user_request_dto import NicknameUpdateRequestDto
 from main.domain.user.dto.user_response_dto import (
     ProfilePhotoResponseDto,
@@ -102,6 +108,14 @@ def get_in_progress_learning(
         total_count=result.in_progress_count,
         items=result.in_progress,
     )
+
+
+@router.get("/achievement", response_model=AchievementResponseDto)
+def get_achievement(
+    usecase: GetMyAchievementUseCase = Depends(),
+    user_id: int = Depends(get_current_user_id),
+):
+    return usecase.execute(user_id)
 
 
 # 26.4.30 : 가령 : 수정 내용 - 마이페이지 학습 바구니 조회 엔드포인트 신규 추가

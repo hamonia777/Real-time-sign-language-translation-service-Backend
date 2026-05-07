@@ -8,10 +8,13 @@ const PASS_THRESHOLD = 80.0;
 const MAX_ATTEMPTS = 3;
 // 가령: 26/04/19 수정내용: 인식률 개선을 위해 프레임 전송 주기 200ms → 100ms (5fps → 10fps)
 const FRAME_INTERVAL_MS = 100;
-const RECORD_MAX_MS = 10000; // 최대 녹화 시간 (진행바 전체)
+// 26.05.06 : 가령 : 수정 내용 - 서버 분석 완료 여유 확보를 위해 녹화 제한 10초 → 15초
+const RECORD_MAX_MS = 15000; // 최대 녹화 시간 (진행바 전체)
 
 const params = new URLSearchParams(location.search);
 const lessonId = parseInt(params.get("lesson_id") || "0", 10);
+// 26.05.06 : 가령 : 수정 내용 - 마이페이지 진행 중 학습에서 진입한 경우 시도 횟수 이어받기
+const shouldResume = params.get("resume") === "1";
 
 const state = {
   lesson: null,
@@ -25,6 +28,7 @@ const state = {
   progressTimer: null,
   recordStartAt: 0,
   recording: false,
+  hasAnalysisResult: false,
   captureCanvas: null,
 };
 
@@ -58,7 +62,54 @@ async function init() {
     document.getElementById("targetCharBig").style.fontSize = "150px";
   }
 
+  await markLearningStarted();
+  await loadResumeAttempt();
   bindNav();
+}
+
+// 26.05.06 : 가령 : 수정 내용 - 학습 페이지 진입만 해도 진행 중 학습으로 DB에 기록
+async function markLearningStarted() {
+  const token = getCookie("access_token");
+  if (!token) return;
+
+  try {
+    await fetch(`${API_BASE}/progress/start`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ lesson_id: lessonId }),
+    });
+  } catch (e) {
+    console.warn("학습 시작 기록 실패", e);
+  }
+}
+
+// 26.05.06 : 가령 : 수정 내용 - 이어하기 진입 시 기존 attempt 다음 횟수부터 시작
+async function loadResumeAttempt() {
+  if (!shouldResume) return;
+  const token = getCookie("access_token");
+  if (!token) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/my-progress`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return;
+
+    const data = await res.json();
+    const progress = (data.in_progress || []).find(
+      (item) => Number(item.lesson_id) === Number(lessonId)
+    );
+    if (!progress) return;
+
+    state.attempt = Math.min((progress.attempt || 0) + 1, MAX_ATTEMPTS);
+    const attemptEl = document.getElementById("attemptLabel");
+    if (attemptEl) attemptEl.textContent = state.attempt;
+  } catch (e) {
+    console.warn("진행 상태 불러오기 실패", e);
+  }
 }
 
 function bindNav() {
@@ -159,6 +210,7 @@ function startWebSocket() {
     // 세그먼트 완료 → 결과 표시
     if (msg.segment_top3) {
       stopRecording();
+      state.hasAnalysisResult = true;
       const top3Html = msg.segment_top3
         .map((p, i) => `${i + 1}위 : ${p.label} (${p.prob.toFixed(1)}%)`)
         .join("<br>");
@@ -201,6 +253,7 @@ function onStartRecord() {
     return;
   }
   state.recording = true;
+  state.hasAnalysisResult = false;
   state.recordStartAt = Date.now();
   document.getElementById("top3Box").innerHTML = "";
   showProgress(true);
@@ -259,9 +312,11 @@ function startProgressAnimation() {
     if (elapsed >= RECORD_MAX_MS) {
       // 최대 시간 초과 — 녹화 강제 종료
       stopRecording();
+      state.hasAnalysisResult = false;
       document.getElementById("statusLine3").textContent = "시간 초과 — 다시 시도하세요";
       document.getElementById("statusLine3").style.color = "#c33";
       showStartButton(true);
+      showConfirmButton(false);
       document.getElementById("startRecordBtn").textContent = "다시 녹화";
     }
   }, 150);
@@ -288,6 +343,12 @@ function showConfirmButton(show) {
 }
 
 async function onConfirmStep3() {
+  // 26.05.06 : 가령 : 수정 내용 - 시간 초과된 녹화는 시도 횟수에 반영하지 않음
+  if (!state.hasAnalysisResult) {
+    alert("분석이 완료된 녹화만 시도 횟수에 반영됩니다.");
+    return;
+  }
+
   const score = state.maxScore;
   state.lastScore = score;
 
