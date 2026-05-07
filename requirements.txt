@@ -50,3 +50,8 @@ loguru==0.7.3
 # pytest==7.4.0
 # black==23.10.0
 # flake8==6.1.0
+
+
+#가령 가상환경 
+#conda activate py311_env
+#uvicorn main.main:app --reload --host 0.0.0.0 --port 8080

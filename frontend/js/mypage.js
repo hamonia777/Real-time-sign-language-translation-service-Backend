@@ -345,6 +345,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return `word_learn.html?lesson_id=${item.lesson_id}`;
     }
 
+    // 26.05.06 : 가령 : 수정 내용 - 진행 중 학습 이어하기 시 기존 시도 횟수를 이어받도록 resume 플래그 추가
+    function getResumeLessonUrl(item) {
+        return `${getLessonUrl(item)}&resume=1`;
+    }
+
     function renderCompletedLearning(items, totalCount) {
         const countEl = document.getElementById('completedCount');
         const recentEl = document.getElementById('completedRecent');
@@ -417,7 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
             row.querySelector('.percent-text').textContent = `${pct}% 완료`;
             row.querySelector('.date-text').textContent = formatDate(item.updated_at);
             row.querySelector('button').addEventListener('click', () => {
-                location.href = getLessonUrl(item);
+                location.href = getResumeLessonUrl(item);
             });
             listEl.appendChild(row);
         });

@@ -56,6 +56,17 @@ class SaveResultRequestDto(BaseModel):
     attempt: int = 1
 
 
+# 26.05.06 : 가령 : 수정 내용 - 학습 페이지 진입 시 진행 중 학습으로 먼저 기록하기 위한 DTO 추가
+class StartProgressRequestDto(BaseModel):
+    lesson_id: int
+
+
+class StartProgressResponseDto(BaseModel):
+    lesson_id: int
+    status: str
+    attempt: int
+
+
 class SaveResultResponseDto(BaseModel):
     lesson_id: int
     score: float

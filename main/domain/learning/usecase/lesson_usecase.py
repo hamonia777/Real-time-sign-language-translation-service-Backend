@@ -18,6 +18,8 @@ from main.domain.learning.dto.lesson_dto import (
     SaveResultRequestDto,
     SaveResultResponseDto,
     SeedResponseDto,
+    StartProgressRequestDto,
+    StartProgressResponseDto,
     # 가령: 260422: 수정 내용 - 문장 시드 응답 DTO import
     SeedSentencesResponseDto,
     # 가령: 260422: 수정 내용 - 문장+수어어순단어 조회 응답 DTO import
@@ -176,6 +178,52 @@ class SaveResultUseCase:
             is_passed=is_passed,
             attempt=req.attempt,
             pass_threshold=PASS_THRESHOLD,
+        )
+
+
+# 26.05.06 : 가령 : 수정 내용 - 학습 시작만 해도 마이페이지 진행 중 학습에 표시되도록 기록 생성
+class StartLearningProgressUseCase:
+    def __init__(
+        self,
+        service: LessonService = Depends(),
+        progress_repo: UserLessonProgressRepository = Depends(
+            get_user_lesson_progress_repository
+        ),
+    ):
+        self.service = service
+        self.progress_repo = progress_repo
+
+    def execute(
+        self, req: StartProgressRequestDto, user_id: int
+    ) -> StartProgressResponseDto:
+        self.service.get_lesson(req.lesson_id)
+        existing = self.progress_repo.find_by_user_and_lesson(user_id, req.lesson_id)
+
+        if existing is None:
+            progress = UserLessonProgress(
+                user_id=user_id,
+                lesson_id=req.lesson_id,
+                status="in_progress",
+                attempt=0,
+                updated_at=datetime.now(),
+            )
+            saved = self.progress_repo.save(progress)
+            return StartProgressResponseDto(
+                lesson_id=req.lesson_id,
+                status=saved.status or "in_progress",
+                attempt=saved.attempt,
+            )
+
+        # 26.05.06 : 가령 : 수정 내용 - 완료된 학습은 시작 API 재호출로 진행 중 상태로 되돌리지 않음
+        if existing.status != "passed" and existing.attempt < MAX_ATTEMPTS:
+            existing.status = existing.status or "in_progress"
+            existing.updated_at = datetime.now()
+            existing = self.progress_repo.save(existing)
+
+        return StartProgressResponseDto(
+            lesson_id=req.lesson_id,
+            status=existing.status or "in_progress",
+            attempt=existing.attempt,
         )
 
 

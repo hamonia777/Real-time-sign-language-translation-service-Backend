@@ -22,6 +22,8 @@ from main.domain.learning.dto.lesson_dto import (
     SaveResultRequestDto,
     SaveResultResponseDto,
     SeedResponseDto,
+    StartProgressRequestDto,
+    StartProgressResponseDto,
     # 가령: 260422: 수정 내용 - 문장 시드 응답 DTO import
     SeedSentencesResponseDto,
     # 가령: 260422: 수정 내용 - 문장+수어어순단어 응답 DTO import
@@ -33,6 +35,7 @@ from main.domain.learning.usecase.lesson_usecase import (
     ListLessonsUseCase,
     SaveResultUseCase,
     SeedFingerspellUseCase,
+    StartLearningProgressUseCase,
     SeedWordsUseCase,
     # 가령: 260422: 수정 내용 - 문장 시드 usecase import
     SeedSentencesUseCase,
@@ -88,6 +91,16 @@ def get_my_learning_progress(
     user_id: int = Depends(get_current_user_id),
 ):
     return usecase.execute(user_id)
+
+
+# 26.05.06 : 가령 : 수정 내용 - 학습 페이지 진입 시 진행 중 학습 기록 생성 API 추가
+@router.post("/progress/start", response_model=StartProgressResponseDto)
+def start_learning_progress(
+    body: StartProgressRequestDto,
+    usecase: StartLearningProgressUseCase = Depends(),
+    user_id: int = Depends(get_current_user_id),
+):
+    return usecase.execute(body, user_id)
 
 
 # 26.4.30 : 가령 : 수정 내용 - 학습 바구니 목록 조회 엔드포인트 신규 추가

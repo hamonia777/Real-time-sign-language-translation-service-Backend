@@ -10,6 +10,8 @@ const FRAME_INTERVAL_MS = 300; // 초당 약 3프레임
 
 const params = new URLSearchParams(location.search);
 const lessonId = parseInt(params.get("lesson_id") || "0", 10);
+// 26.05.06 : 가령 : 수정 내용 - 마이페이지 진행 중 학습에서 진입한 경우 시도 횟수 이어받기
+const shouldResume = params.get("resume") === "1";
 
 const state = {
   lesson: null,
@@ -43,7 +45,54 @@ async function init() {
   document.getElementById("targetChar3").textContent = state.lesson.title;
   document.getElementById("doneChar").textContent = state.lesson.title;
 
+  await markLearningStarted();
+  await loadResumeAttempt();
   bindNav();
+}
+
+// 26.05.06 : 가령 : 수정 내용 - 학습 페이지 진입만 해도 진행 중 학습으로 DB에 기록
+async function markLearningStarted() {
+  const token = getCookie("access_token");
+  if (!token) return;
+
+  try {
+    await fetch(`${API_BASE}/progress/start`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ lesson_id: lessonId }),
+    });
+  } catch (e) {
+    console.warn("학습 시작 기록 실패", e);
+  }
+}
+
+// 26.05.06 : 가령 : 수정 내용 - 이어하기 진입 시 기존 attempt 다음 횟수부터 시작
+async function loadResumeAttempt() {
+  if (!shouldResume) return;
+  const token = getCookie("access_token");
+  if (!token) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/my-progress`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return;
+
+    const data = await res.json();
+    const progress = (data.in_progress || []).find(
+      (item) => Number(item.lesson_id) === Number(lessonId)
+    );
+    if (!progress) return;
+
+    state.attempt = Math.min((progress.attempt || 0) + 1, MAX_ATTEMPTS);
+    const attemptEl = document.getElementById("attemptLabel");
+    if (attemptEl) attemptEl.textContent = state.attempt;
+  } catch (e) {
+    console.warn("진행 상태 불러오기 실패", e);
+  }
 }
 
 function bindNav() {
@@ -202,11 +251,8 @@ function startFrameSender() {
   state.sendTimer = setInterval(() => {
     if (!state.ws || state.ws.readyState !== WebSocket.OPEN) return;
     if (!video.videoWidth) return;
-    ctx.save();
-    ctx.translate(canvas.width, 0);
-    ctx.scale(-1, 1);
+    // 26.05.06 : 가령 : 수정 내용 - 사용자 화면은 CSS로만 반전하고 서버 전송 프레임은 원본 방향 유지
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    ctx.restore();
     const b64 = canvas.toDataURL("image/jpeg", 0.6);
     state.ws.send(JSON.stringify({
       type: "frame",
