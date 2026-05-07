@@ -36,8 +36,8 @@
 .chip {
     padding: 6px 14px;
     border-radius: 999px;
-    border: 1px solid #1C4476;
-    font-weight: 500;
+    border: 0.8px solid #1C4476;
+    font-weight: 400;
     background: #FFFFFF;
     color: #1C4476;
     font-size: 11px;

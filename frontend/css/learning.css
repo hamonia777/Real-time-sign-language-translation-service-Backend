@@ -1,9 +1,22 @@
+
 .learning-main {
   padding: 40px 0 80px;
   min-height: calc(100vh - 55px);
   background: #f9fafc;
 }
 
+body.learning-page {
+    background-color: #f9fafc;
+    font-family: 'Inter', sans-serif;
+}
+body.learning-page .main-header {
+    height: 55px;
+    line-height: 55px;
+}
+
+body.learning-page .logo {
+    line-height: normal;
+}
 .learning-header {
   margin-bottom: 36px;
 }

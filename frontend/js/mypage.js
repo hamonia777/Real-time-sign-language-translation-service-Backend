@@ -362,20 +362,22 @@ document.addEventListener('DOMContentLoaded', () => {
             listEl.innerHTML = '<li class="empty-learning">완료된 학습이 없습니다.</li>';
             return;
         }
-        items.forEach(item => {
+        items.forEach((item, index) => {
+            const colIndex = index % 3; // 0, 1, 2 순으로 순환
+            const colKeys = ['fingerspell', 'word', 'sentence'];
+            const list = columns[colKeys[colIndex]];
+            if (!list) return;
+
             const li = document.createElement('li');
             li.innerHTML = `
-                <i class="check-dot"></i>
-                <span></span>
-                <span class="date"></span>
-                <button class="btn-sm" type="button">다시 학습</button>
+                <div class="flex-center"><i class="green-dot"></i><span></span></div>
+                <button class="btn-blue learn-btn" type="button">학습하기</button>
             `;
             li.querySelector('span').textContent = item.title;
-            li.querySelector('.date').textContent = formatDate(item.updated_at);
-            li.querySelector('button').addEventListener('click', () => {
+            li.querySelector('.learn-btn').addEventListener('click', () => {
                 location.href = getLessonUrl(item);
             });
-            listEl.appendChild(li);
+            list.appendChild(li);
         });
     }
 
@@ -383,7 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const countEl = document.getElementById('inProgressCount');
         const recentEl = document.getElementById('inProgressRecent');
         const listEl = document.getElementById('inProgressLearningList');
-        if (countEl) countEl.textContent = `진행 중인 학습 : ${totalCount}개 단어/문장`;
+        if (countEl) countEl.innerHTML = `진행 중인 학습 : <strong>${totalCount}개</strong> 단어/문장`;
         if (recentEl) {
             const recent = items[0];
             recentEl.textContent = recent
@@ -459,43 +461,32 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ─────────────────────────────────────────────
        1-2. 학습 바구니 DB 연동
        26.4.30 : 가령 : 수정 내용 - DB 바구니 항목을 category 기준 3열 UI로 렌더링
+       -> 26.05.06 혜미 -> 카테고리 기준에서, 가로부터 순서대로 쌓이는 형태로 변경 
        ───────────────────────────────────────────── */
     function renderLearningBasket(items) {
         const countEl = document.getElementById('basketCount');
         const gridEl = document.getElementById('basketGrid');
-        if (countEl) countEl.textContent = `학습 바구니 총 항목 : ${items.length}개`;
+        if (countEl) countEl.innerHTML = `학습 바구니 총 항목 : <strong>${items.length}개</strong>`;
         if (!gridEl) return;
 
         gridEl.innerHTML = '';
-        const groups = [
-            // 26.4.30 : 가령 : 수정 내용 - lessons.category 기준으로 지문자/단어/문장 컬럼 분리
-            { key: 'fingerspell', label: '지문자' },
-            { key: 'word', label: '단어' },
-            { key: 'sentence', label: '문장' },
-        ];
-        const columns = {};
 
-        groups.forEach(group => {
+        // 컬럼 3개 생성
+        const cols = [0, 1, 2].map(() => {
             const col = document.createElement('div');
             col.className = 'basket-col';
             const list = document.createElement('ul');
             list.className = 'item-list';
-            list.dataset.category = group.key;
             col.appendChild(list);
             gridEl.appendChild(col);
-            columns[group.key] = list;
+            return list;
         });
 
-        if (!items.length) {
-            groups.forEach(group => {
-                columns[group.key].innerHTML = '';
-            });
-            return;
-        }
+        if (!items.length) return;
 
-        items.forEach(item => {
-            const list = columns[item.category];
-            if (!list) return;
+        // 가로 우선으로 1→2→3→1→2→3 순서로 채우기
+        items.forEach((item, index) => {
+            const list = cols[index % 3];
             const li = document.createElement('li');
             li.innerHTML = `
                 <div class="flex-center"><i class="green-dot"></i><span></span></div>
@@ -506,12 +497,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 location.href = getLessonUrl(item);
             });
             list.appendChild(li);
-        });
-
-        groups.forEach(group => {
-            if (!columns[group.key].children.length) {
-                columns[group.key].innerHTML = '';
-            }
         });
     }
 

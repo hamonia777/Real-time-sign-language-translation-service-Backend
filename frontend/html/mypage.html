@@ -18,7 +18,7 @@
                 <a href="learning.html">수어학습</a>
                 <a href="search.html">수어검색</a>
                 <a href="support.html">고객지원</a>
-                <a href="mypage.html" class="active">마이페이지</a>
+                <a href="mypage.html">마이페이지</a>
             </nav>
             <button class="login-btn" id="headerAuthBtn">로그인</button>
         </div>
@@ -117,7 +117,7 @@
             <div id="tab-inprogress" class="tab-content" style="display: none;">
                 <div class="content-box no-border"> <div class="progress-tab-content">
                         <div class="summary-header">
-                            <span class="summary-title" id="inProgressCount">진행 중인 학습 : 0개 단어/문장</span>
+                            <span class="summary-title" id="inProgressCount">진행 중인 학습 : <strong id="completedCount">0개 단어/문장</span>
                             <span class="summary-recent" id="inProgressRecent">최근 진행 : 없음</span>
                         </div>
 
@@ -172,5 +172,6 @@
 
     <!-- 26.4.30 : 가령 : 수정 내용 - 마이페이지 학습 바구니 JS 캐시 갱신 -->
     <script src="../js/mypage.js?v=5"></script>
+    <script src="../js/auth.js"></script>
 </body>
 </html>
