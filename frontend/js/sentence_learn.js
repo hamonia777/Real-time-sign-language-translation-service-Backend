@@ -22,6 +22,8 @@ const shouldResume = params.get("resume") === "1";
 const state = {
   sentence: null,             // { sentence_id, sentence_title, words: [{word_order, lesson_id, title}] }
   step: 1,
+  previewWordIdx: 0,          // Step 1 단어 확인에서 넘기는 현재 단어 인덱스
+  previewVideoToken: 0,       // Step 1 영상 비동기 갱신 순서 보장용
   currentWordIdx: 0,          // Step 3 진행 중 0..words.length-1
   attempt: 1,                 // 현재 단어의 시도 횟수
   attemptSentence: 1,         // Step 4 문장 시도 횟수
@@ -84,14 +86,10 @@ async function init() {
   }
 
   state.wordScores = new Array(state.sentence.words.length).fill(0);
-  const wordOrderHtml = state.sentence.words
-    .map((w) => `${w.word_order}. ${escapeHtml(w.title)}`)
-    .join("<br>");
 
   // Step 1 화면 채우기
-  document.getElementById("sentenceBig").innerHTML = wordOrderHtml;
   document.getElementById("sentenceSide").textContent = state.sentence.sentence_title;
-  document.getElementById("wordOrderBox").innerHTML = wordOrderHtml;
+  renderPreviewWord();
 
   // Step 4 화면
   document.getElementById("targetSentence4").textContent = state.sentence.sentence_title;
@@ -148,6 +146,8 @@ async function loadResumeAttempt() {
 }
 
 function bindNav() {
+  document.getElementById("prevPreviewWord").addEventListener("click", () => movePreviewWord(-1));
+  document.getElementById("nextPreviewWord").addEventListener("click", () => movePreviewWord(1));
   document.getElementById("toStep2").addEventListener("click", () => gotoStep(2));
   document.getElementById("backTo1").addEventListener("click", () => gotoStep(1));
   document.getElementById("toStep3").addEventListener("click", () => gotoStep(3));
@@ -158,6 +158,7 @@ function bindNav() {
   document.getElementById("startSentenceRecordBtn").addEventListener("click", onStartSentenceRecord);
   document.getElementById("confirmSentenceBtn").addEventListener("click", onConfirmSentence);
   document.getElementById("retryBtn").addEventListener("click", () => {
+    state.previewWordIdx = 0;
     state.currentWordIdx = 0;
     state.attempt = 1;
     state.attemptSentence = 1;
@@ -166,6 +167,65 @@ function bindNav() {
     state.sentenceScore = 0;
     gotoStep(1);
   });
+}
+
+// 가령: 5월 11일 : 수정 내용 - Step 1 단어 확인에서 수어 어순 단어를 하나씩 넘겨 표시
+function renderPreviewWord() {
+  const words = state.sentence.words;
+  const current = words[state.previewWordIdx];
+  const total = words.length;
+
+  document.getElementById("sentenceBig").textContent = current.title;
+  document.getElementById("sentenceWordCount").textContent = `${state.previewWordIdx + 1}/${total}`;
+  document.getElementById("prevPreviewWord").disabled = state.previewWordIdx === 0;
+  document.getElementById("nextPreviewWord").disabled = state.previewWordIdx >= total - 1;
+  document.getElementById("wordOrderBox").innerHTML = words
+    .map((w, idx) => {
+      const text = `${w.word_order}. ${escapeHtml(w.title)}`;
+      return idx === state.previewWordIdx
+        ? `<span class="word-order-current">${text}</span>`
+        : text;
+    })
+    .join("<br>");
+  updatePreviewWordVideo(current);
+}
+
+function movePreviewWord(delta) {
+  const lastIdx = state.sentence.words.length - 1;
+  state.previewWordIdx = Math.max(0, Math.min(lastIdx, state.previewWordIdx + delta));
+  renderPreviewWord();
+}
+
+// 가령: 5월 11일 : 수정 내용 - 문장 단어 확인에서 현재 단어별 연결 영상 표시
+async function updatePreviewWordVideo(word) {
+  const video = document.getElementById("sentenceWordVideo");
+  const token = ++state.previewVideoToken;
+
+  if (!video || typeof resolveSignLessonVideoUrl !== "function") {
+    return;
+  }
+
+  video.pause();
+  video.removeAttribute("src");
+  video.load();
+  video.style.display = "none";
+
+  const videoUrl = await resolveSignLessonVideoUrl({
+    title: word.title,
+    video_url: word.video_url || "",
+  });
+
+  if (token !== state.previewVideoToken) return;
+  if (!videoUrl) return;
+
+  video.src = videoUrl;
+  video.style.display = "block";
+  video.load();
+  video.onerror = () => {
+    if (token === state.previewVideoToken) {
+      video.style.display = "none";
+    }
+  };
 }
 
 function gotoStep(n) {

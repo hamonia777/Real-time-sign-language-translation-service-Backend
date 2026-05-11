@@ -1,0 +1,1939 @@
+{
+  "안녕하세요": {
+    "status": "success",
+    "origin_no": 3331,
+    "path": "C:\\backend\\data\\data_set\\안녕하세요.mp4"
+  },
+  "가다": {
+    "status": "success",
+    "origin_no": 11796,
+    "path": "C:\\backend\\data\\data_set\\가다.mp4"
+  },
+  "가끔": {
+    "status": "success",
+    "origin_no": 12415,
+    "path": "C:\\backend\\data\\data_set\\가끔.mp4"
+  },
+  "가족": {
+    "status": "success",
+    "origin_no": 6770,
+    "path": "C:\\backend\\data\\data_set\\가족.mp4"
+  },
+  "가수": {
+    "status": "success",
+    "origin_no": 6401,
+    "path": "C:\\backend\\data\\data_set\\가수.mp4"
+  },
+  "저는": {
+    "status": "not_found"
+  },
+  "가르치다": {
+    "status": "success",
+    "origin_no": 11915,
+    "path": "C:\\backend\\data\\data_set\\가르치다.mp4"
+  },
+  "가을": {
+    "status": "success",
+    "origin_no": 6884,
+    "path": "C:\\backend\\data\\data_set\\가을.mp4"
+  },
+  "고등학교": {
+    "status": "success",
+    "origin_no": 7446,
+    "path": "C:\\backend\\data\\data_set\\고등학교.mp4"
+  },
+  "간호사": {
+    "status": "success",
+    "origin_no": 14094,
+    "path": "C:\\backend\\data\\data_set\\간호사.mp4"
+  },
+  "입니다": {
+    "status": "success",
+    "origin_no": 16648,
+    "path": "C:\\backend\\data\\data_set\\입니다.mp4"
+  },
+  "가방": {
+    "status": "success",
+    "origin_no": 6361,
+    "path": "C:\\backend\\data\\data_set\\가방.mp4"
+  },
+  "가져가다": {
+    "status": "success",
+    "origin_no": 23826,
+    "path": "C:\\backend\\data\\data_set\\가져가다.mp4"
+  },
+  "공원": {
+    "status": "success",
+    "origin_no": 4462,
+    "path": "C:\\backend\\data\\data_set\\공원.mp4"
+  },
+  "강": {
+    "status": "success",
+    "origin_no": 8511,
+    "path": "C:\\backend\\data\\data_set\\강.mp4"
+  },
+  "감사합니다": {
+    "status": "success",
+    "origin_no": 2372,
+    "path": "C:\\backend\\data\\data_set\\감사합니다.mp4"
+  },
+  "괜찮다": {
+    "status": "success",
+    "origin_no": 9466,
+    "path": "C:\\backend\\data\\data_set\\괜찮다.mp4"
+  },
+  "감기": {
+    "status": "success",
+    "origin_no": 8833,
+    "path": "C:\\backend\\data\\data_set\\감기.mp4"
+  },
+  "과일": {
+    "status": "success",
+    "origin_no": 5943,
+    "path": "C:\\backend\\data\\data_set\\과일.mp4"
+  },
+  "거래": {
+    "status": "success",
+    "origin_no": 9367,
+    "path": "C:\\backend\\data\\data_set\\거래.mp4"
+  },
+  "질문": {
+    "status": "success",
+    "origin_no": 11634,
+    "path": "C:\\backend\\data\\data_set\\질문.mp4"
+  },
+  "귀엽다": {
+    "status": "success",
+    "origin_no": 28,
+    "path": "C:\\backend\\data\\data_set\\귀엽다.mp4"
+  },
+  "겨울": {
+    "status": "success",
+    "origin_no": 740,
+    "path": "C:\\backend\\data\\data_set\\겨울.mp4"
+  },
+  "교실": {
+    "status": "success",
+    "origin_no": 6305,
+    "path": "C:\\backend\\data\\data_set\\교실.mp4"
+  },
+  "건강": {
+    "status": "success",
+    "origin_no": 8517,
+    "path": "C:\\backend\\data\\data_set\\건강.mp4"
+  },
+  "다시": {
+    "status": "success",
+    "origin_no": 7422,
+    "path": "C:\\backend\\data\\data_set\\다시.mp4"
+  },
+  "기다리다": {
+    "status": "success",
+    "origin_no": 7336,
+    "path": "C:\\backend\\data\\data_set\\기다리다.mp4"
+  },
+  "겪다": {
+    "status": "success",
+    "origin_no": 6767,
+    "path": "C:\\backend\\data\\data_set\\겪다.mp4"
+  },
+  "국가": {
+    "status": "success",
+    "origin_no": 1703,
+    "path": "C:\\backend\\data\\data_set\\국가.mp4"
+  },
+  "검토": {
+    "status": "success",
+    "origin_no": 12468,
+    "path": "C:\\backend\\data\\data_set\\검토.mp4"
+  },
+  "이해": {
+    "status": "success",
+    "origin_no": 5993,
+    "path": "C:\\backend\\data\\data_set\\이해.mp4"
+  },
+  "기쁘다": {
+    "status": "success",
+    "origin_no": 3874,
+    "path": "C:\\backend\\data\\data_set\\기쁘다.mp4"
+  },
+  "계절": {
+    "status": "success",
+    "origin_no": 12437,
+    "path": "C:\\backend\\data\\data_set\\계절.mp4"
+  },
+  "그림": {
+    "status": "success",
+    "origin_no": 12907,
+    "path": "C:\\backend\\data\\data_set\\그림.mp4"
+  },
+  "토론": {
+    "status": "success",
+    "origin_no": 10532,
+    "path": "C:\\backend\\data\\data_set\\토론.mp4"
+  },
+  "맞다": {
+    "status": "success",
+    "origin_no": 1768,
+    "path": "C:\\backend\\data\\data_set\\맞다.mp4"
+  },
+  "끝나다": {
+    "status": "success",
+    "origin_no": 8729,
+    "path": "C:\\backend\\data\\data_set\\끝나다.mp4"
+  },
+  "공부": {
+    "status": "success",
+    "origin_no": 3794,
+    "path": "C:\\backend\\data\\data_set\\공부.mp4"
+  },
+  "기차": {
+    "status": "success",
+    "origin_no": 2760,
+    "path": "C:\\backend\\data\\data_set\\기차.mp4"
+  },
+  "결산": {
+    "status": "success",
+    "origin_no": 12432,
+    "path": "C:\\backend\\data\\data_set\\결산.mp4"
+  },
+  "말씀": {
+    "status": "success",
+    "origin_no": 11074,
+    "path": "C:\\backend\\data\\data_set\\말씀.mp4"
+  },
+  "나중에": {
+    "status": "not_found"
+  },
+  "교수": {
+    "status": "success",
+    "origin_no": 6303,
+    "path": "C:\\backend\\data\\data_set\\교수.mp4"
+  },
+  "꽃": {
+    "status": "success",
+    "origin_no": 1529,
+    "path": "C:\\backend\\data\\data_set\\꽃.mp4"
+  },
+  "결제": {
+    "status": "success",
+    "origin_no": 6621,
+    "path": "C:\\backend\\data\\data_set\\결제.mp4"
+  },
+  "틀리다": {
+    "status": "success",
+    "origin_no": 11495,
+    "path": "C:\\backend\\data\\data_set\\틀리다.mp4"
+  },
+  "날씨": {
+    "status": "not_found"
+  },
+  "그냥": {
+    "status": "success",
+    "origin_no": 23922,
+    "path": "C:\\backend\\data\\data_set\\그냥.mp4"
+  },
+  "나라": {
+    "status": "success",
+    "origin_no": 11,
+    "path": "C:\\backend\\data\\data_set\\나라.mp4"
+  },
+  "경찰": {
+    "status": "success",
+    "origin_no": 6891,
+    "path": "C:\\backend\\data\\data_set\\경찰.mp4"
+  },
+  "반갑습니다": {
+    "status": "not_found"
+  },
+  "남동생": {
+    "status": "success",
+    "origin_no": 6903,
+    "path": "C:\\backend\\data\\data_set\\남동생.mp4"
+  },
+  "근로자": {
+    "status": "success",
+    "origin_no": 2062,
+    "path": "C:\\backend\\data\\data_set\\근로자.mp4"
+  },
+  "숲": {
+    "status": "success",
+    "origin_no": 6572,
+    "path": "C:\\backend\\data\\data_set\\숲.mp4"
+  },
+  "계약": {
+    "status": "success",
+    "origin_no": 2155,
+    "path": "C:\\backend\\data\\data_set\\계약.mp4"
+  },
+  "모르다": {
+    "status": "success",
+    "origin_no": 11931,
+    "path": "C:\\backend\\data\\data_set\\모르다.mp4"
+  },
+  "내일": {
+    "status": "success",
+    "origin_no": 6442,
+    "path": "C:\\backend\\data\\data_set\\내일.mp4"
+  },
+  "근무하다": {
+    "status": "not_found"
+  },
+  "남편": {
+    "status": "success",
+    "origin_no": 6618,
+    "path": "C:\\backend\\data\\data_set\\남편.mp4"
+  },
+  "공유": {
+    "status": "success",
+    "origin_no": 15309,
+    "path": "C:\\backend\\data\\data_set\\공유.mp4"
+  },
+  "좋다": {
+    "status": "success",
+    "origin_no": 9078,
+    "path": "C:\\backend\\data\\data_set\\좋다.mp4"
+  },
+  "년": {
+    "status": "success",
+    "origin_no": 11559,
+    "path": "C:\\backend\\data\\data_set\\년.mp4"
+  },
+  "기능": {
+    "status": "success",
+    "origin_no": 291,
+    "path": "C:\\backend\\data\\data_set\\기능.mp4"
+  },
+  "냉장고": {
+    "status": "success",
+    "origin_no": 6449,
+    "path": "C:\\backend\\data\\data_set\\냉장고.mp4"
+  },
+  "과학자": {
+    "status": "success",
+    "origin_no": 3890,
+    "path": "C:\\backend\\data\\data_set\\과학자.mp4"
+  },
+  "적다": {
+    "status": "success",
+    "origin_no": 24704,
+    "path": "C:\\backend\\data\\data_set\\적다.mp4"
+  },
+  "누구": {
+    "status": "success",
+    "origin_no": 5394,
+    "path": "C:\\backend\\data\\data_set\\누구.mp4"
+  },
+  "기분": {
+    "status": "success",
+    "origin_no": 9360,
+    "path": "C:\\backend\\data\\data_set\\기분.mp4"
+  },
+  "노래": {
+    "status": "success",
+    "origin_no": 5520,
+    "path": "C:\\backend\\data\\data_set\\노래.mp4"
+  },
+  "광고": {
+    "status": "success",
+    "origin_no": 10477,
+    "path": "C:\\backend\\data\\data_set\\광고.mp4"
+  },
+  "많다": {
+    "status": "failed",
+    "origin_no": 6094,
+    "error": "ConnectTimeout(MaxRetryError(\"HTTPSConnectionPool(host='sldict.korean.go.kr', port=443): Max retries exceeded with url: /multimedia/multimedia_files/convert/20191011/626588/MOV000252367_700X466.webm (Caused by ConnectTimeoutError(<HTTPSConnection(host='sldict.korean.go.kr', port=443) at 0x1b127417f90>, 'Connection to sldict.korean.go.kr timed out. (connect timeout=60)'))\"))"
+  },
+  "도서관": {
+    "status": "success",
+    "origin_no": 5565,
+    "path": "C:\\backend\\data\\data_set\\도서관.mp4"
+  },
+  "기침": {
+    "status": "success",
+    "origin_no": 11518,
+    "path": "C:\\backend\\data\\data_set\\기침.mp4"
+  },
+  "동물원": {
+    "status": "success",
+    "origin_no": 6899,
+    "path": "C:\\backend\\data\\data_set\\동물원.mp4"
+  },
+  "구름": {
+    "status": "success",
+    "origin_no": 7297,
+    "path": "C:\\backend\\data\\data_set\\구름.mp4"
+  },
+  "싫다": {
+    "status": "success",
+    "origin_no": 23960,
+    "path": "C:\\backend\\data\\data_set\\싫다.mp4"
+  },
+  "돈": {
+    "status": "success",
+    "origin_no": 6544,
+    "path": "C:\\backend\\data\\data_set\\돈.mp4"
+  },
+  "딸": {
+    "status": "success",
+    "origin_no": 6756,
+    "path": "C:\\backend\\data\\data_set\\딸.mp4"
+  },
+  "군인": {
+    "status": "success",
+    "origin_no": 8505,
+    "path": "C:\\backend\\data\\data_set\\군인.mp4"
+  },
+  "돕다": {
+    "status": "success",
+    "origin_no": 5447,
+    "path": "C:\\backend\\data\\data_set\\돕다.mp4"
+  },
+  "나누다": {
+    "status": "success",
+    "origin_no": 12411,
+    "path": "C:\\backend\\data\\data_set\\나누다.mp4"
+  },
+  "마을": {
+    "status": "success",
+    "origin_no": 10341,
+    "path": "C:\\backend\\data\\data_set\\마을.mp4"
+  },
+  "귀": {
+    "status": "success",
+    "origin_no": 3706,
+    "path": "C:\\backend\\data\\data_set\\귀.mp4"
+  },
+  "뒤쪽": {
+    "status": "success",
+    "origin_no": 10313,
+    "path": "C:\\backend\\data\\data_set\\뒤쪽.mp4"
+  },
+  "내용": {
+    "status": "success",
+    "origin_no": 11147,
+    "path": "C:\\backend\\data\\data_set\\내용.mp4"
+  },
+  "문화": {
+    "status": "success",
+    "origin_no": 1509,
+    "path": "C:\\backend\\data\\data_set\\문화.mp4"
+  },
+  "기자": {
+    "status": "success",
+    "origin_no": 2122,
+    "path": "C:\\backend\\data\\data_set\\기자.mp4"
+  },
+  "듣다": {
+    "status": "success",
+    "origin_no": 6417,
+    "path": "C:\\backend\\data\\data_set\\듣다.mp4"
+  },
+  "넷": {
+    "status": "success",
+    "origin_no": 12528,
+    "path": "C:\\backend\\data\\data_set\\넷.mp4"
+  },
+  "바람": {
+    "status": "success",
+    "origin_no": 2116,
+    "path": "C:\\backend\\data\\data_set\\바람.mp4"
+  },
+  "긴장": {
+    "status": "success",
+    "origin_no": 14227,
+    "path": "C:\\backend\\data\\data_set\\긴장.mp4"
+  },
+  "뜨겁다": {
+    "status": "success",
+    "origin_no": 7491,
+    "path": "C:\\backend\\data\\data_set\\뜨겁다.mp4"
+  },
+  "농인": {
+    "status": "success",
+    "origin_no": 11016,
+    "path": "C:\\backend\\data\\data_set\\농인.mp4"
+  },
+  "버스": {
+    "status": "success",
+    "origin_no": 11656,
+    "path": "C:\\backend\\data\\data_set\\버스.mp4"
+  },
+  "나무": {
+    "status": "success",
+    "origin_no": 2908,
+    "path": "C:\\backend\\data\\data_set\\나무.mp4"
+  },
+  "마시다": {
+    "status": "success",
+    "origin_no": 6277,
+    "path": "C:\\backend\\data\\data_set\\마시다.mp4"
+  },
+  "다르다": {
+    "status": "success",
+    "origin_no": 7363,
+    "path": "C:\\backend\\data\\data_set\\다르다.mp4"
+  },
+  "비행기": {
+    "status": "success",
+    "origin_no": 5545,
+    "path": "C:\\backend\\data\\data_set\\비행기.mp4"
+  },
+  "농부": {
+    "status": "success",
+    "origin_no": 6229,
+    "path": "C:\\backend\\data\\data_set\\농부.mp4"
+  },
+  "매일": {
+    "status": "success",
+    "origin_no": 23866,
+    "path": "C:\\backend\\data\\data_set\\매일.mp4"
+  },
+  "다섯": {
+    "status": "success",
+    "origin_no": 11055,
+    "path": "C:\\backend\\data\\data_set\\다섯.mp4"
+  },
+  "사람": {
+    "status": "success",
+    "origin_no": 8239,
+    "path": "C:\\backend\\data\\data_set\\사람.mp4"
+  },
+  "감속": {
+    "status": "success",
+    "origin_no": 13539,
+    "path": "C:\\backend\\data\\data_set\\감속.mp4"
+  },
+  "먹다": {
+    "status": "success",
+    "origin_no": 10419,
+    "path": "C:\\backend\\data\\data_set\\먹다.mp4"
+  },
+  "답변": {
+    "status": "not_found"
+  },
+  "사진": {
+    "status": "success",
+    "origin_no": 4942,
+    "path": "C:\\backend\\data\\data_set\\사진.mp4"
+  },
+  "눈": {
+    "status": "success",
+    "origin_no": 3942,
+    "path": "C:\\backend\\data\\data_set\\눈.mp4"
+  },
+  "물": {
+    "status": "success",
+    "origin_no": 10981,
+    "path": "C:\\backend\\data\\data_set\\물.mp4"
+  },
+  "대학교": {
+    "status": "success",
+    "origin_no": 6212,
+    "path": "C:\\backend\\data\\data_set\\대학교.mp4"
+  },
+  "색깔": {
+    "status": "success",
+    "origin_no": 5582,
+    "path": "C:\\backend\\data\\data_set\\색깔.mp4"
+  },
+  "다리": {
+    "status": "success",
+    "origin_no": 11572,
+    "path": "C:\\backend\\data\\data_set\\다리.mp4"
+  },
+  "바다": {
+    "status": "success",
+    "origin_no": 11878,
+    "path": "C:\\backend\\data\\data_set\\바다.mp4"
+  },
+  "대회": {
+    "status": "success",
+    "origin_no": 6216,
+    "path": "C:\\backend\\data\\data_set\\대회.mp4"
+  },
+  "생일": {
+    "status": "success",
+    "origin_no": 2848,
+    "path": "C:\\backend\\data\\data_set\\생일.mp4"
+  },
+  "다행": {
+    "status": "success",
+    "origin_no": 6376,
+    "path": "C:\\backend\\data\\data_set\\다행.mp4"
+  },
+  "받다": {
+    "status": "success",
+    "origin_no": 23875,
+    "path": "C:\\backend\\data\\data_set\\받다.mp4"
+  },
+  "데이터": {
+    "status": "success",
+    "origin_no": 15365,
+    "path": "C:\\backend\\data\\data_set\\데이터.mp4"
+  },
+  "선물": {
+    "status": "success",
+    "origin_no": 6257,
+    "path": "C:\\backend\\data\\data_set\\선물.mp4"
+  },
+  "다정": {
+    "status": "success",
+    "origin_no": 11575,
+    "path": "C:\\backend\\data\\data_set\\다정.mp4"
+  },
+  "배우다": {
+    "status": "success",
+    "origin_no": 9131,
+    "path": "C:\\backend\\data\\data_set\\배우다.mp4"
+  },
+  "도움": {
+    "status": "success",
+    "origin_no": 5447,
+    "path": "C:\\backend\\data\\data_set\\도움.mp4"
+  },
+  "세계": {
+    "status": "success",
+    "origin_no": 10119,
+    "path": "C:\\backend\\data\\data_set\\세계.mp4"
+  },
+  "당황": {
+    "status": "success",
+    "origin_no": 7372,
+    "path": "C:\\backend\\data\\data_set\\당황.mp4"
+  },
+  "병원": {
+    "status": "success",
+    "origin_no": 10964,
+    "path": "C:\\backend\\data\\data_set\\병원.mp4"
+  },
+  "도입": {
+    "status": "success",
+    "origin_no": 722,
+    "path": "C:\\backend\\data\\data_set\\도입.mp4"
+  },
+  "소리": {
+    "status": "success",
+    "origin_no": 19780,
+    "path": "C:\\backend\\data\\data_set\\소리.mp4"
+  },
+  "대출금": {
+    "status": "success",
+    "origin_no": 2045,
+    "path": "C:\\backend\\data\\data_set\\대출금.mp4"
+  },
+  "보다": {
+    "status": "success",
+    "origin_no": 6437,
+    "path": "C:\\backend\\data\\data_set\\보다.mp4"
+  },
+  "둘": {
+    "status": "success",
+    "origin_no": 7459,
+    "path": "C:\\backend\\data\\data_set\\둘.mp4"
+  },
+  "숫자": {
+    "status": "success",
+    "origin_no": 5670,
+    "path": "C:\\backend\\data\\data_set\\숫자.mp4"
+  },
+  "동굴": {
+    "status": "success",
+    "origin_no": 14170,
+    "path": "C:\\backend\\data\\data_set\\동굴.mp4"
+  },
+  "빌리다": {
+    "status": "success",
+    "origin_no": 11531,
+    "path": "C:\\backend\\data\\data_set\\빌리다.mp4"
+  },
+  "노트북": {
+    "status": "success",
+    "origin_no": 5563,
+    "path": "C:\\backend\\data\\data_set\\노트북.mp4"
+  },
+  "만족": {
+    "status": "success",
+    "origin_no": 10402,
+    "path": "C:\\backend\\data\\data_set\\만족.mp4"
+  },
+  "빵": {
+    "status": "success",
+    "origin_no": 6480,
+    "path": "C:\\backend\\data\\data_set\\빵.mp4"
+  },
+  "뛰어나다": {
+    "status": "success",
+    "origin_no": 10375,
+    "path": "C:\\backend\\data\\data_set\\뛰어나다.mp4"
+  },
+  "시험": {
+    "status": "success",
+    "origin_no": 12,
+    "path": "C:\\backend\\data\\data_set\\시험.mp4"
+  },
+  "머리": {
+    "status": "success",
+    "origin_no": 11602,
+    "path": "C:\\backend\\data\\data_set\\머리.mp4"
+  },
+  "사과": {
+    "status": "success",
+    "origin_no": 11864,
+    "path": "C:\\backend\\data\\data_set\\사과.mp4"
+  },
+  "마지막": {
+    "status": "success",
+    "origin_no": 9376,
+    "path": "C:\\backend\\data\\data_set\\마지막.mp4"
+  },
+  "아들": {
+    "status": "success",
+    "origin_no": 8127,
+    "path": "C:\\backend\\data\\data_set\\아들.mp4"
+  },
+  "무릎": {
+    "status": "success",
+    "origin_no": 4529,
+    "path": "C:\\backend\\data\\data_set\\무릎.mp4"
+  },
+  "사다": {
+    "status": "success",
+    "origin_no": 11478,
+    "path": "C:\\backend\\data\\data_set\\사다.mp4"
+  },
+  "만나다": {
+    "status": "success",
+    "origin_no": 12165,
+    "path": "C:\\backend\\data\\data_set\\만나다.mp4"
+  },
+  "아이": {
+    "status": "success",
+    "origin_no": 10943,
+    "path": "C:\\backend\\data\\data_set\\아이.mp4"
+  },
+  "무섭다": {
+    "status": "success",
+    "origin_no": 10967,
+    "path": "C:\\backend\\data\\data_set\\무섭다.mp4"
+  },
+  "산": {
+    "status": "success",
+    "origin_no": 10690,
+    "path": "C:\\backend\\data\\data_set\\산.mp4"
+  },
+  "말하다": {
+    "status": "success",
+    "origin_no": 6135,
+    "path": "C:\\backend\\data\\data_set\\말하다.mp4"
+  },
+  "아내": {
+    "status": "success",
+    "origin_no": 3017,
+    "path": "C:\\backend\\data\\data_set\\아내.mp4"
+  },
+  "무지개": {
+    "status": "success",
+    "origin_no": 5344,
+    "path": "C:\\backend\\data\\data_set\\무지개.mp4"
+  },
+  "선생님": {
+    "status": "success",
+    "origin_no": 16706,
+    "path": "C:\\backend\\data\\data_set\\선생님.mp4"
+  },
+  "약속": {
+    "status": "success",
+    "origin_no": 12710,
+    "path": "C:\\backend\\data\\data_set\\약속.mp4"
+  },
+  "미용사": {
+    "status": "success",
+    "origin_no": 6300,
+    "path": "C:\\backend\\data\\data_set\\미용사.mp4"
+  },
+  "쉽다": {
+    "status": "success",
+    "origin_no": 6574,
+    "path": "C:\\backend\\data\\data_set\\쉽다.mp4"
+  },
+  "맡다": {
+    "status": "success",
+    "origin_no": 561,
+    "path": "C:\\backend\\data\\data_set\\맡다.mp4"
+  },
+  "얼굴": {
+    "status": "success",
+    "origin_no": 8407,
+    "path": "C:\\backend\\data\\data_set\\얼굴.mp4"
+  },
+  "바위": {
+    "status": "not_found"
+  },
+  "슬프다": {
+    "status": "success",
+    "origin_no": 7240,
+    "path": "C:\\backend\\data\\data_set\\슬프다.mp4"
+  },
+  "멈추다": {
+    "status": "success",
+    "origin_no": 11916,
+    "path": "C:\\backend\\data\\data_set\\멈추다.mp4"
+  },
+  "영화": {
+    "status": "success",
+    "origin_no": 7145,
+    "path": "C:\\backend\\data\\data_set\\영화.mp4"
+  },
+  "반려": {
+    "status": "success",
+    "origin_no": 2688,
+    "path": "C:\\backend\\data\\data_set\\반려.mp4"
+  },
+  "시간": {
+    "status": "success",
+    "origin_no": 24028,
+    "path": "C:\\backend\\data\\data_set\\시간.mp4"
+  },
+  "문제": {
+    "status": "success",
+    "origin_no": 7320,
+    "path": "C:\\backend\\data\\data_set\\문제.mp4"
+  },
+  "발": {
+    "status": "success",
+    "origin_no": 1303,
+    "path": "C:\\backend\\data\\data_set\\발.mp4"
+  },
+  "식당": {
+    "status": "success",
+    "origin_no": 6970,
+    "path": "C:\\backend\\data\\data_set\\식당.mp4"
+  },
+  "바꾸다": {
+    "status": "success",
+    "origin_no": 6675,
+    "path": "C:\\backend\\data\\data_set\\바꾸다.mp4"
+  },
+  "의사": {
+    "status": "success",
+    "origin_no": 7711,
+    "path": "C:\\backend\\data\\data_set\\의사.mp4"
+  },
+  "쌀밥": {
+    "status": "success",
+    "origin_no": 5225,
+    "path": "C:\\backend\\data\\data_set\\쌀밥.mp4"
+  },
+  "신발": {
+    "status": "success",
+    "origin_no": 6042,
+    "path": "C:\\backend\\data\\data_set\\신발.mp4"
+  },
+  "발표": {
+    "status": "success",
+    "origin_no": 10477,
+    "path": "C:\\backend\\data\\data_set\\발표.mp4"
+  },
+  "의자": {
+    "status": "success",
+    "origin_no": 10887,
+    "path": "C:\\backend\\data\\data_set\\의자.mp4"
+  },
+  "번개": {
+    "status": "success",
+    "origin_no": 5632,
+    "path": "C:\\backend\\data\\data_set\\번개.mp4"
+  },
+  "방법": {
+    "status": "success",
+    "origin_no": 8385,
+    "path": "C:\\backend\\data\\data_set\\방법.mp4"
+  },
+  "이름": {
+    "status": "success",
+    "origin_no": 7059,
+    "path": "C:\\backend\\data\\data_set\\이름.mp4"
+  },
+  "법률": {
+    "status": "success",
+    "origin_no": 6561,
+    "path": "C:\\backend\\data\\data_set\\법률.mp4"
+  },
+  "씻다": {
+    "status": "success",
+    "origin_no": 23897,
+    "path": "C:\\backend\\data\\data_set\\씻다.mp4"
+  },
+  "법원": {
+    "status": "success",
+    "origin_no": 6603,
+    "path": "C:\\backend\\data\\data_set\\법원.mp4"
+  },
+  "승용차": {
+    "status": "success",
+    "origin_no": 6956,
+    "path": "C:\\backend\\data\\data_set\\승용차.mp4"
+  },
+  "변호사": {
+    "status": "success",
+    "origin_no": 5505,
+    "path": "C:\\backend\\data\\data_set\\변호사.mp4"
+  },
+  "아버지": {
+    "status": "success",
+    "origin_no": 3157,
+    "path": "C:\\backend\\data\\data_set\\아버지.mp4"
+  },
+  "변화": {
+    "status": "success",
+    "origin_no": 5504,
+    "path": "C:\\backend\\data\\data_set\\변화.mp4"
+  },
+  "장소": {
+    "status": "success",
+    "origin_no": 4053,
+    "path": "C:\\backend\\data\\data_set\\장소.mp4"
+  },
+  "별": {
+    "status": "failed",
+    "origin_no": 6163,
+    "error": "video src not found"
+  },
+  "아침": {
+    "status": "success",
+    "origin_no": 2231,
+    "path": "C:\\backend\\data\\data_set\\아침.mp4"
+  },
+  "봄": {
+    "status": "success",
+    "origin_no": 7842,
+    "path": "C:\\backend\\data\\data_set\\봄.mp4"
+  },
+  "전공": {
+    "status": "success",
+    "origin_no": 4944,
+    "path": "C:\\backend\\data\\data_set\\전공.mp4"
+  },
+  "보안": {
+    "status": "success",
+    "origin_no": 11436,
+    "path": "C:\\backend\\data\\data_set\\보안.mp4"
+  },
+  "아프다": {
+    "status": "success",
+    "origin_no": 11229,
+    "path": "C:\\backend\\data\\data_set\\아프다.mp4"
+  },
+  "정보": {
+    "status": "success",
+    "origin_no": 3840,
+    "path": "C:\\backend\\data\\data_set\\정보.mp4"
+  },
+  "복구": {
+    "status": "success",
+    "origin_no": 24705,
+    "path": "C:\\backend\\data\\data_set\\복구.mp4"
+  },
+  "안경": {
+    "status": "success",
+    "origin_no": 7000,
+    "path": "C:\\backend\\data\\data_set\\안경.mp4"
+  },
+  "사전": {
+    "status": "success",
+    "origin_no": 7927,
+    "path": "C:\\backend\\data\\data_set\\사전.mp4"
+  },
+  "종이": {
+    "status": "success",
+    "origin_no": 5125,
+    "path": "C:\\backend\\data\\data_set\\종이.mp4"
+  },
+  "복지": {
+    "status": "success",
+    "origin_no": 5062,
+    "path": "C:\\backend\\data\\data_set\\복지.mp4"
+  },
+  "앞": {
+    "status": "success",
+    "origin_no": 8144,
+    "path": "C:\\backend\\data\\data_set\\앞.mp4"
+  },
+  "상": {
+    "status": "success",
+    "origin_no": 7898,
+    "path": "C:\\backend\\data\\data_set\\상.mp4"
+  },
+  "지역": {
+    "status": "success",
+    "origin_no": 8635,
+    "path": "C:\\backend\\data\\data_set\\지역.mp4"
+  },
+  "부끄럽다": {
+    "status": "success",
+    "origin_no": 12013,
+    "path": "C:\\backend\\data\\data_set\\부끄럽다.mp4"
+  },
+  "약": {
+    "status": "success",
+    "origin_no": 11990,
+    "path": "C:\\backend\\data\\data_set\\약.mp4"
+  },
+  "상식": {
+    "status": "success",
+    "origin_no": 7946,
+    "path": "C:\\backend\\data\\data_set\\상식.mp4"
+  },
+  "직업": {
+    "status": "success",
+    "origin_no": 253,
+    "path": "C:\\backend\\data\\data_set\\직업.mp4"
+  },
+  "부럽다": {
+    "status": "success",
+    "origin_no": 9167,
+    "path": "C:\\backend\\data\\data_set\\부럽다.mp4"
+  },
+  "약국": {
+    "status": "success",
+    "origin_no": 7016,
+    "path": "C:\\backend\\data\\data_set\\약국.mp4"
+  },
+  "새롭다": {
+    "status": "success",
+    "origin_no": 12919,
+    "path": "C:\\backend\\data\\data_set\\새롭다.mp4"
+  },
+  "부서": {
+    "status": "success",
+    "origin_no": 6856,
+    "path": "C:\\backend\\data\\data_set\\부서.mp4"
+  },
+  "어디": {
+    "status": "success",
+    "origin_no": 8799,
+    "path": "C:\\backend\\data\\data_set\\어디.mp4"
+  },
+  "셋": {
+    "status": "success",
+    "origin_no": 3956,
+    "path": "C:\\backend\\data\\data_set\\셋.mp4"
+  },
+  "책상": {
+    "status": "success",
+    "origin_no": 8637,
+    "path": "C:\\backend\\data\\data_set\\책상.mp4"
+  },
+  "비": {
+    "status": "success",
+    "origin_no": 6463,
+    "path": "C:\\backend\\data\\data_set\\비.mp4"
+  },
+  "어떻게": {
+    "status": "success",
+    "origin_no": 7256,
+    "path": "C:\\backend\\data\\data_set\\어떻게.mp4"
+  },
+  "소개": {
+    "status": "success",
+    "origin_no": 10533,
+    "path": "C:\\backend\\data\\data_set\\소개.mp4"
+  },
+  "텔레비전": {
+    "status": "success",
+    "origin_no": 131,
+    "path": "C:\\backend\\data\\data_set\\텔레비전.mp4"
+  },
+  "사장": {
+    "status": "success",
+    "origin_no": 1160,
+    "path": "C:\\backend\\data\\data_set\\사장.mp4"
+  },
+  "어렵다": {
+    "status": "success",
+    "origin_no": 437,
+    "path": "C:\\backend\\data\\data_set\\어렵다.mp4"
+  },
+  "수어": {
+    "status": "success",
+    "origin_no": 11290,
+    "path": "C:\\backend\\data\\data_set\\수어.mp4"
+  },
+  "서운하다": {
+    "status": "success",
+    "origin_no": 12160,
+    "path": "C:\\backend\\data\\data_set\\서운하다.mp4"
+  },
+  "어머니": {
+    "status": "success",
+    "origin_no": 8214,
+    "path": "C:\\backend\\data\\data_set\\어머니.mp4"
+  },
+  "순서": {
+    "status": "success",
+    "origin_no": 10762,
+    "path": "C:\\backend\\data\\data_set\\순서.mp4"
+  },
+  "학생": {
+    "status": "success",
+    "origin_no": 1362,
+    "path": "C:\\backend\\data\\data_set\\학생.mp4"
+  },
+  "설명": {
+    "status": "success",
+    "origin_no": 10720,
+    "path": "C:\\backend\\data\\data_set\\설명.mp4"
+  },
+  "어제": {
+    "status": "success",
+    "origin_no": 8218,
+    "path": "C:\\backend\\data\\data_set\\어제.mp4"
+  },
+  "쉬다": {
+    "status": "success",
+    "origin_no": 6573,
+    "path": "C:\\backend\\data\\data_set\\쉬다.mp4"
+  },
+  "휴일": {
+    "status": "success",
+    "origin_no": 2364,
+    "path": "C:\\backend\\data\\data_set\\휴일.mp4"
+  },
+  "섬": {
+    "status": "success",
+    "origin_no": 2589,
+    "path": "C:\\backend\\data\\data_set\\섬.mp4"
+  },
+  "언니": {
+    "status": "success",
+    "origin_no": 8400,
+    "path": "C:\\backend\\data\\data_set\\언니.mp4"
+  },
+  "실시간": {
+    "status": "success",
+    "origin_no": 15587,
+    "path": "C:\\backend\\data\\data_set\\실시간.mp4"
+  },
+  "걷다": {
+    "status": "success",
+    "origin_no": 3762,
+    "path": "C:\\backend\\data\\data_set\\걷다.mp4"
+  },
+  "세금": {
+    "status": "success",
+    "origin_no": 7782,
+    "path": "C:\\backend\\data\\data_set\\세금.mp4"
+  },
+  "언제": {
+    "status": "success",
+    "origin_no": 12723,
+    "path": "C:\\backend\\data\\data_set\\언제.mp4"
+  },
+  "고르다": {
+    "status": "success",
+    "origin_no": 1851,
+    "path": "C:\\backend\\data\\data_set\\고르다.mp4"
+  },
+  "소방원": {
+    "status": "success",
+    "origin_no": 2858,
+    "path": "C:\\backend\\data\\data_set\\소방원.mp4"
+  },
+  "여기": {
+    "status": "success",
+    "origin_no": 8472,
+    "path": "C:\\backend\\data\\data_set\\여기.mp4"
+  },
+  "아니다": {
+    "status": "success",
+    "origin_no": 11433,
+    "path": "C:\\backend\\data\\data_set\\아니다.mp4"
+  },
+  "손": {
+    "status": "success",
+    "origin_no": 12255,
+    "path": "C:\\backend\\data\\data_set\\손.mp4"
+  },
+  "여동생": {
+    "status": "success",
+    "origin_no": 8473,
+    "path": "C:\\backend\\data\\data_set\\여동생.mp4"
+  },
+  "아홉": {
+    "status": "success",
+    "origin_no": 11315,
+    "path": "C:\\backend\\data\\data_set\\아홉.mp4"
+  },
+  "그리다": {
+    "status": "success",
+    "origin_no": 12907,
+    "path": "C:\\backend\\data\\data_set\\그리다.mp4"
+  },
+  "송금": {
+    "status": "success",
+    "origin_no": 21521,
+    "path": "C:\\backend\\data\\data_set\\송금.mp4"
+  },
+  "역": {
+    "status": "success",
+    "origin_no": 8368,
+    "path": "C:\\backend\\data\\data_set\\역.mp4"
+  },
+  "알레르기": {
+    "status": "success",
+    "origin_no": 14672,
+    "path": "C:\\backend\\data\\data_set\\알레르기.mp4"
+  },
+  "수술": {
+    "status": "success",
+    "origin_no": 6556,
+    "path": "C:\\backend\\data\\data_set\\수술.mp4"
+  },
+  "옆": {
+    "status": "success",
+    "origin_no": 5580,
+    "path": "C:\\backend\\data\\data_set\\옆.mp4"
+  },
+  "여덟": {
+    "status": "success",
+    "origin_no": 11419,
+    "path": "C:\\backend\\data\\data_set\\여덟.mp4"
+  },
+  "넣다": {
+    "status": "success",
+    "origin_no": 6631,
+    "path": "C:\\backend\\data\\data_set\\넣다.mp4"
+  },
+  "마음": {
+    "status": "success",
+    "origin_no": 6280,
+    "path": "C:\\backend\\data\\data_set\\마음.mp4"
+  },
+  "예쁘다": {
+    "status": "success",
+    "origin_no": 10826,
+    "path": "C:\\backend\\data\\data_set\\예쁘다.mp4"
+  },
+  "여름": {
+    "status": "not_found"
+  },
+  "놀다": {
+    "status": "success",
+    "origin_no": 11150,
+    "path": "C:\\backend\\data\\data_set\\놀다.mp4"
+  },
+  "승인": {
+    "status": "success",
+    "origin_no": 811,
+    "path": "C:\\backend\\data\\data_set\\승인.mp4"
+  },
+  "오늘": {
+    "status": "success",
+    "origin_no": 7703,
+    "path": "C:\\backend\\data\\data_set\\오늘.mp4"
+  },
+  "여섯": {
+    "status": "success",
+    "origin_no": 12791,
+    "path": "C:\\backend\\data\\data_set\\여섯.mp4"
+  },
+  "닫다": {
+    "status": "success",
+    "origin_no": 11158,
+    "path": "C:\\backend\\data\\data_set\\닫다.mp4"
+  },
+  "신나다": {
+    "status": "success",
+    "origin_no": 6046,
+    "path": "C:\\backend\\data\\data_set\\신나다.mp4"
+  },
+  "오다": {
+    "status": "success",
+    "origin_no": 7704,
+    "path": "C:\\backend\\data\\data_set\\오다.mp4"
+  },
+  "연결": {
+    "status": "success",
+    "origin_no": 15725,
+    "path": "C:\\backend\\data\\data_set\\연결.mp4"
+  },
+  "던지다": {
+    "status": "success",
+    "origin_no": 12766,
+    "path": "C:\\backend\\data\\data_set\\던지다.mp4"
+  },
+  "안개": {
+    "status": "success",
+    "origin_no": 11984,
+    "path": "C:\\backend\\data\\data_set\\안개.mp4"
+  },
+  "오전": {
+    "status": "success",
+    "origin_no": 5024,
+    "path": "C:\\backend\\data\\data_set\\오전.mp4"
+  },
+  "연락": {
+    "status": "success",
+    "origin_no": 8408,
+    "path": "C:\\backend\\data\\data_set\\연락.mp4"
+  },
+  "들어가다": {
+    "status": "success",
+    "origin_no": 11006,
+    "path": "C:\\backend\\data\\data_set\\들어가다.mp4"
+  },
+  "퇴직금": {
+    "status": "success",
+    "origin_no": 4187,
+    "path": "C:\\backend\\data\\data_set\\퇴직금.mp4"
+  },
+  "오후": {
+    "status": "success",
+    "origin_no": 8147,
+    "path": "C:\\backend\\data\\data_set\\오후.mp4"
+  },
+  "열": {
+    "status": "success",
+    "origin_no": 7828,
+    "path": "C:\\backend\\data\\data_set\\열.mp4"
+  },
+  "만들다": {
+    "status": "success",
+    "origin_no": 12326,
+    "path": "C:\\backend\\data\\data_set\\만들다.mp4"
+  },
+  "어깨": {
+    "status": "success",
+    "origin_no": 7223,
+    "path": "C:\\backend\\data\\data_set\\어깨.mp4"
+  },
+  "우산": {
+    "status": "success",
+    "origin_no": 12059,
+    "path": "C:\\backend\\data\\data_set\\우산.mp4"
+  },
+  "영상": {
+    "status": "success",
+    "origin_no": 15634,
+    "path": "C:\\backend\\data\\data_set\\영상.mp4"
+  },
+  "믿다": {
+    "status": "success",
+    "origin_no": 6700,
+    "path": "C:\\backend\\data\\data_set\\믿다.mp4"
+  },
+  "연차": {
+    "status": "success",
+    "origin_no": 7833,
+    "path": "C:\\backend\\data\\data_set\\연차.mp4"
+  },
+  "우유": {
+    "status": "success",
+    "origin_no": 9694,
+    "path": "C:\\backend\\data\\data_set\\우유.mp4"
+  },
+  "예전": {
+    "status": "success",
+    "origin_no": 2773,
+    "path": "C:\\backend\\data\\data_set\\예전.mp4"
+  },
+  "부르다": {
+    "status": "success",
+    "origin_no": 11288,
+    "path": "C:\\backend\\data\\data_set\\부르다.mp4"
+  },
+  "영수증": {
+    "status": "success",
+    "origin_no": 8169,
+    "path": "C:\\backend\\data\\data_set\\영수증.mp4"
+  },
+  "월": {
+    "status": "success",
+    "origin_no": 11461,
+    "path": "C:\\backend\\data\\data_set\\월.mp4"
+  },
+  "옷": {
+    "status": "success",
+    "origin_no": 7160,
+    "path": "C:\\backend\\data\\data_set\\옷.mp4"
+  },
+  "부탁": {
+    "status": "success",
+    "origin_no": 22,
+    "path": "C:\\backend\\data\\data_set\\부탁.mp4"
+  },
+  "요리사": {
+    "status": "success",
+    "origin_no": 8102,
+    "path": "C:\\backend\\data\\data_set\\요리사.mp4"
+  },
+  "일어나다": {
+    "status": "success",
+    "origin_no": 11514,
+    "path": "C:\\backend\\data\\data_set\\일어나다.mp4"
+  },
+  "왜냐하면": {
+    "status": "success",
+    "origin_no": 5685,
+    "path": "C:\\backend\\data\\data_set\\왜냐하면.mp4"
+  },
+  "비싸다": {
+    "status": "success",
+    "origin_no": 5358,
+    "path": "C:\\backend\\data\\data_set\\비싸다.mp4"
+  },
+  "우울": {
+    "status": "success",
+    "origin_no": 14747,
+    "path": "C:\\backend\\data\\data_set\\우울.mp4"
+  },
+  "잊다": {
+    "status": "success",
+    "origin_no": 6595,
+    "path": "C:\\backend\\data\\data_set\\잊다.mp4"
+  },
+  "요약": {
+    "status": "success",
+    "origin_no": 11200,
+    "path": "C:\\backend\\data\\data_set\\요약.mp4"
+  },
+  "빠르다": {
+    "status": "success",
+    "origin_no": 11543,
+    "path": "C:\\backend\\data\\data_set\\빠르다.mp4"
+  },
+  "운동선수": {
+    "status": "success",
+    "origin_no": 8926,
+    "path": "C:\\backend\\data\\data_set\\운동선수.mp4"
+  },
+  "자다": {
+    "status": "success",
+    "origin_no": 12264,
+    "path": "C:\\backend\\data\\data_set\\자다.mp4"
+  },
+  "월급": {
+    "status": "success",
+    "origin_no": 2922,
+    "path": "C:\\backend\\data\\data_set\\월급.mp4"
+  },
+  "사랑": {
+    "status": "success",
+    "origin_no": 8240,
+    "path": "C:\\backend\\data\\data_set\\사랑.mp4"
+  },
+  "이별": {
+    "status": "success",
+    "origin_no": 6802,
+    "path": "C:\\backend\\data\\data_set\\이별.mp4"
+  },
+  "저녁": {
+    "status": "success",
+    "origin_no": 11849,
+    "path": "C:\\backend\\data\\data_set\\저녁.mp4"
+  },
+  "은행": {
+    "status": "success",
+    "origin_no": 11464,
+    "path": "C:\\backend\\data\\data_set\\은행.mp4"
+  },
+  "서다": {
+    "status": "success",
+    "origin_no": 4537,
+    "path": "C:\\backend\\data\\data_set\\서다.mp4"
+  },
+  "입": {
+    "status": "success",
+    "origin_no": 3248,
+    "path": "C:\\backend\\data\\data_set\\입.mp4"
+  },
+  "주다": {
+    "status": "success",
+    "origin_no": 8307,
+    "path": "C:\\backend\\data\\data_set\\주다.mp4"
+  },
+  "이루다": {
+    "status": "success",
+    "origin_no": 7598,
+    "path": "C:\\backend\\data\\data_set\\이루다.mp4"
+  },
+  "싸우다": {
+    "status": "success",
+    "origin_no": 9247,
+    "path": "C:\\backend\\data\\data_set\\싸우다.mp4"
+  },
+  "위자료": {
+    "status": "success",
+    "origin_no": 13268,
+    "path": "C:\\backend\\data\\data_set\\위자료.mp4"
+  },
+  "지금": {
+    "status": "success",
+    "origin_no": 6990,
+    "path": "C:\\backend\\data\\data_set\\지금.mp4"
+  },
+  "이유": {
+    "status": "success",
+    "origin_no": 11524,
+    "path": "C:\\backend\\data\\data_set\\이유.mp4"
+  },
+  "시작하다": {
+    "status": "success",
+    "origin_no": 24022,
+    "path": "C:\\backend\\data\\data_set\\시작하다.mp4"
+  },
+  "조종사": {
+    "status": "success",
+    "origin_no": 243,
+    "path": "C:\\backend\\data\\data_set\\조종사.mp4"
+  },
+  "집": {
+    "status": "success",
+    "origin_no": 4892,
+    "path": "C:\\backend\\data\\data_set\\집.mp4"
+  },
+  "일곱": {
+    "status": "success",
+    "origin_no": 12674,
+    "path": "C:\\backend\\data\\data_set\\일곱.mp4"
+  },
+  "싸다": {
+    "status": "success",
+    "origin_no": 9245,
+    "path": "C:\\backend\\data\\data_set\\싸다.mp4"
+  },
+  "주사": {
+    "status": "success",
+    "origin_no": 9525,
+    "path": "C:\\backend\\data\\data_set\\주사.mp4"
+  },
+  "찾다": {
+    "status": "success",
+    "origin_no": 8119,
+    "path": "C:\\backend\\data\\data_set\\찾다.mp4"
+  },
+  "일하다": {
+    "status": "success",
+    "origin_no": 11052,
+    "path": "C:\\backend\\data\\data_set\\일하다.mp4"
+  },
+  "알다": {
+    "status": "success",
+    "origin_no": 6031,
+    "path": "C:\\backend\\data\\data_set\\알다.mp4"
+  },
+  "무증상": {
+    "status": "success",
+    "origin_no": 14367,
+    "path": "C:\\backend\\data\\data_set\\무증상.mp4"
+  },
+  "책": {
+    "status": "success",
+    "origin_no": 5262,
+    "path": "C:\\backend\\data\\data_set\\책.mp4"
+  },
+  "잃다": {
+    "status": "success",
+    "origin_no": 12458,
+    "path": "C:\\backend\\data\\data_set\\잃다.mp4"
+  },
+  "없다": {
+    "status": "success",
+    "origin_no": 9846,
+    "path": "C:\\backend\\data\\data_set\\없다.mp4"
+  },
+  "지루하다": {
+    "status": "success",
+    "origin_no": 6015,
+    "path": "C:\\backend\\data\\data_set\\지루하다.mp4"
+  },
+  "친구": {
+    "status": "success",
+    "origin_no": 7028,
+    "path": "C:\\backend\\data\\data_set\\친구.mp4"
+  },
+  "입다": {
+    "status": "success",
+    "origin_no": 24041,
+    "path": "C:\\backend\\data\\data_set\\입다.mp4"
+  },
+  "있다": {
+    "status": "success",
+    "origin_no": 8966,
+    "path": "C:\\backend\\data\\data_set\\있다.mp4"
+  },
+  "차별": {
+    "status": "success",
+    "origin_no": 13386,
+    "path": "C:\\backend\\data\\data_set\\차별.mp4"
+  },
+  "커피": {
+    "status": "success",
+    "origin_no": 8198,
+    "path": "C:\\backend\\data\\data_set\\커피.mp4"
+  },
+  "장애인": {
+    "status": "success",
+    "origin_no": 12490,
+    "path": "C:\\backend\\data\\data_set\\장애인.mp4"
+  },
+  "쓰다": {
+    "status": "success",
+    "origin_no": 9406,
+    "path": "C:\\backend\\data\\data_set\\쓰다.mp4"
+  },
+  "전화": {
+    "status": "success",
+    "origin_no": 1599,
+    "path": "C:\\backend\\data\\data_set\\전화.mp4"
+  },
+  "컴퓨터": {
+    "status": "success",
+    "origin_no": 15772,
+    "path": "C:\\backend\\data\\data_set\\컴퓨터.mp4"
+  },
+  "장점": {
+    "status": "success",
+    "origin_no": 3827,
+    "path": "C:\\backend\\data\\data_set\\장점.mp4"
+  },
+  "앉다": {
+    "status": "success",
+    "origin_no": 828,
+    "path": "C:\\backend\\data\\data_set\\앉다.mp4"
+  },
+  "극복": {
+    "status": "success",
+    "origin_no": 23924,
+    "path": "C:\\backend\\data\\data_set\\극복.mp4"
+  },
+  "팔다": {
+    "status": "success",
+    "origin_no": 10553,
+    "path": "C:\\backend\\data\\data_set\\팔다.mp4"
+  },
+  "전달": {
+    "status": "success",
+    "origin_no": 10605,
+    "path": "C:\\backend\\data\\data_set\\전달.mp4"
+  },
+  "약하다": {
+    "status": "success",
+    "origin_no": 8014,
+    "path": "C:\\backend\\data\\data_set\\약하다.mp4"
+  },
+  "추진": {
+    "status": "success",
+    "origin_no": 9672,
+    "path": "C:\\backend\\data\\data_set\\추진.mp4"
+  },
+  "학교": {
+    "status": "success",
+    "origin_no": 1352,
+    "path": "C:\\backend\\data\\data_set\\학교.mp4"
+  },
+  "전화번호": {
+    "status": "success",
+    "origin_no": 1599,
+    "path": "C:\\backend\\data\\data_set\\전화번호.mp4"
+  },
+  "열다": {
+    "status": "success",
+    "origin_no": 7829,
+    "path": "C:\\backend\\data\\data_set\\열다.mp4"
+  },
+  "등록비": {
+    "status": "success",
+    "origin_no": 3232,
+    "path": "C:\\backend\\data\\data_set\\등록비.mp4"
+  },
+  "할머니": {
+    "status": "success",
+    "origin_no": 10284,
+    "path": "C:\\backend\\data\\data_set\\할머니.mp4"
+  },
+  "읽다": {
+    "status": "success",
+    "origin_no": 8304,
+    "path": "C:\\backend\\data\\data_set\\읽다.mp4"
+  },
+  "출장": {
+    "status": "success",
+    "origin_no": 9950,
+    "path": "C:\\backend\\data\\data_set\\출장.mp4"
+  },
+  "할아버지": {
+    "status": "success",
+    "origin_no": 1392,
+    "path": "C:\\backend\\data\\data_set\\할아버지.mp4"
+  },
+  "주제": {
+    "status": "success",
+    "origin_no": 6978,
+    "path": "C:\\backend\\data\\data_set\\주제.mp4"
+  },
+  "잡다": {
+    "status": "success",
+    "origin_no": 5676,
+    "path": "C:\\backend\\data\\data_set\\잡다.mp4"
+  },
+  "취소": {
+    "status": "success",
+    "origin_no": 5204,
+    "path": "C:\\backend\\data\\data_set\\취소.mp4"
+  },
+  "형": {
+    "status": "failed",
+    "origin_no": 1004,
+    "error": "video src not found"
+  },
+  "준비": {
+    "status": "success",
+    "origin_no": 7480,
+    "path": "C:\\backend\\data\\data_set\\준비.mp4"
+  },
+  "치과": {
+    "status": "success",
+    "origin_no": 9593,
+    "path": "C:\\backend\\data\\data_set\\치과.mp4"
+  },
+  "화나다": {
+    "status": "success",
+    "origin_no": 1086,
+    "path": "C:\\backend\\data\\data_set\\화나다.mp4"
+  },
+  "중학교": {
+    "status": "success",
+    "origin_no": 7093,
+    "path": "C:\\backend\\data\\data_set\\중학교.mp4"
+  },
+  "졸업하다": {
+    "status": "not_found"
+  },
+  "코": {
+    "status": "success",
+    "origin_no": 7042,
+    "path": "C:\\backend\\data\\data_set\\코.mp4"
+  },
+  "화장실": {
+    "status": "success",
+    "origin_no": 971,
+    "path": "C:\\backend\\data\\data_set\\화장실.mp4"
+  },
+  "타다": {
+    "status": "success",
+    "origin_no": 6413,
+    "path": "C:\\backend\\data\\data_set\\타다.mp4"
+  },
+  "모습": {
+    "status": "success",
+    "origin_no": 10433,
+    "path": "C:\\backend\\data\\data_set\\모습.mp4"
+  },
+  "회사": {
+    "status": "success",
+    "origin_no": 2916,
+    "path": "C:\\backend\\data\\data_set\\회사.mp4"
+  },
+  "필요하다": {
+    "status": "success",
+    "origin_no": 22422,
+    "path": "C:\\backend\\data\\data_set\\필요하다.mp4"
+  },
+  "반성": {
+    "status": "success",
+    "origin_no": 7835,
+    "path": "C:\\backend\\data\\data_set\\반성.mp4"
+  },
+  "휴대폰": {
+    "status": "success",
+    "origin_no": 4399,
+    "path": "C:\\backend\\data\\data_set\\휴대폰.mp4"
+  },
+  "초등학교": {
+    "status": "success",
+    "origin_no": 9023,
+    "path": "C:\\backend\\data\\data_set\\초등학교.mp4"
+  },
+  "같다": {
+    "status": "success",
+    "origin_no": 11065,
+    "path": "C:\\backend\\data\\data_set\\같다.mp4"
+  },
+  "팀": {
+    "status": "success",
+    "origin_no": 10058,
+    "path": "C:\\backend\\data\\data_set\\팀.mp4"
+  },
+  "힘들다": {
+    "status": "success",
+    "origin_no": 4178,
+    "path": "C:\\backend\\data\\data_set\\힘들다.mp4"
+  },
+  "추가": {
+    "status": "success",
+    "origin_no": 2104,
+    "path": "C:\\backend\\data\\data_set\\추가.mp4"
+  },
+  "느리다": {
+    "status": "success",
+    "origin_no": 9928,
+    "path": "C:\\backend\\data\\data_set\\느리다.mp4"
+  },
+  "판사": {
+    "status": "success",
+    "origin_no": 783,
+    "path": "C:\\backend\\data\\data_set\\판사.mp4"
+  },
+  "카메라": {
+    "status": "success",
+    "origin_no": 10158,
+    "path": "C:\\backend\\data\\data_set\\카메라.mp4"
+  },
+  "무겁다": {
+    "status": "success",
+    "origin_no": 11085,
+    "path": "C:\\backend\\data\\data_set\\무겁다.mp4"
+  },
+  "편하다": {
+    "status": "success",
+    "origin_no": 7392,
+    "path": "C:\\backend\\data\\data_set\\편하다.mp4"
+  },
+  "통계": {
+    "status": "success",
+    "origin_no": 23975,
+    "path": "C:\\backend\\data\\data_set\\통계.mp4"
+  },
+  "작다": {
+    "status": "success",
+    "origin_no": 7957,
+    "path": "C:\\backend\\data\\data_set\\작다.mp4"
+  },
+  "품질": {
+    "status": "success",
+    "origin_no": 5311,
+    "path": "C:\\backend\\data\\data_set\\품질.mp4"
+  },
+  "표": {
+    "status": "success",
+    "origin_no": 1348,
+    "path": "C:\\backend\\data\\data_set\\표.mp4"
+  },
+  "짧다": {
+    "status": "success",
+    "origin_no": 12329,
+    "path": "C:\\backend\\data\\data_set\\짧다.mp4"
+  },
+  "피곤": {
+    "status": "success",
+    "origin_no": 12438,
+    "path": "C:\\backend\\data\\data_set\\피곤.mp4"
+  },
+  "표정": {
+    "status": "success",
+    "origin_no": 8110,
+    "path": "C:\\backend\\data\\data_set\\표정.mp4"
+  },
+  "조용하다": {
+    "status": "success",
+    "origin_no": 9351,
+    "path": "C:\\backend\\data\\data_set\\조용하다.mp4"
+  },
+  "하늘": {
+    "status": "success",
+    "origin_no": 12293,
+    "path": "C:\\backend\\data\\data_set\\하늘.mp4"
+  },
+  "하나": {
+    "status": "success",
+    "origin_no": 1424,
+    "path": "C:\\backend\\data\\data_set\\하나.mp4"
+  },
+  "천천히": {
+    "status": "success",
+    "origin_no": 9928,
+    "path": "C:\\backend\\data\\data_set\\천천히.mp4"
+  },
+  "행복": {
+    "status": "success",
+    "origin_no": 10223,
+    "path": "C:\\backend\\data\\data_set\\행복.mp4"
+  },
+  "하다": {
+    "status": "success",
+    "origin_no": 12042,
+    "path": "C:\\backend\\data\\data_set\\하다.mp4"
+  },
+  "크다": {
+    "status": "success",
+    "origin_no": 5956,
+    "path": "C:\\backend\\data\\data_set\\크다.mp4"
+  },
+  "협의": {
+    "status": "success",
+    "origin_no": 7652,
+    "path": "C:\\backend\\data\\data_set\\협의.mp4"
+  },
+  "핸드폰": {
+    "status": "success",
+    "origin_no": 4399,
+    "path": "C:\\backend\\data\\data_set\\핸드폰.mp4"
+  },
+  "항상": {
+    "status": "success",
+    "origin_no": 12723,
+    "path": "C:\\backend\\data\\data_set\\항상.mp4"
+  },
+  "호수": {
+    "status": "success",
+    "origin_no": 10813,
+    "path": "C:\\backend\\data\\data_set\\호수.mp4"
+  },
+  "허용": {
+    "status": "success",
+    "origin_no": 11714,
+    "path": "C:\\backend\\data\\data_set\\허용.mp4"
+  },
+  "혼자": {
+    "status": "success",
+    "origin_no": 11785,
+    "path": "C:\\backend\\data\\data_set\\혼자.mp4"
+  },
+  "화가": {
+    "status": "success",
+    "origin_no": 1085,
+    "path": "C:\\backend\\data\\data_set\\화가.mp4"
+  },
+  "화면": {
+    "status": "success",
+    "origin_no": 15880,
+    "path": "C:\\backend\\data\\data_set\\화면.mp4"
+  },
+  "웃다": {
+    "status": "success",
+    "origin_no": 12007,
+    "path": "C:\\backend\\data\\data_set\\웃다.mp4"
+  },
+  "후회": {
+    "status": "success",
+    "origin_no": 12524,
+    "path": "C:\\backend\\data\\data_set\\후회.mp4"
+  },
+  "확인": {
+    "status": "success",
+    "origin_no": 20883,
+    "path": "C:\\backend\\data\\data_set\\확인.mp4"
+  },
+  "울다": {
+    "status": "success",
+    "origin_no": 7859,
+    "path": "C:\\backend\\data\\data_set\\울다.mp4"
+  },
+  "휴가": {
+    "status": "success",
+    "origin_no": 12073,
+    "path": "C:\\backend\\data\\data_set\\휴가.mp4"
+  }
+}
