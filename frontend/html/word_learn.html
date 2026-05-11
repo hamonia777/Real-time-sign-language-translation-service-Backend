@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>단어 학습</title>
     <link rel="stylesheet" href="../css/home.css">
-    <link rel="stylesheet" href="../css/learning.css">
+    <link rel="stylesheet" href="../css/learning.css?v=260511">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -44,7 +44,10 @@
             <section id="step1" class="step-view">
                 <div class="learn-body">
                     <div class="video-box">
+                        <!-- 가령: 5월 11일 : 수정 내용 - 단어 학습 1단계 영상 표시 영역 추가 -->
+                        <video id="lessonVideo" class="learn-video" controls playsinline preload="metadata" style="display:none;"></video>
                         <div class="char-huge" id="targetCharBig" style="font-size: 64px;">?</div>
+                        <div class="video-fallback" id="videoFallback" style="display:none;"></div>
                     </div>
                     <aside class="side-info">
                         <h3>학습 단어 정보</h3>
@@ -127,6 +130,8 @@
         </div>
     </main>
 
-    <script src="../js/word_learn.js?v=260506"></script>
+    <!-- 가령: 5월 11일 : 수정 내용 - 단어 학습도 영상 연결 스크립트 사용 -->
+    <script src="../js/sign_video.js?v=260511"></script>
+    <script src="../js/word_learn.js?v=260511"></script>
 </body>
 </html>

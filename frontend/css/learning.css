@@ -236,6 +236,54 @@
   font-weight: 800;
   color: #2C3E63;
 }
+/* 가령: 5월 11일 : 수정 내용 - 1단계 학습 영상과 fallback 문구 스타일 추가 */
+.learn-video {
+  width: 100%;
+  max-height: 100%;
+  aspect-ratio: 700 / 466;
+  object-fit: contain;
+  background: #000;
+  border-radius: 8px;
+}
+.video-fallback {
+  margin-top: 12px;
+  color: #666;
+  font-size: 15px;
+  font-weight: 600;
+}
+/* 가령: 5월 11일 : 수정 내용 - 문장 학습 단어 확인 넘김 UI 스타일 추가 */
+.sentence-word-preview {
+  width: 100%;
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 20px;
+}
+.sentence-word-count {
+  color: #6B7280;
+  font-size: 14px;
+  font-weight: 700;
+}
+.sentence-word-video {
+  max-height: 220px;
+}
+.sentence-word-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.sentence-word-controls button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.word-order-current {
+  font-weight: 800;
+  color: #1F4E8C;
+}
 .camera-box video,
 .camera-box canvas {
   width: 100%;
