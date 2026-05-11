@@ -44,7 +44,7 @@ graph TD
     K --> L["📊 - 학습 목표 선택<br/>- 난이도 선호도<br/>- 학습 시간 설정"]
     L --> M["📤 POST /api/v1/users/user_id/survey"]
     M --> N["✅ 설정 완료<br/>홈 대시보드로 이동"]
-
+```
 
 ### 시나리오 2: 손가락 문자(Fingerspell) 학습
 
