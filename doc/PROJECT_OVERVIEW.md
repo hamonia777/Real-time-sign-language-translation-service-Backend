@@ -398,8 +398,3 @@ logger.error("데이터베이스 오류", exc_info=True)
 ✅ 레슨 및 단어 관리
 ✅ 실시간 수어 인식
 ✅ 학습 진도 추적
-
-## 연락처
-
-- 개발팀: dev@example.com
-- 문제 보고: issues@example.com
