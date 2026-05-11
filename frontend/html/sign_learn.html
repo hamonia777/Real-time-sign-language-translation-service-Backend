@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../css/learning.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="learning-page">
     <header class="main-header">
         <div class="wide-container header-inner">
             <div class="logo" onclick="location.href='home.html'">
@@ -16,18 +16,18 @@
                 <span>수어 연구소</span>
             </div>
             <nav class="nav-bar">
-                <a href="learning.html">수어학습</a>
+                <a href="learning.html" style="font-weight:600; color:#0C0C0C;">수어학습</a>
                 <a href="search.html">수어검색</a>
                 <a href="support.html">고객지원</a>
                 <a href="mypage.html">마이페이지</a>
             </nav>
-            <button class="login-btn" id="headerAuthBtn">로그인</button>
+            <button class="login-btn" id="headerAuthBtn">로그아웃</button>
         </div>
     </header>
 
-    <main>
+    <main class="learning-main">
         <div class="learn-wrap">
-            <div class="learn-title" id="pageTitle">수어 학습 페이지 - 단계 1</div>
+            <!-- learn-title 제거 (피그마 디자인에 없음) -->
 
             <div class="stepper-row" id="stepper">
                 <div class="node active" data-step="1"><div class="dot">1</div><span>영상 시청</span></div>
@@ -47,8 +47,9 @@
                     </div>
                     <aside class="side-info">
                         <h3>학습 단어 정보</h3>
-                        <div class="target-char" id="targetCharSide">?</div>
-                        <div class="pass-line">자음/모음 지문자 형태를 보고 따라할 준비를 하세요.</div>
+                        <div class="divider"></div>
+                        <div class="target-char" id="targetCharSide">안녕하세요</div>
+                        <div class="word-desc">가장 간단한 인삿말입니다.</div>
                     </aside>
                 </div>
                 <div class="learn-footer">
@@ -65,6 +66,7 @@
                     </div>
                     <aside class="side-info">
                         <h3>세팅 가이드</h3>
+                        <div class="divider"></div>
                         <div>👍 오른손으로 진행</div>
                         <div>🧼 배경 정리</div>
                         <div>👤 상반신 노출</div>
@@ -86,6 +88,7 @@
                     </div>
                     <aside class="side-info">
                         <h3>실시간 채점</h3>
+                        <div class="divider"></div>
                         <div>현재 실습 단어:</div>
                         <div class="target-char" id="targetChar3">?</div>
                         <div class="pass-line">통과 기준 : <b>80점</b></div>

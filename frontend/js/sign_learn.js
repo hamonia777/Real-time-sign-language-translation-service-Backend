@@ -60,31 +60,44 @@ function bindNav() {
 }
 
 function gotoStep(n) {
-  // cleanup
-  if (state.step === 2 || state.step === 3) {
-    stopCamera();
-  }
-  if (state.step === 3) {
-    stopWebSocket();
-  }
+  if (state.step === 2 || state.step === 3) stopCamera();
+  if (state.step === 3) stopWebSocket();
 
+  const prev = state.step;
   state.step = n;
+
   for (let i = 1; i <= 4; i++) {
     document.getElementById(`step${i}`).style.display = i === n ? "block" : "none";
   }
-  document.getElementById("pageTitle").textContent = `수어 학습 페이지 - 단계 ${n}`;
 
-  // stepper 상태 업데이트
   const nodes = document.querySelectorAll("#stepper .node");
   const lines = document.querySelectorAll("#stepper .line");
-  nodes.forEach((node, i) => {
-    node.classList.remove("active", "done");
-    if (i + 1 < n) node.classList.add("done");
-    else if (i + 1 === n) node.classList.add("active");
-  });
-  lines.forEach((line, i) => {
-    line.classList.toggle("done", i + 1 < n);
-  });
+
+  if (n > prev) {
+    // 다음: 선 먼저 채우고 → dot 색 변경
+    lines.forEach((line, i) => {
+      line.classList.toggle("done", i + 1 < n);
+    });
+    setTimeout(() => {
+      nodes.forEach((node, i) => {
+        node.classList.remove("active", "done");
+        if (i + 1 < n) node.classList.add("done");
+        else if (i + 1 === n) node.classList.add("active");
+      });
+    }, 500);
+  } else {
+    // 이전: dot 색 먼저 제거하고 → 선 색 제거
+    nodes.forEach((node, i) => {
+      node.classList.remove("active", "done");
+      if (i + 1 < n) node.classList.add("done");
+      else if (i + 1 === n) node.classList.add("active");
+    });
+    setTimeout(() => {
+      lines.forEach((line, i) => {
+        line.classList.toggle("done", i + 1 < n);
+      });
+    }, 500);
+  }
 
   if (n === 2) startCameraForStep(2);
   if (n === 3) {

@@ -1,12 +1,11 @@
-
 .learning-main {
   padding: 40px 0 80px;
   min-height: calc(100vh - 55px);
-  background: #f9fafc;
+  background: #FFFFFF;
 }
 
 body.learning-page {
-    background-color: #f9fafc;
+    background-color: #FFFFFF;
     font-family: 'Inter', sans-serif;
 }
 body.learning-page .main-header {
@@ -17,6 +16,271 @@ body.learning-page .main-header {
 body.learning-page .logo {
     line-height: normal;
 }
+
+/* learn-wrap: search-container 기준 크기 */
+.learn-wrap {
+  max-width: 960px;
+  margin: 30px auto;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0 20px 60px;
+}
+
+/* learn-title 숨김 */
+.learn-title {
+  display: none;
+}
+
+/* ─── 스테퍼 ─── */
+.stepper-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  margin-bottom: 80px;
+  width: 100%;
+  padding: 0 110px;
+  box-sizing: border-box;
+}
+
+.stepper-row .node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+  position: relative;
+  width: 32px; /* dot 크기와 동일하게 */
+}
+
+.stepper-row .dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #E7EEF7;
+  color: #34436D;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14.5px;
+}
+
+.stepper-row .node.active .dot {
+  background: #34436D;
+  color: #FFFFFF;
+}
+
+.stepper-row .node.done .dot {
+  background: #34436D;
+  color: #FFFFFF;
+}
+
+
+.stepper-row .node span {
+  position: absolute;
+  top: 40px; /* dot 아래 */
+  font-size: 12px;
+  font-weight: 500;
+  color: #323232;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  left: 50%;
+}
+
+/* 연결선: flex:1 로 dot 사이 균등하게 채움 */
+.stepper-row .line {
+  flex: 1;
+  height: 6px;
+  background: #E7EEF7;
+  align-self: flex-start;
+  margin-top: 13px;
+  position: relative;
+  overflow: hidden;
+}
+
+.stepper-row .line::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  width: 0%;
+  background: #34436D;
+  transition: width 0.5s ease;
+}
+
+.stepper-row .line.done::after {
+  width: 100%;
+}
+/* ─── 본문 레이아웃 ─── */
+.learn-body {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 40px;
+  align-items: start;
+}
+
+/* 영상 박스 */
+.video-box {
+  width: 100%;
+  aspect-ratio: 854 / 462;
+  background: #F1F1F1;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  color: #9D9D9D;
+  font-size: 20px;
+}
+
+.video-box .char-huge {
+  font-size: 100px;
+  font-weight: 700;
+  color: #2C3E63;
+}
+
+.camera-box {
+  width: 100%;
+  aspect-ratio: 854 / 462;
+  background: #F1F1F1;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.camera-box video,
+.camera-box canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0; left: 0;
+  transform: scaleX(-1);
+}
+
+/* 사이드 정보 박스 */
+.side-info {
+  width: 100%;
+  aspect-ratio: 854 / 462;
+  border: 1px solid #D6D6D6;
+  border-radius: 6px;
+  padding: 12px 21px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  box-sizing: border-box;
+}
+
+.side-info h3 {
+  font-size: 14px;
+  font-weight: 500;
+  color: #474747;
+  line-height: 30px;
+  padding-bottom: 0;
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+/* 구분선 */
+.side-info .divider {
+  width: 100%;
+  height: 1px;
+  background: #E7E7E7;
+  margin: 10px 0;
+}
+
+.side-info .target-char {
+  font-size: 18px;
+  font-weight: 500;
+  color: #474747;
+  line-height: 30px;
+  margin-top: 5px;
+}
+
+.side-info .word-desc {
+  font-size: 12px;
+  color: #777777;
+  line-height: 30px;
+  margin-top: 5px;
+}
+
+.side-info .pass-line {
+  font-size: 13px;
+  color: #6B7280;
+  margin-top: 2px;
+}
+.side-info .pass-line b { color: #4a6cf7; }
+
+.side-info .gauge {
+  margin-top: 12px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #4a6cf7;
+}
+
+.side-info .status-line {
+  font-size: 12px;
+  color: #8c93a8;
+  margin-top: auto;
+}
+
+.side-info .top3 {
+  font-size: 12px;
+  color: #2C3E63;
+  line-height: 1.8;
+}
+
+/* ─── 하단 버튼 ─── */
+.learn-footer {
+  margin-top: 54px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 26px;
+}
+
+.learn-footer button {
+  border: none;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-secondary {
+  background: #E6E6E6;
+  color: #474747;
+  padding: 8px 30px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.btn-secondary:hover {
+  background: #d5d5d5;
+}
+
+.btn-primary {
+  background: #517AAF;
+  color: #FFFFFF;
+  padding: 8px 30px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.btn-primary:hover {
+  background: #3f6391;
+}
+
+.btn-primary:disabled {
+  background: #b4bcd3;
+  cursor: not-allowed;
+}
+
+/* ─── 카테고리 / 레슨 그리드 (기존 유지) ─── */
 .learning-header {
   margin-bottom: 36px;
 }
@@ -83,7 +347,6 @@ body.learning-page .logo {
   color: #4a6cf7;
 }
 
-/* 가령: 26/04/19 수정내용: 단어 학습 섹션용 탭/카드 스타일 추가 */
 .word-tabs {
   display: flex;
   flex-wrap: wrap;
@@ -114,7 +377,6 @@ body.learning-page .logo {
   min-height: 56px;
 }
 
-/* 가령: 260422: 수정 내용 - 문장 학습 카드: 3열 그리드 정렬 (한 줄에 3개씩, 자동 줄바꿈) */
 .sentence-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -132,7 +394,6 @@ body.learning-page .logo {
   justify-content: center;
 }
 
-/* 가령: 260422: 수정 내용 - 문장 학습 페이지: 단어 진행 미니 스테퍼 (Step 3 내부 1/N → N/N) */
 .word-mini-stepper {
   display: flex;
   flex-wrap: wrap;
@@ -164,7 +425,6 @@ body.learning-page .logo {
   border-color: #c33;
 }
 
-/* 가령: 26/04/19 수정내용: 단어 학습 녹화 진행바 */
 .progress-wrap {
   margin-top: 8px;
   width: 100%;
@@ -187,141 +447,6 @@ body.learning-page .logo {
   text-align: right;
 }
 
-/* ─── sign_learn page ─── */
-.learn-wrap {
-  max-width: 960px;
-  margin: 24px auto 60px;
-  background: #fff;
-  border: 1px solid #e6e8f0;
-  border-radius: 12px;
-  padding: 28px 32px 32px;
-}
-.learn-title {
-  font-size: 20px;
-  color: #6c7aa3;
-  margin-bottom: 22px;
-  font-weight: 600;
-}
-.stepper-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  margin-bottom: 28px;
-}
-.stepper-row .node {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-}
-.stepper-row .dot {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: #d4d9e6; color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 14px;
-}
-.stepper-row .node.active .dot { background: #2C3E63; }
-.stepper-row .node.done .dot { background: #2C3E63; }
-.stepper-row .node span { font-size: 12px; color: #6B7280; }
-.stepper-row .line { flex: 0 0 60px; height: 2px; background: #d4d9e6; }
-.stepper-row .line.done { background: #2C3E63; }
-
-.learn-body {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 20px;
-}
-.video-box, .camera-box {
-  background: #e9ecf3;
-  border-radius: 10px;
-  min-height: 320px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-  color: #8c93a8;
-  font-size: 14px;
-}
-.video-box .char-huge {
-  font-size: 150px;
-  font-weight: 800;
-  color: #2C3E63;
-}
-.camera-box video,
-.camera-box canvas {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  top: 0; left: 0;
-  transform: scaleX(-1);
-}
-.side-info {
-  background: #fff;
-  border: 1px solid #e6e8f0;
-  border-radius: 10px;
-  padding: 18px 20px;
-  min-height: 320px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.side-info h3 {
-  font-size: 13px;
-  color: #8c93a8;
-  font-weight: 600;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #eef0f7;
-  margin-bottom: 6px;
-}
-.side-info .target-char {
-  font-size: 32px;
-  font-weight: 700;
-  color: #1F202F;
-}
-.side-info .pass-line {
-  font-size: 13px; color: #6B7280;
-}
-.side-info .pass-line b { color: #4a6cf7; }
-.side-info .gauge {
-  margin-top: 12px;
-  font-size: 28px;
-  font-weight: 700;
-  color: #4a6cf7;
-}
-.side-info .status-line {
-  font-size: 12px; color: #8c93a8; margin-top: auto;
-}
-.side-info .top3 { font-size: 12px; color: #2C3E63; line-height: 1.8; }
-
-.learn-footer {
-  margin-top: 22px;
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
-.learn-footer button {
-  padding: 10px 26px;
-  border-radius: 6px;
-  font-size: 14px;
-  cursor: pointer;
-  border: none;
-}
-.btn-secondary {
-  background: #eef0f7;
-  color: #3b3f55;
-}
-.btn-primary {
-  background: #2C3E63;
-  color: #fff;
-}
-.btn-primary:disabled {
-  background: #b4bcd3;
-  cursor: not-allowed;
-}
-
 .step4-wrap {
   text-align: center;
   padding: 50px 20px 20px;
@@ -342,5 +467,7 @@ body.learning-page .logo {
   margin-top: 10px;
 }
 .step4-card .score {
-  font-size: 32px; font-weight: 700; color: #4a6cf7;
+  font-size: 32px;
+  font-weight: 700;
+  color: #4a6cf7;
 }
