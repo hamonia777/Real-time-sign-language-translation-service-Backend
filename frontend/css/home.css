@@ -6,8 +6,13 @@ body {
   background: #fff;
   line-height: 1.7;
   letter-spacing: -0.01em;
+  opacity: 0;
+  transition: opacity 0.1s ease;
 }
 
+body.loaded {
+  opacity: 1;
+}
 .wide-container {
   width: 100%;
   max-width: 1600px;

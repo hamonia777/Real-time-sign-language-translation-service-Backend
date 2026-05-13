@@ -4,7 +4,9 @@
     margin-bottom : 40px;
     padding: 0px 20px; 
 }
-
+.learning-main.practice-mode {
+    padding-top: 80px;
+}
 body.learning-page {
     background-color: #FFFFFF;
     font-family: 'Inter', sans-serif;
@@ -18,7 +20,6 @@ body.learning-page .logo {
     line-height: normal;
 }
 
-/* learn-wrap: search-container 기준 크기 */
 .learn-wrap {
   max-width: 960px;
   margin: 0px auto;
@@ -28,7 +29,6 @@ body.learning-page .logo {
   padding: 0px 20px; 
 }
 
-/* learn-title 숨김 */
 .learn-title {
   display: none;
 }
@@ -69,7 +69,7 @@ body.learning-page .logo {
   width: 22px;
   height: 22px;
   fill: #fff;
-  margin-left: 3px; /* 삼각형 시각적 중앙 보정 */
+  margin-left: 3px; 
 }
 
 .video-play-btn.playing {
@@ -94,7 +94,7 @@ body.learning-page .logo {
   gap: 0;
   flex-shrink: 0;
   position: relative;
-  width: 32px; /* dot 크기와 동일하게 */
+  width: 32px; 
 }
 
 .stepper-row .dot {
@@ -124,7 +124,7 @@ body.learning-page .logo {
 
 .stepper-row .node span {
   position: absolute;
-  top: 40px; /* dot 아래 */
+  top: 40px;
   font-size: 12px;
   font-weight: 500;
   color: #323232;
@@ -133,7 +133,7 @@ body.learning-page .logo {
   left: 50%;
 }
 
-/* 연결선: flex:1 로 dot 사이 균등하게 채움 */
+/* 연결선 */
 .stepper-row .line {
   flex: 1;
   height: 6px;
@@ -677,6 +677,8 @@ body.learning-page .logo {
 .learning-header {
   margin-bottom: 22px;
 }
+
+
 .learning-header h1 {
   font-size: 17px;
   font-weight: 600;
@@ -823,8 +825,8 @@ body.learning-page .logo {
 }
 .word-mini-chip.failed {
   background: #fff;
-  color: #550e0d;
-  border-color: #550e0d;
+  color: #7d2523;
+  border-color: #7d2523;
 }
 
 .progress-wrap {

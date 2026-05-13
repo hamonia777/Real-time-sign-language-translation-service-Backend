@@ -7,7 +7,7 @@ const PASS_THRESHOLD = 80.0;
 const MAX_ATTEMPTS = 3;
 // 26/04/19: 프레임 전송 주기 200ms → 100ms
 const FRAME_INTERVAL_MS = 100;
-// 1번 UI 기준: 원형 SVG 타이머
+// 원형 SVG 타이머
 const RECORD_SECONDS = 10;
 const TIMER_CIRCUMFERENCE = 107;
 
@@ -37,6 +37,9 @@ function getCookie(name) {
 }
 
 async function init() {
+  const mainEl = document.querySelector('.learning-main');
+  if (mainEl) mainEl.classList.add('practice-mode');
+
   if (!lessonId) {
     alert("lesson_id 가 없습니다.");
     location.href = "learning.html";
@@ -240,17 +243,15 @@ function startWebSocket() {
 
     if (msg.type === "error") {
       document.getElementById("statusLine3").textContent = "오류: " + msg.message;
-      document.getElementById("statusLine3").style.color = "#550e0d";
+      document.getElementById("statusLine3").style.color = "#7d2523";
       finishWordRecording();
       return;
     }
     if (msg.type !== "prediction") return;
     if (!state.recording) return;
 
-    // ★ 2번 기준: 손 미감지 피드백 (1번에서 누락되어 인식 불가처럼 보이던 원인)
     if (msg.hand_detected === false) {
       state._noHandCount = (state._noHandCount || 0) + 1;
-      // 3초(30프레임@100ms) 이상 손 미감지 시 안내 메시지 강화
       if (state._noHandCount > 30) {
         document.getElementById("top3Box").innerHTML =
           "<i>손이 감지되지 않아요.<br>카메라 정면에 손을 크게 보여주세요.</i>";
@@ -261,7 +262,6 @@ function startWebSocket() {
     }
     state._noHandCount = 0; // 손 감지되면 카운터 리셋
 
-    // ★ 2번 기준: segment_top3 또는 top3 모두 처리 → 실시간 top3 갱신
     const predictions = msg.segment_top3 || msg.top3 || [];
     if (predictions.length) {
       const top3Html = predictions
@@ -270,7 +270,6 @@ function startWebSocket() {
       document.getElementById("top3Box").innerHTML = top3Html;
     }
 
-    // ★ 2번 기준: score를 prediction마다 실시간으로 갱신 (segment 완료 전에도)
     if (typeof msg.score === "number") {
       const score = Math.round(msg.score || 0);
       console.log("받은 score:", score, "maxScore:", state.maxScore);
@@ -280,7 +279,6 @@ function startWebSocket() {
       }
     }
 
-    // ★ 2번 기준: segment_top3가 왔을 때만 녹화 종료 (세그먼트 분석 완료 신호)
     if (msg.segment_top3) {
       finishWordRecording();
       state.hasAnalysisResult = true;
@@ -294,7 +292,7 @@ function startWebSocket() {
 
   state.ws.onerror = () => {
     document.getElementById("statusLine3").textContent = "WebSocket 오류";
-    document.getElementById("statusLine3").style.color = "#550e0d";
+    document.getElementById("statusLine3").style.color = "#7d2523";
     finishWordRecording();
   };
   state.ws.onclose = () => {
@@ -308,7 +306,7 @@ function stopWebSocket() {
 }
 
 // ════════════════════════════════════════════════════════════
-//  녹화 제어 — 1번 UI 기준 (원형 SVG 타이머)
+//  녹화 제어 
 // ════════════════════════════════════════════════════════════
 function onStartRecord() {
   if (!state.ws || state.ws.readyState !== WebSocket.OPEN) {
@@ -327,8 +325,8 @@ function startWordRecording() {
   updateGauge(0);
   document.getElementById("top3Box").innerHTML = "";
   document.getElementById("statusLine3").textContent = "녹화 중 — 수어를 수행하고 2초간 정지하면 완료됩니다";
-  document.getElementById("statusLine3").style.color = "#550e0d";
-  startTimer();       // 1번 원형 타이머
+  document.getElementById("statusLine3").style.color = "#7d2523";
+  startTimer();    
   startFrameSender();
 }
 
@@ -342,7 +340,7 @@ function finishWordRecording() {
 }
 
 // ════════════════════════════════════════════════════════════
-//  프레임 전송 — 2번 기준 (원본 프레임 전송, 품질 0.85)
+//  프레임 전송 
 // ════════════════════════════════════════════════════════════
 function startFrameSender() {
   const video = document.getElementById("video3");
@@ -373,7 +371,7 @@ function startFrameSender() {
 }
 
 // ════════════════════════════════════════════════════════════
-//  타이머 — 1번 기준 (원형 SVG + 시간 초과 시 자동 확인)
+//  타이머 
 // ════════════════════════════════════════════════════════════
 function startTimer() {
   const wrap = document.getElementById("cameraTimerWrap");
@@ -390,7 +388,7 @@ function startTimer() {
     fill.style.transition = "none";
     fill.style.strokeDasharray = TIMER_CIRCUMFERENCE;
     fill.style.strokeDashoffset = "0";
-    fill.getBoundingClientRect(); // reflow 강제 (애니메이션 리셋)
+    fill.getBoundingClientRect(); 
   }
   if (text) text.textContent = `${RECORD_SECONDS}s`;
 
@@ -411,7 +409,7 @@ function startTimer() {
       } else {
         finishWordRecording();
         document.getElementById("statusLine3").textContent = "시간 초과 — 손이 잘 보이도록 다시 시도하세요";
-        document.getElementById("statusLine3").style.color = "#550e0d";
+        document.getElementById("statusLine3").style.color = "#7d2523";
         showStartButton(true);
         showConfirmButton(false);
         document.getElementById("startRecordBtn").textContent = "다시 녹화";
@@ -433,7 +431,7 @@ function stopTimer() {
 //  결과 확인 및 단계 완료
 // ════════════════════════════════════════════════════════════
 async function onConfirmStep3() {
-  // 2번 기준: 분석 완료된 녹화만 시도 횟수에 반영
+  // 분석 완료된 녹화만 시도 횟수에 반영
   if (!state.hasAnalysisResult) {
     alert("분석이 완료된 녹화만 확인할 수 있어요. 다시 녹화해주세요.");
     return;

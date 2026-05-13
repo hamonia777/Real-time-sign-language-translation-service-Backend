@@ -45,9 +45,18 @@
     white-space: nowrap;           
 }
 
+.chip:hover {
+  background: #f0f2f8;
+  border-color: #1C4476;
+}
+
 .chip.active {
-    background: #1C4476;
-    color: #FFFFFF;
+  background: #1C4476;
+  color: #FFFFFF;
+}
+
+.chip.active:hover {
+  background: #163a66;
 }
 
 .faq-box {
@@ -61,6 +70,18 @@
     font-size: 17px;
     color: #474747;
     margin-bottom: 13px;
+}
+
+.faq-box {
+  transition: opacity 0.2s ease;
+}
+
+.faq-box.fade-out {
+  opacity: 0;
+}
+
+.faq-box.fade-in {
+  opacity: 1;
 }
 
 .faq-content h3 { font-size: 15px; margin-bottom: 9px; color:#34436D; }
@@ -139,7 +160,7 @@
     font-size: 13px;
 }
 
-/* 문의하기 버튼 (140x40 -> 154x44) */
+/* 문의하기 버튼 */
 .submit-inquiry-btn {
     display: block;
     width: 140px; 
