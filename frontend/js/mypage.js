@@ -95,15 +95,40 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(() => {});
 
+        // fetch('/api/v1/profile/me', {
+        //     headers: { 'Authorization': `Bearer ${token}` }
+        // })
+        // .then(res => res.ok ? res.json() : null)
+        // .then(data => {
+        //     if (data && data.nickname) {
+        //         const el = document.getElementById('profileName');
+        //         if (el) el.textContent = data.nickname;
+        //         localStorage.setItem('kakaoNickname', data.nickname);
+        //     }
+        // })
+        // .catch(() => {});
         fetch('/api/v1/profile/me', {
             headers: { 'Authorization': `Bearer ${token}` }
         })
         .then(res => res.ok ? res.json() : null)
         .then(data => {
-            if (data && data.nickname) {
-                const el = document.getElementById('profileName');
-                if (el) el.textContent = data.nickname;
-                localStorage.setItem('kakaoNickname', data.nickname);
+            if (data) {
+                if (data.nickname) {
+                    const elName = document.getElementById('profileName');
+                    if (elName) elName.textContent = data.nickname;
+                    localStorage.setItem('kakaoNickname', data.nickname);
+                }
+
+                if (data.email) {
+                    const elEmail = document.getElementById('profileEmail');
+                    if (elEmail) elEmail.textContent = data.email;
+                    localStorage.setItem('kakaoEmail', data.email);
+                }
+                if (data.phone_num) {
+                    const elPhone = document.getElementById('profilePhone');
+                    if (elPhone) elPhone.textContent = data.phone_num;
+                    localStorage.setItem('userPhone', data.phone_num);
+                }
             }
         })
         .catch(() => {});
