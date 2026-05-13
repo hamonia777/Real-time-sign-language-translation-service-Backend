@@ -72,7 +72,7 @@ graph TD
     Q --> I
     O -->|Yes| R["💾 POST /api/v1/learning/progress<br/>학습 진도 저장"]
     R --> S["📝 StudyLog 자동 생성<br/>학습 시간, 정확도"]
-    S --> T["🎉 완료 축하"]
+    S --> T["🎉 완료"]
     T --> U["📊 학습 통계 페이지"]
     U --> V["🏆 정확도 평가, 소요 시간<br/>다음 학습 추천"]
 ```
