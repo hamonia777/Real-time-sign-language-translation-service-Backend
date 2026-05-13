@@ -71,6 +71,8 @@ function escapeHtml(value) {
 }
 
 async function init() {
+  const mainEl = document.querySelector('.learning-main');
+  if (mainEl) mainEl.classList.add('practice-mode');
   if (!sentenceId) {
     alert("lesson_id 가 없습니다.");
     location.href = "learning.html";
@@ -433,7 +435,7 @@ function startWebSocket() {
 
     if (msg.type === "error") {
       document.getElementById("statusLine3").textContent = "오류: " + msg.message;
-      document.getElementById("statusLine3").style.color = "#550e0d";
+      document.getElementById("statusLine3").style.color = "#7d2523";
       stopRecording();
       return;
     }
@@ -464,7 +466,7 @@ function startWebSocket() {
 
   state.ws.onerror = () => {
     document.getElementById("statusLine3").textContent = "WebSocket 오류";
-    document.getElementById("statusLine3").style.color = "#550e0d";
+    document.getElementById("statusLine3").style.color = "#7d2523";
     stopRecording();
   };
   state.ws.onclose = () => {
@@ -493,7 +495,7 @@ function startSentenceWebSocket() {
 
     if (msg.type === "error") {
       document.getElementById("statusLine4").textContent = "오류: " + msg.message;
-      document.getElementById("statusLine4").style.color = "#550e0d";
+      document.getElementById("statusLine4").style.color = "#7d2523";
       stopSentenceRecording();
       return;
     }
@@ -521,7 +523,7 @@ function startSentenceWebSocket() {
   };
   state.sentenceWs.onerror = () => {
     document.getElementById("statusLine4").textContent = "WebSocket 오류";
-    document.getElementById("statusLine4").style.color = "#550e0d";
+    document.getElementById("statusLine4").style.color = "#7d2523";
     stopSentenceRecording();
   };
   state.sentenceWs.onclose = () => stopSentenceRecording();
@@ -557,7 +559,7 @@ function onStartSentenceRecord() {
   document.getElementById("startSentenceRecordBtn").style.display = "none";
   document.getElementById("confirmSentenceBtn").style.display = "none";
   document.getElementById("statusLine4").textContent = "녹화 중 — 문장을 수어 어순대로 수행하세요.";
-  document.getElementById("statusLine4").style.color = "#550e0d";
+  document.getElementById("statusLine4").style.color = "#7d2523";
   startSentenceFrameSender();
   state.sentenceRecordTimer = setInterval(() => {
     const elapsed = Date.now() - state.sentenceRecordStartAt;
@@ -590,7 +592,7 @@ function finishSentenceRecording() {
     document.getElementById("startSentenceRecordBtn").style.display = "inline-block";
     document.getElementById("startSentenceRecordBtn").textContent = "다시 녹화";
     document.getElementById("statusLine4").textContent = "WebSocket 연결이 끊겼습니다. 다시 시도하세요.";
-    document.getElementById("statusLine4").style.color = "#550e0d";
+    document.getElementById("statusLine4").style.color = "#7d2523";
   }
 }
 
@@ -682,7 +684,7 @@ function onStartRecord() {
   showStartButton(false);
   showConfirmButton(false);
   document.getElementById("statusLine3").textContent = "녹화 중 — 수어를 수행하고 2초간 정지하면 완료됩니다";
-  document.getElementById("statusLine3").style.color = "#550e0d";
+  document.getElementById("statusLine3").style.color = "#7d2523";
   startFrameSender();
   startProgressAnimation();
 }
@@ -732,7 +734,7 @@ function startProgressAnimation() {
       stopRecording();
       state.hasAnalysisResult = false;
       document.getElementById("statusLine3").textContent = "시간 초과 — 다시 시도하세요";
-      document.getElementById("statusLine3").style.color = "#550e0d";
+      document.getElementById("statusLine3").style.color = "#7d2523";
       showStartButton(true);
       showConfirmButton(false);
       document.getElementById("startRecordBtn").textContent = "다시 녹화";
@@ -883,7 +885,7 @@ function onConfirmSentence() {
     document.getElementById("confirmSentenceBtn").style.display = "none";
     document.getElementById("statusLine4").textContent =
       `점수가 부족합니다. 다시 시도하세요. (${state.attemptSentence}/3)`;
-    document.getElementById("statusLine4").style.color = "#550e0d";
+    document.getElementById("statusLine4").style.color = "#7d2523";
     return;
   }
 

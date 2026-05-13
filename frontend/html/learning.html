@@ -29,39 +29,35 @@
     </header>
 
     <main class="learning-main">
-        <div class="learn-wrap">
-            <!-- 가령: 26/04/19 수정내용: DB 시드 초기화 버튼 제거 -->
-            <div class="learning-header">
-                <h1>지문자 학습</h1>
-                <p>한국어 자음 14개, 모음 14개를 단계별로 학습해보세요.</p>
-            </div>
-
-            <section class="category-section">
-                <h2 class="category-title">자음</h2>
-                <div id="consonantList" class="lesson-grid"></div>
-            </section>
-
-            <section class="category-section">
-                <h2 class="category-title">모음</h2>
-                <div id="vowelList" class="lesson-grid"></div>
-            </section>
-
-            <!-- 가령: 26/04/19 수정내용: 단어 학습 섹션 신규 추가 (카테고리 탭 + 단어 그리드) -->
-            <div class="learning-header section-start">
-                <h1>단어 학습</h1>
-                <p>카테고리를 선택해 단어를 학습해보세요.</p>
-            </div>
-
-            <div id="wordTabs" class="word-tabs"></div>
-            <div id="wordList" class="lesson-grid"></div>
-
-            <!-- 26.05.07 : 가령 : 수정 내용 - 단어 목록 다음에 문장 학습 섹션이 나오도록 중복 섹션 정리 -->
-            <div class="learning-header section-start">
-                <h1>문장 학습</h1>
-                <p>수어 어순으로 단어를 익힌 뒤, 문장을 통째로 따라해보세요.</p>
-            </div>
-            <div id="sentenceList" class="lesson-grid sentence-grid"></div>
+    <!-- learn-wrap 제거 -->
+        <div class="learning-header">
+            <h1>지문자 학습</h1>
+            <p>한국어 자음 14개, 모음 14개를 단계별로 학습해보세요.</p>
         </div>
+
+        <section class="category-section">
+            <h2 class="category-title">자음</h2>
+            <div id="consonantList" class="lesson-grid"></div>
+        </section>
+
+        <section class="category-section">
+            <h2 class="category-title">모음</h2>
+            <div id="vowelList" class="lesson-grid"></div>
+        </section>
+
+        <div class="learning-header section-start">
+            <h1>단어 학습</h1>
+            <p>카테고리를 선택해 단어를 학습해보세요.</p>
+        </div>
+
+        <div id="wordTabs" class="word-tabs"></div>
+        <div id="wordList" class="lesson-grid"></div>
+
+        <div class="learning-header section-start">
+            <h1>문장 학습</h1>
+            <p>수어 어순으로 단어를 익힌 뒤, 문장을 통째로 따라해보세요.</p>
+        </div>
+        <div id="sentenceList" class="lesson-grid sentence-grid"></div>
     </main>
 
     <!-- 26.4.30 : 가령 : 수정 내용 - learning.js 변경사항 반영을 위한 캐시 버전 갱신 -->

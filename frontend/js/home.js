@@ -197,14 +197,41 @@ document.addEventListener('DOMContentLoaded', () => {
     const chips = document.querySelectorAll('.chip');
 
     if (faqTitle && faqContent && chips.length > 0) {
-        const faqData = {
-            "카메라 이슈": `<h3>브라우저 권한 설정</h3><p>주소창 왼쪽 자물쇠 아이콘을 눌러 허용해 주세요.</p>`,
-            "순위 업데이트": `<h3>실시간 반영</h3><p>학습 즉시 경험치가 반영됩니다.</p>`,
-            "카카오톡 채널": `<h3>1:1 문의</h3><p>상담 운영시간은 10:00 - 17:00입니다.</p>`,
-            "학습 단어": `<h3>단어 업데이트</h3><p>매주 새로운 수어 단어가 추가됩니다.</p>`,
-            "학습 알림": `<h3>Push 알림</h3><p>마이페이지에서 알림 시간을 설정하세요.</p>`,
-            "수어 지원 문의": `<h3>영상 제보</h3><p>새로운 수어 영상을 기다리고 있습니다.</p>`,
-            "후원 문의": `<h3>연구소 후원</h3><p>교육 콘텐츠 제작에 소중히 사용됩니다.</p>`
+const faqData = {
+            "카메라 이슈": `
+                <h3>브라우저 권한 및 하드웨어 설정</h3>
+                <p>1. 주소창 왼쪽 자물쇠 아이콘을 눌러 카메라 권한을 '허용'으로 변경해 주세요.</p>
+                <p>2. 다른 프로그램(Zoom, Meet 등)에서 카메라를 사용 중인지 확인해 주세요.</p>
+                <p>3. 지속적인 오류 발생 시 브라우저를 완전히 종료 후 재접속하시거나, 크롬(Chrome) 브라우저 사용을 권장합니다.</p>`,
+            
+            "순위 업데이트": `
+                <h3>실시간 경험치 반영 및 랭킹 시스템</h3>
+                <p>학습 완료 즉시 경험치가 반영되며, 랭킹 리스트는 최대 5분 이내에 동기화됩니다.</p>
+                <p>동일 점수인 경우, 먼저 해당 점수에 도달한 사용자가 상위 순위에 노출됩니다.</p>`,
+            
+            "카카오톡 채널": `
+                <h3>1:1 맞춤 상담 및 운영 안내</h3>
+                <p>상담 운영시간: 평일 10:00 - 17:00 (점심시간 12:00 - 13:00 제외)</p>
+                <p>주말 및 공휴일 접수된 문의는 영업일 기준 순차적으로 답변해 드립니다. 채널 추가 시 공지사항과 이벤트 소식을 가장 먼저 받아보실 수 있습니다.</p>`,
+            
+            "학습 단어": `
+                <h3>매주 업데이트되는 단어 라이브러리</h3>
+                <p>새로운 수어 단어가 매주 월요일 업데이트됩니다.</p>
+                <p>학습하고 싶은 특정 분야의 단어가 있다면 '수어 지원 문의'를 통해 자유롭게 의견을 남겨주세요.</p>`,
+            
+            "학습 알림": `
+                <h3>스마트 Push 알림 설정</h3>
+                <p>설정 방법: 마이페이지 > 설정 > 알림 설정에서 알림 허용 버튼을 누르세요.</p>`,
+            
+            "수어 지원 문의": `
+                <h3>수어 영상 제보 및 콘텐츠 제안</h3>
+                <p>지역별 방언이나 고유 명사 등 새로운 수어 영상을 기다리고 있습니다.</p>
+                <p>제보해주신 영상은 내부 검토 후 학습 콘텐츠 제작에 적극 반영되며, 채택 시 소정의 리워드를 드립니다.</p>`,
+            
+            "후원 문의": `
+                <h3>수어 교육 연구소 후원 안내</h3>
+                <p>여러분의 소중한 후원금은 AI 수어 인식 기술 고도화 및 취약계층 교육 콘텐츠 보급에 전액 사용됩니다.</p>
+                <p>정기 후원 및 기업 후원 관련 상세 제안서는 이메일로 요청해 주시면 안내해 드리겠습니다.</p>`
         };
 
         // 초기화
@@ -216,8 +243,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 chip.classList.add('active');
                 
                 const category = chip.innerText.trim();
-                faqTitle.innerText = `Q. ${category}`;
-                faqContent.innerHTML = faqData[category] || "<p>준비 중...</p>";
+                const box = document.querySelector('.faq-box');
+
+                // fade out
+                box.style.transition = 'opacity 0.3s ease';
+                box.style.opacity = '0';
+
+                setTimeout(() => {
+                    faqTitle.innerText = `Q. ${category}`;
+                    faqContent.innerHTML = faqData[category] || "<p>준비 중...</p>";
+                    // fade in
+                    box.style.opacity = '1';
+                }, 300);
             };
         });
     }
@@ -243,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pages = document.querySelectorAll('.step-page');
     let step = 1;
 
-    // --- ⭐ 핵심: 가입 직후 첫 로그인인지 체크 ---
+    // --- 핵심: 가입 직후 첫 로그인인지 체크 ---
     const needsSurvey = localStorage.getItem('needsSurvey') === 'true';
     if (overlay && needsSurvey) {
         overlay.style.display = 'flex';

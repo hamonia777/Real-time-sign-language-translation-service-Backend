@@ -73,7 +73,7 @@
     color: #392020;
 }
 
-/* 로그아웃 버튼 스타일 (피그마 시안 반영) */
+/* 로그아웃 버튼 스타일 */
 .header-auth-btn.logout-style {
     background: #FFFFFF;      
     border: 1px solid #1F2A58;    

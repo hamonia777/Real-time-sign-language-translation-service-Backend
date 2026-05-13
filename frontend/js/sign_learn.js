@@ -26,6 +26,8 @@ const state = {
 };
 
 async function init() {
+  const mainEl = document.querySelector('.learning-main');
+  if (mainEl) mainEl.classList.add('practice-mode');
   if (!lessonId) {
     alert("lesson_id 가 없습니다.");
     location.href = "learning.html";
@@ -112,13 +114,10 @@ function bindNav() {
     state.attempt = 1;
     state.maxScore = 0;
     state.step = 1;
-
-    // 모든 step 숨기고 1만 보이기
     for (let i = 1; i <= 4; i++) {
       document.getElementById(`step${i}`).style.display = i === 1 ? "block" : "none";
     }
 
-    // transition 끄고 즉시 리셋
     const nodes = document.querySelectorAll("#stepper .node");
     const lines = document.querySelectorAll("#stepper .line");
 
@@ -156,7 +155,6 @@ function gotoStep(n) {
   const lines = document.querySelectorAll("#stepper .line");
 
 if (n > prev) {
-    // 앞으로: 선(0.2s) → 도트(0.2s 뒤에 시작, 0.25s 동안)
     lines.forEach((line, i) => {
       line.classList.toggle("done", i + 1 < n);
     });
@@ -169,7 +167,6 @@ if (n > prev) {
       });
     }, 200);
   } else {
-    // 뒤로: 도트 먼저 → 선(0.2s 뒤에 시작)
     nodes.forEach((node, i) => {
       node.classList.remove("active");
       if (i + 1 < n) node.classList.add("done");
@@ -399,7 +396,7 @@ function markLessonCompleted(id) {
 }
 
 const RECORD_SECONDS = 10;
-const TIMER_CIRCUMFERENCE = 107; // 2 * π * 17
+const TIMER_CIRCUMFERENCE = 107;
 let timerInterval = null;
 let timerSeconds = RECORD_SECONDS;
 
