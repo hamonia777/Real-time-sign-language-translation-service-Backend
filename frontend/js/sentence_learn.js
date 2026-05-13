@@ -177,29 +177,10 @@ function bindNav() {
   });
 }
 
-// 가령: 5월 11일 : 수정 내용 - Step 1 단어 확인에서 수어 어순 단어를 하나씩 넘겨 표시
-function renderPreviewWord() {
-  const words = state.sentence.words;
-  const current = words[state.previewWordIdx];
 
-  document.getElementById("sentenceBig").textContent = "수어 영상 보이는 곳";
-  document.getElementById("wordOrderBox").innerHTML = words
-    .map((w, idx) => {
-      const text = `${idx + 1}. ${escapeHtml(w.title)}`;
-      return idx === state.previewWordIdx
-        ? `<span class="word-order-current">${text}</span>`
-        : text;
-    })
-    .join("<br>");
-  updatePreviewWordVideo(current);
-  updateSentenceVideoListActive();
-}
-
-function selectPreviewWord(idx) {
-  state.previewWordIdx = Math.max(0, Math.min(state.sentence.words.length - 1, idx));
-  renderPreviewWord();
-}
-
+/* ──────────────────────────────────────────────────────────────
+          혜미 추가 : 문장 구성 단어 리스트 관련 함수 시작
+  ─────────────────────────────────────────────────────────────── */
 async function renderSentenceVideoList() {
   const container = document.getElementById("sentenceVideoList");
   if (!container || !state.sentence?.words) return;
@@ -257,18 +238,27 @@ function updateSentenceVideoListActive() {
   });
 }
 
-function renderWordChips(containerId, activeIdx, doneCount) {
-  const container = document.getElementById(containerId);
-  if (!container || !state.sentence?.words) return;
+function selectPreviewWord(idx) {
+  state.previewWordIdx = Math.max(0, Math.min(state.sentence.words.length - 1, idx));
+  renderPreviewWord();
+}
 
-  container.innerHTML = state.sentence.words
-    .map((word, idx) => {
-      const classes = ["sentence-word-chip"];
-      if (idx < doneCount) classes.push("done");
-      if (idx === activeIdx) classes.push("active");
-      return `<span class="${classes.join(" ")}">${escapeHtml(word.title)}</span>`;
+// 가령: 5월 11일 : 수정 내용 - Step 1 단어 확인에서 수어 어순 단어를 하나씩 넘겨 표시
+function renderPreviewWord() {
+  const words = state.sentence.words;
+  const current = words[state.previewWordIdx];
+
+  document.getElementById("sentenceBig").textContent = "수어 영상 보이는 곳";
+  document.getElementById("wordOrderBox").innerHTML = words
+    .map((w, idx) => {
+      const text = `${idx + 1}. ${escapeHtml(w.title)}`;
+      return idx === state.previewWordIdx
+        ? `<span class="word-order-current">${text}</span>`
+        : text;
     })
-    .join("");
+    .join("<br>");
+  updatePreviewWordVideo(current);
+  updateSentenceVideoListActive();
 }
 
 // 가령: 5월 11일 : 수정 내용 - 문장 단어 확인에서 현재 단어별 연결 영상 표시
@@ -304,6 +294,23 @@ async function updatePreviewWordVideo(word) {
       document.getElementById("sentenceBig").style.display = "block";
     }
   };
+}
+/* ───────────────────────────────────────────────────────────
+          혜미 추가 : 문장 구성 단어 리스트 관련 함수 끝
+  ──────────────────────────────────────────────────────────── */
+
+function renderWordChips(containerId, activeIdx, doneCount) {
+  const container = document.getElementById(containerId);
+  if (!container || !state.sentence?.words) return;
+
+  container.innerHTML = state.sentence.words
+    .map((word, idx) => {
+      const classes = ["sentence-word-chip"];
+      if (idx < doneCount) classes.push("done");
+      if (idx === activeIdx) classes.push("active");
+      return `<span class="${classes.join(" ")}">${escapeHtml(word.title)}</span>`;
+    })
+    .join("");
 }
 
 function gotoStep(n) {
