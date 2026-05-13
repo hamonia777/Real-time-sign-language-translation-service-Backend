@@ -111,36 +111,77 @@ function bindNav() {
   document.getElementById("retryBtn").addEventListener("click", () => {
     state.attempt = 1;
     state.maxScore = 0;
-    gotoStep(1);
+    state.step = 1;
+
+    // 모든 step 숨기고 1만 보이기
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById(`step${i}`).style.display = i === 1 ? "block" : "none";
+    }
+
+    // transition 끄고 즉시 리셋
+    const nodes = document.querySelectorAll("#stepper .node");
+    const lines = document.querySelectorAll("#stepper .line");
+
+    lines.forEach((line) => {
+      line.style.transition = "none";
+      line.classList.remove("done");
+    });
+
+    nodes.forEach((node, i) => {
+      node.querySelector(".dot").style.transition = "none";
+      node.classList.remove("active", "done");
+      if (i === 0) node.classList.add("active");
+    });
+
+    // reflow 후 transition 복구
+    document.querySelector("#stepper").getBoundingClientRect();
+
+    lines.forEach((line) => line.style.transition = "");
+    nodes.forEach((node) => node.querySelector(".dot").style.transition = "");
   });
 }
 
 function gotoStep(n) {
-  // cleanup
-  if (state.step === 2 || state.step === 3) {
-    stopCamera();
-  }
-  if (state.step === 3) {
-    stopWebSocket();
-  }
+  if (state.step === 2 || state.step === 3) stopCamera();
+  if (state.step === 3) stopWebSocket();
 
+  const prev = state.step;
   state.step = n;
+
   for (let i = 1; i <= 4; i++) {
     document.getElementById(`step${i}`).style.display = i === n ? "block" : "none";
   }
-  document.getElementById("pageTitle").textContent = `수어 학습 페이지 - 단계 ${n}`;
 
-  // stepper 상태 업데이트
   const nodes = document.querySelectorAll("#stepper .node");
   const lines = document.querySelectorAll("#stepper .line");
-  nodes.forEach((node, i) => {
-    node.classList.remove("active", "done");
-    if (i + 1 < n) node.classList.add("done");
-    else if (i + 1 === n) node.classList.add("active");
-  });
-  lines.forEach((line, i) => {
-    line.classList.toggle("done", i + 1 < n);
-  });
+
+if (n > prev) {
+    // 앞으로: 선(0.2s) → 도트(0.2s 뒤에 시작, 0.25s 동안)
+    lines.forEach((line, i) => {
+      line.classList.toggle("done", i + 1 < n);
+    });
+    setTimeout(() => {
+      nodes.forEach((node, i) => {
+        node.classList.remove("active");
+        if (i + 1 < n) node.classList.add("done");
+        else if (i + 1 === n) node.classList.add("active");
+        else node.classList.remove("done");
+      });
+    }, 200);
+  } else {
+    // 뒤로: 도트 먼저 → 선(0.2s 뒤에 시작)
+    nodes.forEach((node, i) => {
+      node.classList.remove("active");
+      if (i + 1 < n) node.classList.add("done");
+      else if (i + 1 === n) node.classList.add("active");
+      else node.classList.remove("done");
+    });
+    setTimeout(() => {
+      lines.forEach((line, i) => {
+        line.classList.toggle("done", i + 1 < n);
+      });
+    }, 200);
+  }
 
   if (n === 2) startCameraForStep(2);
   if (n === 3) {
@@ -161,13 +202,21 @@ async function startCameraForStep(n) {
     video.srcObject = state.stream;
     if (n === 2) {
       document.getElementById("cameraStatus2").textContent = "카메라 상태 : 정상";
+      const checkBtn = document.getElementById("cameraCheckBtn");
+      if (checkBtn) {
+        checkBtn.onclick = async () => {
+          document.getElementById("cameraStatus2").textContent = "카메라 상태 : 확인 중...";
+          stopCamera();
+          await startCameraForStep(2);
+        };
+      }
     }
     if (n === 3) {
       document.getElementById("statusLine3").textContent = "카메라 연결됨";
     }
   } catch (e) {
     if (n === 2) {
-      document.getElementById("cameraStatus2").textContent = "카메라 상태 : 실패 (" + e.message + ")";
+      document.getElementById("cameraStatus2").textContent = "카메라 상태 : 연결 실패";
     }
     if (n === 3) {
       document.getElementById("statusLine3").textContent = "카메라 실패: " + e.message;
@@ -196,6 +245,7 @@ function startWebSocket() {
 
   state.ws.onopen = () => {
     document.getElementById("statusLine3").textContent = "WebSocket 연결됨 — 손을 카메라에 보여주세요";
+    startTimer(); 
     startFrameSender();
   };
   state.ws.onmessage = (ev) => {
@@ -220,7 +270,7 @@ function startWebSocket() {
     const score = Math.round(msg.score || 0);
     if (score > state.maxScore) {
       state.maxScore = score;
-      document.getElementById("scoreVal").textContent = score;
+      updateGauge(score); 
     }
   };
   state.ws.onerror = () => {
@@ -235,6 +285,7 @@ function startWebSocket() {
 }
 
 function stopWebSocket() {
+  stopTimer(); 
   if (state.sendTimer) {
     clearInterval(state.sendTimer);
     state.sendTimer = null;
@@ -279,58 +330,60 @@ function getCookie(name) {
 }
 
 async function onConfirmStep3() {
+  stopTimer();
+  stopWebSocket();
+
   const score = state.maxScore;
   state.lastScore = score;
 
+  // 통과 여부는 클라이언트에서 즉시 판단
+  const isPassed = score >= PASS_THRESHOLD;
+
+  // 서버 저장은 백그라운드에서 (화면 전환 안 기다림)
   const token = getCookie("access_token");
   const headers = { "Content-Type": "application/json" };
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  try {
-    const res = await fetch(`${API_BASE}/results`, {
-      method: "POST",
-      headers: headers,
-      body: JSON.stringify({
-        lesson_id: lessonId,
-        score: score,
-        attempt: state.attempt,
-      }),
-    });
-    if (res.status === 401) {
-      alert("로그인이 필요합니다. 로그인 후 다시 시도해주세요.");
-      location.href = "login.html";
-      return;
-    }
-    const data = await res.json();
-    finishStep3(data);
-  } catch (e) {
-    finishStep3({
+  fetch(`${API_BASE}/results`, {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify({
       lesson_id: lessonId,
       score: score,
-      is_passed: score >= PASS_THRESHOLD,
       attempt: state.attempt,
-    });
-  }
+    }),
+  }).catch((e) => console.warn("결과 저장 실패", e));
+
+  // 화면 전환은 즉시
+  finishStep3({ score, is_passed: isPassed, attempt: state.attempt });
 }
 
 function finishStep3(result) {
-  const passed = result.is_passed || state.attempt >= MAX_ATTEMPTS;
-  if (!result.is_passed && state.attempt < MAX_ATTEMPTS) {
+  const failMsg = document.getElementById('failMsg');
+  const isPassed = result.is_passed;
+
+  if (!isPassed && state.attempt < MAX_ATTEMPTS) {
+    if (failMsg) failMsg.style.display = 'block';
     state.attempt += 1;
     document.getElementById("attemptLabel").textContent = state.attempt;
     state.maxScore = 0;
-    document.getElementById("scoreVal").textContent = "0";
+    document.getElementById("scoreVal").textContent = "0점";
+    updateGauge(0);
     alert(`점수 ${result.score}점 — 재시도 (${state.attempt}/${MAX_ATTEMPTS})`);
+    if (failMsg) failMsg.style.display = 'none';
+
+    startWebSocket();
     return;
   }
 
-  document.getElementById("doneScore").textContent = result.score;
-  const msg = result.is_passed
-    ? "축하합니다!<br>학습을 완료했습니다!"
-    : `3회 시도 완료<br>최고 점수: ${result.score}점`;
-  document.getElementById("completeMsg").innerHTML = msg;
-  markLessonCompleted(lessonId);
-  gotoStep(4);
+  const finalScore = result.score || state.maxScore;
+  const doneScoreEl = document.getElementById("doneScore");
+  if (doneScoreEl) doneScoreEl.textContent = finalScore;
+
+  if (isPassed) markLessonCompleted(lessonId);
+
+  // 3초 후 완료 화면으로 전환
+  setTimeout(() => gotoStep(4), 2000);
 }
 
 function markLessonCompleted(id) {
@@ -345,4 +398,58 @@ function markLessonCompleted(id) {
   }
 }
 
+const RECORD_SECONDS = 10;
+const TIMER_CIRCUMFERENCE = 107; // 2 * π * 17
+let timerInterval = null;
+let timerSeconds = RECORD_SECONDS;
+
+function startTimer() {
+  const wrap = document.getElementById('cameraTimerWrap');
+  const text = document.getElementById('cameraTimerText');
+  const fill = document.getElementById('timerFill');
+  if (!wrap) return;
+
+  if (timerInterval) clearInterval(timerInterval);
+
+  timerSeconds = RECORD_SECONDS;
+  wrap.style.display = 'block';
+
+  if (fill) {
+    fill.style.transition = 'none';
+    fill.style.strokeDasharray = TIMER_CIRCUMFERENCE;
+    fill.style.strokeDashoffset = '0';
+    fill.getBoundingClientRect();
+  }
+
+  if (text) text.textContent = RECORD_SECONDS + 's';
+
+  // tick()을 즉시 호출하지 않고 interval만 등록 → 10초 정확히 보장
+  timerInterval = setInterval(() => {
+    timerSeconds--;
+    if (text) text.textContent = timerSeconds + 's';
+    if (fill) {
+      fill.style.transition = 'stroke-dashoffset 1s linear';
+      const offset = TIMER_CIRCUMFERENCE * (1 - timerSeconds / RECORD_SECONDS);
+      fill.style.strokeDashoffset = offset;
+    }
+    if (timerSeconds <= 0) {
+      stopTimer();
+      onConfirmStep3(); // .click() 대신 직접 호출
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  const wrap = document.getElementById('cameraTimerWrap');
+  if (wrap) wrap.style.display = 'none';
+}
+
+function updateGauge(score) {
+  const val = document.getElementById('scoreVal');
+  if (val) val.textContent = score + '점';
+}
 init();

@@ -65,6 +65,11 @@ body {
     letter-spacing: 0em;
 }
 
+.nav-bar a.active {
+    font-weight: 500;
+    color: #0C0C0C;
+}
+
 .login-btn {
   background: #1F2A58;
   color: #fff;
@@ -87,6 +92,23 @@ body {
   font-size: 12px;
   cursor: pointer;
   letter-spacing: 0.01em;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f9f9f9;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d6d6d6;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #d3d3d3;
 }
 
 /* ── Hero Section ── */
