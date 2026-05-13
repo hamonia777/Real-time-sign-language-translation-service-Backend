@@ -11,7 +11,6 @@ body.search-page {
     background-color: #FFFFFF;
     font-family: 'Inter', sans-serif;
     color: #474747;
-    line-height: 1.6;
 }
 
 .search-container {
@@ -40,6 +39,7 @@ body.search-page {
     position: relative;
 }
 
+
 #searchInput {
     flex: 1;
     height: 40px;
@@ -47,7 +47,7 @@ body.search-page {
     border: 1px solid #D6D6D6;
     border-radius: 5px;
     padding: 0 20px;
-    font-size: 14px;
+    font-size: 13px;
     color: #474747;
     outline: none;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -248,6 +248,13 @@ body.search-page {
     cursor: pointer;
     white-space: nowrap;
     transition: opacity 0.2s, background 0.2s;
+    width: 110px;      
+    text-align: center;  
+}
+
+.btn-basket.in-basket {
+    background: #2E5A8A;
+    opacity: 0.85;
 }
 
 .btn-learn {
@@ -287,7 +294,7 @@ body.search-page {
     text-align: center;
     padding: 150px 0;
     color: #9F9F9F;
-    font-size: 14px;
+    font-size: 13px;
     letter-spacing: -0.01em;
 }
 
@@ -308,7 +315,7 @@ body.search-page {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #1C4476;
+    background: #d3d3d3;
 }
 
 /* 포커스 상태에서의 시각적 강조 */

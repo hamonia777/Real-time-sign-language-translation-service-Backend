@@ -12,6 +12,7 @@ async function setupSignLessonVideo(lesson) {
   const video = document.getElementById("lessonVideo");
   const targetChar = document.getElementById("targetCharBig");
   const fallback = document.getElementById("videoFallback");
+  const playBtn = document.getElementById("videoPlayBtn");
   const videoUrl = await resolveSignLessonVideoUrl(lesson);
 
   if (!videoUrl) {
@@ -23,8 +24,26 @@ async function setupSignLessonVideo(lesson) {
   video.style.display = "block";
   targetChar.style.display = "none";
   fallback.style.display = "none";
+
+  // 재생 버튼 표시
+  if (playBtn) {
+    playBtn.style.display = "flex";
+    playBtn.onclick = () => {
+      if (video.paused) {
+        video.play();
+        playBtn.classList.add("playing");
+      } else {
+        video.pause();
+        playBtn.classList.remove("playing");
+      }
+    };
+    // 영상 끝나면 버튼 다시 표시
+    video.onended = () => playBtn.classList.remove("playing");
+  }
+
   video.onerror = () => {
     showEmptySignVideo(video, targetChar, fallback);
+    if (playBtn) playBtn.style.display = "none";
   };
 }
 
