@@ -9,6 +9,7 @@ function getCookie(name) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    document.body.classList.add('loaded');
 
     /* ── 1. 현재 페이지에 맞는 nav 링크 강조 ── */
     const currentPage = location.pathname.split('/').pop();
@@ -51,4 +52,25 @@ document.addEventListener('DOMContentLoaded', () => {
             location.href = 'login.html';
         };
     }
+
+    /* ── 4. 페이지 전환 애니메이션 ── */
+    document.body.style.opacity = '1';
+    document.body.style.transition = 'opacity 0.1s ease';
+
+    // 모든 링크 클릭 시 fade out 후 이동
+    document.querySelectorAll('a[href]').forEach(a => {
+        a.addEventListener('click', (e) => {
+            const href = a.getAttribute('href');
+            // 외부 링크, 앵커, javascript: 제외
+            if (!href || href.startsWith('#') || href.startsWith('javascript') || href.startsWith('http')) return;
+            e.preventDefault();
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                location.href = href;
+            }, 100);
+        });
+    });
+
+    // 버튼으로 location.href 이동하는 경우도 커버
+    const originalHref = Object.getOwnPropertyDescriptor(window.Location.prototype, 'href');
 });
