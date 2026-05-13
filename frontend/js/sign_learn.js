@@ -48,6 +48,13 @@ async function init() {
   await markLearningStarted();
   await loadResumeAttempt();
   bindNav();
+
+  // 가령: 5월 11일 : 수정 내용 - 1단계 학습 영상을 sign_video.js에서 설정
+  if (typeof setupSignLessonVideo === "function") {
+    setupSignLessonVideo(state.lesson).catch((e) => {
+      console.warn("학습 영상 설정 실패", e);
+    });
+  }
 }
 
 // 26.05.06 : 가령 : 수정 내용 - 학습 페이지 진입만 해도 진행 중 학습으로 DB에 기록

@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import os
 from pathlib import Path  # [추가] 정적 파일 경로 처리를 위해 추가
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -49,6 +50,16 @@ frontend_dir = Path(__file__).resolve().parent.parent / "frontend"
 app.mount("/css", StaticFiles(directory=frontend_dir / "css"), name="css")
 app.mount("/js", StaticFiles(directory=frontend_dir / "js"), name="js")
 app.mount("/images", StaticFiles(directory=frontend_dir / "images"), name="images")
+# 가령: 5월 11일 : 수정 내용 - 영상 매핑 JSON을 프론트에서 읽을 수 있도록 data 폴더 서빙
+app.mount("/data", StaticFiles(directory=frontend_dir / "data"), name="data")
+
+# 가령: 5월 11일 : 수정 내용 - 수어 학습 1단계 영상 파일 서빙
+# 배포 시에는 SIGN_VIDEO_DIR 또는 프론트의 VIDEO_BASE_URL을 S3/CloudFront 경로로 교체하면 된다.
+default_video_dir = Path.home() / "Downloads" / "data" / "data_set"
+video_dir = Path(os.getenv("SIGN_VIDEO_DIR", default_video_dir)).expanduser()
+if not video_dir.exists():
+    video_dir = frontend_dir / "videos"
+app.mount("/videos", StaticFiles(directory=video_dir), name="videos")
 
 # 가령: 26/04/19 수정내용: frontend/logo.png 를 루트 경로로 서빙 (HTML 에서 ../logo.png 참조 대응)
 @app.get("/logo.png")

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>문장 학습</title>
     <link rel="stylesheet" href="../css/home.css">
-    <link rel="stylesheet" href="../css/learning.css">
+    <link rel="stylesheet" href="../css/learning.css?v=260511">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -46,7 +46,17 @@
             <section id="step1" class="step-view">
                 <div class="learn-body">
                     <div class="video-box">
-                        <div class="char-huge" id="sentenceBig" style="font-size: 24px; padding: 20px; text-align:center; line-height:1.8;">로딩 중...</div>
+                        <!-- 가령: 5월 11일 : 수정 내용 - 문장 학습 단어 확인을 순서대로 넘기는 UI로 변경 -->
+                        <div class="sentence-word-preview">
+                            <div class="sentence-word-count" id="sentenceWordCount">1/1</div>
+                            <!-- 가령: 5월 11일 : 수정 내용 - 현재 확인 중인 문장 단어의 연결 영상을 표시 -->
+                            <video id="sentenceWordVideo" class="learn-video sentence-word-video" controls playsinline preload="metadata" style="display:none;"></video>
+                            <div class="char-huge" id="sentenceBig" style="font-size: 64px; padding: 20px; text-align:center; line-height:1.4;">로딩 중...</div>
+                            <div class="sentence-word-controls">
+                                <button class="btn-secondary" id="prevPreviewWord" type="button">이전 단어</button>
+                                <button class="btn-secondary" id="nextPreviewWord" type="button">다음 단어</button>
+                            </div>
+                        </div>
                     </div>
                     <aside class="side-info">
                         <h3>최종 문장</h3>
@@ -159,6 +169,7 @@
     </main>
 
     <!-- 가령: 260422: 수정 내용 - 캐시 우회용 버전 쿼리 추가 -->
-    <script src="../js/sentence_learn.js?v=260507"></script>
+    <script src="../js/sign_video.js?v=260511"></script>
+    <script src="../js/sentence_learn.js?v=260511"></script>
 </body>
 </html>
