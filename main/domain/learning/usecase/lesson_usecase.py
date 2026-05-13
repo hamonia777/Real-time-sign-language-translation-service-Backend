@@ -1,5 +1,5 @@
 # 가령: 26/04/19 수정내용: SaveResultUseCase 가 user_id 를 받아 user_lesson_progress 에 upsert 하도록 변경
-from datetime import datetime
+from datetime import date, datetime, timedelta
 
 from fastapi import Depends
 
@@ -9,6 +9,8 @@ from main.domain.UserLessonProgress.repository.user_lesson_progress_repository i
     get_user_lesson_progress_repository,
 )
 from main.domain.learning.dto.lesson_dto import (
+    AchievementDayDto,
+    AchievementResponseDto,
     LessonProgressItemDto,
     LessonListResponseDto,
     LessonResponseDto,
@@ -16,6 +18,8 @@ from main.domain.learning.dto.lesson_dto import (
     SaveResultRequestDto,
     SaveResultResponseDto,
     SeedResponseDto,
+    StartProgressRequestDto,
+    StartProgressResponseDto,
     # 가령: 260422: 수정 내용 - 문장 시드 응답 DTO import
     SeedSentencesResponseDto,
     # 가령: 260422: 수정 내용 - 문장+수어어순단어 조회 응답 DTO import
@@ -177,6 +181,52 @@ class SaveResultUseCase:
         )
 
 
+# 26.05.06 : 가령 : 수정 내용 - 학습 시작만 해도 마이페이지 진행 중 학습에 표시되도록 기록 생성
+class StartLearningProgressUseCase:
+    def __init__(
+        self,
+        service: LessonService = Depends(),
+        progress_repo: UserLessonProgressRepository = Depends(
+            get_user_lesson_progress_repository
+        ),
+    ):
+        self.service = service
+        self.progress_repo = progress_repo
+
+    def execute(
+        self, req: StartProgressRequestDto, user_id: int
+    ) -> StartProgressResponseDto:
+        self.service.get_lesson(req.lesson_id)
+        existing = self.progress_repo.find_by_user_and_lesson(user_id, req.lesson_id)
+
+        if existing is None:
+            progress = UserLessonProgress(
+                user_id=user_id,
+                lesson_id=req.lesson_id,
+                status="in_progress",
+                attempt=0,
+                updated_at=datetime.now(),
+            )
+            saved = self.progress_repo.save(progress)
+            return StartProgressResponseDto(
+                lesson_id=req.lesson_id,
+                status=saved.status or "in_progress",
+                attempt=saved.attempt,
+            )
+
+        # 26.05.06 : 가령 : 수정 내용 - 완료된 학습은 시작 API 재호출로 진행 중 상태로 되돌리지 않음
+        if existing.status != "passed" and existing.attempt < MAX_ATTEMPTS:
+            existing.status = existing.status or "in_progress"
+            existing.updated_at = datetime.now()
+            existing = self.progress_repo.save(existing)
+
+        return StartProgressResponseDto(
+            lesson_id=req.lesson_id,
+            status=existing.status or "in_progress",
+            attempt=existing.attempt,
+        )
+
+
 class GetMyLearningProgressUseCase:
     def __init__(
         self,
@@ -222,3 +272,39 @@ class GetMyLearningProgressUseCase:
         if attempt <= 0:
             return 0
         return min(90, max(10, round((attempt / MAX_ATTEMPTS) * 100)))
+
+
+class GetMyAchievementUseCase:
+    def __init__(
+        self,
+        progress_repo: UserLessonProgressRepository = Depends(
+            get_user_lesson_progress_repository
+        ),
+    ):
+        self.progress_repo = progress_repo
+
+    def execute(self, user_id: int) -> AchievementResponseDto:
+        today = date.today()
+        start_date = today - timedelta(days=(53 * 7 - 1))
+        count_by_date = {
+            day: count
+            for day, count in self.progress_repo.count_by_user_grouped_by_date(
+                user_id, start_date
+            )
+        }
+
+        days = []
+        for offset in range(53 * 7):
+            current_date = start_date + timedelta(days=offset)
+            days.append(
+                AchievementDayDto(
+                    date=current_date,
+                    count=count_by_date.get(current_date, 0),
+                )
+            )
+
+        return AchievementResponseDto(
+            start_date=start_date,
+            end_date=today,
+            days=days,
+        )

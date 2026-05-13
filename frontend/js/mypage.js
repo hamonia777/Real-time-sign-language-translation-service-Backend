@@ -345,6 +345,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return `word_learn.html?lesson_id=${item.lesson_id}`;
     }
 
+    // 26.05.06 : 가령 : 수정 내용 - 진행 중 학습 이어하기 시 기존 시도 횟수를 이어받도록 resume 플래그 추가
+    function getResumeLessonUrl(item) {
+        return `${getLessonUrl(item)}&resume=1`;
+    }
+
     function renderCompletedLearning(items, totalCount) {
         const countEl = document.getElementById('completedCount');
         const recentEl = document.getElementById('completedRecent');
@@ -362,22 +367,20 @@ document.addEventListener('DOMContentLoaded', () => {
             listEl.innerHTML = '<li class="empty-learning">완료된 학습이 없습니다.</li>';
             return;
         }
-        items.forEach((item, index) => {
-            const colIndex = index % 3; // 0, 1, 2 순으로 순환
-            const colKeys = ['fingerspell', 'word', 'sentence'];
-            const list = columns[colKeys[colIndex]];
-            if (!list) return;
-
+        items.forEach(item => {
             const li = document.createElement('li');
             li.innerHTML = `
-                <div class="flex-center"><i class="green-dot"></i><span></span></div>
-                <button class="btn-blue learn-btn" type="button">학습하기</button>
+                <i class="check-dot"></i>
+                <span></span>
+                <span class="date"></span>
+                <button class="btn-sm" type="button">다시 학습</button>
             `;
             li.querySelector('span').textContent = item.title;
-            li.querySelector('.learn-btn').addEventListener('click', () => {
+            li.querySelector('.date').textContent = formatDate(item.updated_at);
+            li.querySelector('button').addEventListener('click', () => {
                 location.href = getLessonUrl(item);
             });
-            list.appendChild(li);
+            listEl.appendChild(li);
         });
     }
 
@@ -385,7 +388,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const countEl = document.getElementById('inProgressCount');
         const recentEl = document.getElementById('inProgressRecent');
         const listEl = document.getElementById('inProgressLearningList');
-        if (countEl) countEl.innerHTML = `진행 중인 학습 : <strong>${totalCount}개</strong> 단어/문장`;
+        if (countEl) countEl.textContent = `${totalCount}개`;
         if (recentEl) {
             const recent = items[0];
             recentEl.textContent = recent
@@ -419,7 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
             row.querySelector('.percent-text').textContent = `${pct}% 완료`;
             row.querySelector('.date-text').textContent = formatDate(item.updated_at);
             row.querySelector('button').addEventListener('click', () => {
-                location.href = getLessonUrl(item);
+                location.href = getResumeLessonUrl(item);
             });
             listEl.appendChild(row);
         });
@@ -461,7 +464,7 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ─────────────────────────────────────────────
        1-2. 학습 바구니 DB 연동
        26.4.30 : 가령 : 수정 내용 - DB 바구니 항목을 category 기준 3열 UI로 렌더링
-       -> 26.05.06 혜미 -> 카테고리 기준에서, 가로부터 순서대로 쌓이는 형태로 변경 
+       26.5.12 : 혜미 : 수정 내용 - category 기준으로 말고 행 순서대로 바구니가 차도록 수정
        ───────────────────────────────────────────── */
     function renderLearningBasket(items) {
         const countEl = document.getElementById('basketCount');
@@ -470,6 +473,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!gridEl) return;
 
         gridEl.innerHTML = '';
+
+        if (!items.length) return;
 
         // 컬럼 3개 생성
         const cols = [0, 1, 2].map(() => {
@@ -482,9 +487,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return list;
         });
 
-        if (!items.length) return;
-
-        // 가로 우선으로 1→2→3→1→2→3 순서로 채우기
+        // 가로 우선: 0→1→2→0→1→2 순서로 채우기
         items.forEach((item, index) => {
             const list = cols[index % 3];
             const li = document.createElement('li');
@@ -539,7 +542,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 /* ──────────────────────────────────────────────────────────
-   2. 성취도 잔디 그래프 생성 (방법 A & 날짜 툴팁 반영)
+   2. 성취도 잔디 그래프 생성 (가변 그리드 대응 교정본)
    ────────────────────────────────────────────────────────── */
     const monthContainer = document.getElementById('monthLabels');
     const grassGrid      = document.getElementById('grassGrid');
@@ -559,21 +562,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // 오늘부터 52주 전 계산
     const today = new Date();
     const startDate = new Date(today);
-    // 이번 주 일요일(0)로 맞추기
-    startDate.setDate(today.getDate() - 52 * 7 - today.getDay());
+    startDate.setDate(today.getDate() - 370);
 
-    // 2. 월 라벨 생성 (방법 A: 첫 주 자투리 생략 및 중첩 방지)
+    // 2. 월 라벨 생성 (CSS 그리드 칼럼 시스템 활용)
     if (monthContainer) {
         monthContainer.innerHTML = '';
         
-        // 첫 번째 칸 스페이서 생성
+        // 첫 번째 칸(요일 라벨 너비 26px 대응) 비워두기용 스페이서 생성
         const spacer = document.createElement('div');
         spacer.className = 'month-spacer'; 
         monthContainer.appendChild(spacer);
 
         const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
         let lastMonth = -1;
-        let lastLabelColumn = -5; // 이전 라벨 위치 기록용
 
         for (let w = 0; w < 53; w++) {
             const d = new Date(startDate.getTime());
@@ -581,62 +582,69 @@ document.addEventListener('DOMContentLoaded', () => {
             const m = d.getMonth();
 
             if (m !== lastMonth) {
-                const currentColumn = w + 2; 
-
-                // [방법 A] 첫 번째 주(w > 0)는 건너뛰고, 이전 라벨과 간격이 충분할 때만 생성
-                if (w > 0 && (currentColumn - lastLabelColumn > 2)) {
-                    lastMonth = m;
-                    lastLabelColumn = currentColumn;
-                    
-                    const lbl = document.createElement('span');
-                    lbl.className = 'month-label-item';
-                    lbl.textContent = monthNames[m];
-                    lbl.style.gridColumn = currentColumn; 
-                    monthContainer.appendChild(lbl);
-                }
+                lastMonth = m;
+                const lbl = document.createElement('span');
+                lbl.className = 'month-label-item';
+                lbl.textContent = monthNames[m];
+                
+                // 핵심: px 계산 대신 grid-column 속성 사용
+                // 첫 칸이 spacer이므로 (w + 2)번째 칼럼에 위치시킴
+                lbl.style.gridColumn = w + 2; 
+                monthContainer.appendChild(lbl);
             }
         }
     }
 
-    // 3. 잔디 그리드 채우기 (날짜 기반 툴팁 강화)
-    if (grassGrid) {
-        grassGrid.innerHTML = '';
-        let learningData = [];
+    function toIsoDate(date) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
 
-        try {
-            const raw = localStorage.getItem('learningHistory');
-            learningData = JSON.parse(raw);
-            if (!Array.isArray(learningData)) learningData = [];
-        } catch (e) {
-            learningData = [];
-        }
+    function renderAchievement(days, startDateValue) {
+        if (!grassGrid) return;
+        grassGrid.innerHTML = '';
+        const countMap = new Map((days || []).map(day => [day.date, day.count || 0]));
+        const graphStartDate = startDateValue ? new Date(`${startDateValue}T00:00:00`) : startDate;
 
         // 371개(53주 * 7일) 박스 생성
         for (let i = 0; i < 371; i++) {
             const square = document.createElement('div');
             square.className = 'grass-square';
-
-            // [추가] 해당 칸의 실제 날짜 계산
-            const cellDate = new Date(startDate.getTime());
-            cellDate.setDate(startDate.getDate() + i);
-            const dateStr = `${cellDate.getFullYear()}년 ${cellDate.getMonth() + 1}월 ${cellDate.getDate()}일`;
-
-            // 데이터 할당 (실제 데이터 없으면 랜덤 시뮬레이션)
-            let count = (learningData[i] !== undefined) 
-                        ? learningData[i] 
-                        : (Math.random() > 0.6 ? Math.floor(Math.random() * 6) : 0);
-
+            const currentDate = new Date(graphStartDate.getTime());
+            currentDate.setDate(graphStartDate.getDate() + i);
+            const dateKey = toIsoDate(currentDate);
+            const count = countMap.get(dateKey) || 0;
             const level = getGrassLevel(count);
-            square.classList.add(level); 
-            
-            // [수정] 호버 툴팁에 날짜와 학습량 병합 표시
-            square.title = `${dateStr} : 학습량 ${count}개`;
-            
+            square.classList.add(level);
+            square.title = `${dateKey} 학습량: ${count}개`;
             grassGrid.appendChild(square);
         }
     }
 
-    // 레벨 판별 함수 (기존 유지)
+    async function loadAchievement() {
+        try {
+            const res = await fetch('/api/v1/profile/achievement', {
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+            if (res.status === 401) {
+                alert('로그인이 필요합니다.');
+                location.href = 'login.html';
+                return;
+            }
+            if (!res.ok) throw new Error(`achievement HTTP ${res.status}`);
+            const data = await res.json();
+            renderAchievement(data.days || [], data.start_date);
+        } catch (err) {
+            console.error('성취도 로드 실패:', err);
+            renderAchievement([]);
+        }
+    }
+
+    loadAchievement();
+
+    // 레벨 판별 함수 (수치 조정)
     function getGrassLevel(count) {
         if (!count || count === 0) return 'lv0';
         if (count === 1) return 'lv1';
@@ -644,6 +652,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (count <= 5)  return 'lv3';
         return 'lv4';
     }
+
 
     /* ─────────────────────────────────────────────
        3. 탭 전환 / 알림 / 카카오 / 로그아웃 (기존 동일)

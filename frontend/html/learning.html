@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>수어학습 - 지문자</title>
     <link rel="stylesheet" href="../css/home.css">
+
     <!-- 가령: 260422: 수정 내용 - learning.css 캐시 우회용 버전 쿼리 추가 (문장 카드 가로 정렬 반영) -->
     <link rel="stylesheet" href="../css/learning.css?v=260422c">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="learning-page">
@@ -27,7 +29,7 @@
     </header>
 
     <main class="learning-main">
-        <div class="wide-container">
+        <div class="learn-wrap">
             <!-- 가령: 26/04/19 수정내용: DB 시드 초기화 버튼 제거 -->
             <div class="learning-header">
                 <h1>지문자 학습</h1>
@@ -45,7 +47,7 @@
             </section>
 
             <!-- 가령: 26/04/19 수정내용: 단어 학습 섹션 신규 추가 (카테고리 탭 + 단어 그리드) -->
-            <div class="learning-header" style="margin-top: 48px;">
+            <div class="learning-header section-start">
                 <h1>단어 학습</h1>
                 <p>카테고리를 선택해 단어를 학습해보세요.</p>
             </div>
@@ -53,8 +55,8 @@
             <div id="wordTabs" class="word-tabs"></div>
             <div id="wordList" class="lesson-grid"></div>
 
-            <!-- 가령: 260422: 수정 내용 - 문장 학습 섹션 신규 추가 (단어 학습 아래) -->
-            <div class="learning-header" style="margin-top: 48px;">
+            <!-- 26.05.07 : 가령 : 수정 내용 - 단어 목록 다음에 문장 학습 섹션이 나오도록 중복 섹션 정리 -->
+            <div class="learning-header section-start">
                 <h1>문장 학습</h1>
                 <p>수어 어순으로 단어를 익힌 뒤, 문장을 통째로 따라해보세요.</p>
             </div>
@@ -65,5 +67,6 @@
     <!-- 26.4.30 : 가령 : 수정 내용 - learning.js 변경사항 반영을 위한 캐시 버전 갱신 -->
     <script src="../js/learning.js?v=260429"></script>
     <script src="../js/auth.js"></script>
+
 </body>
 </html>
