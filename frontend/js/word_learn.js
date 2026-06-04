@@ -1,19 +1,19 @@
-// 가령: 26/04/19 수정내용: 단어 학습 Step 3 에 model_word.pt WebSocket 연결 + 세그먼트 기반 채점 구현
-// 가령: 26/04/19 수정내용: 시작 버튼으로 녹화 트리거 / 녹화 중에는 예측 숨기고 진행바 표시
+// UI·타이머: 1번 코드 기준
+// WS 모델 연결·top3·hand_detected·score 실시간 처리: 2번 코드 기준
 const API_BASE = "/api/v1/learning";
+// const API_BASE = "http://127.0.0.1:8080/api/v1/learning";
 
-// 진웅 : live 서버에서는 CORS 문제로 인해 API_BASE 를 상대경로로 설정. 개발 시에는 필요에 따라 주석 처리된 라인을 사용 가능.
-// const API_BASE = "http://127.0.0.1:8080/api/v1/learning"; 
 const PASS_THRESHOLD = 80.0;
 const MAX_ATTEMPTS = 3;
-// 가령: 26/04/19 수정내용: 인식률 개선을 위해 프레임 전송 주기 200ms → 100ms (5fps → 10fps)
+// 26/04/19: 프레임 전송 주기 200ms → 100ms
 const FRAME_INTERVAL_MS = 100;
-// 26.05.06 : 가령 : 수정 내용 - 서버 분석 완료 여유 확보를 위해 녹화 제한 10초 → 15초
-const RECORD_MAX_MS = 15000; // 최대 녹화 시간 (진행바 전체)
+// 원형 SVG 타이머
+const RECORD_SECONDS = 10;
+const TIMER_CIRCUMFERENCE = 107;
 
 const params = new URLSearchParams(location.search);
 const lessonId = parseInt(params.get("lesson_id") || "0", 10);
-// 26.05.06 : 가령 : 수정 내용 - 마이페이지 진행 중 학습에서 진입한 경우 시도 횟수 이어받기
+// 26.05.06: 마이페이지 진행 중 학습에서 진입한 경우 시도 횟수 이어받기
 const shouldResume = params.get("resume") === "1";
 
 const state = {
@@ -25,8 +25,7 @@ const state = {
   stream: null,
   ws: null,
   sendTimer: null,
-  progressTimer: null,
-  recordStartAt: 0,
+  timerInterval: null,   // 1번 기준 원형 타이머
   recording: false,
   hasAnalysisResult: false,
   captureCanvas: null,
@@ -38,6 +37,9 @@ function getCookie(name) {
 }
 
 async function init() {
+  const mainEl = document.querySelector('.learning-main');
+  if (mainEl) mainEl.classList.add('practice-mode');
+
   if (!lessonId) {
     alert("lesson_id 가 없습니다.");
     location.href = "learning.html";
@@ -57,7 +59,7 @@ async function init() {
   document.getElementById("targetChar3").textContent = state.lesson.title;
   document.getElementById("doneChar").textContent = state.lesson.title;
 
-  // 가령: 26/04/19 수정내용: 단일 지문자(쌍자음/이중모음) 는 크게 표시
+  // 단일 지문자(쌍자음/이중모음)는 크게 표시
   if (state.lesson.title.length === 1) {
     document.getElementById("targetCharBig").style.fontSize = "150px";
   }
@@ -66,7 +68,7 @@ async function init() {
   await loadResumeAttempt();
   bindNav();
 
-  // 가령: 5월 11일 : 수정 내용 - 단어 학습 1단계 영상도 sign_video.js에서 설정
+  // 5월 11일: 단어 학습 1단계 영상도 sign_video.js에서 설정
   if (typeof setupSignLessonVideo === "function") {
     setupSignLessonVideo(state.lesson).catch((e) => {
       console.warn("학습 영상 설정 실패", e);
@@ -74,11 +76,10 @@ async function init() {
   }
 }
 
-// 26.05.06 : 가령 : 수정 내용 - 학습 페이지 진입만 해도 진행 중 학습으로 DB에 기록
+// 26.05.06: 학습 페이지 진입만 해도 진행 중 학습으로 DB에 기록
 async function markLearningStarted() {
   const token = getCookie("access_token");
   if (!token) return;
-
   try {
     await fetch(`${API_BASE}/progress/start`, {
       method: "POST",
@@ -93,24 +94,21 @@ async function markLearningStarted() {
   }
 }
 
-// 26.05.06 : 가령 : 수정 내용 - 이어하기 진입 시 기존 attempt 다음 횟수부터 시작
+// 26.05.06: 이어하기 진입 시 기존 attempt 다음 횟수부터 시작
 async function loadResumeAttempt() {
   if (!shouldResume) return;
   const token = getCookie("access_token");
   if (!token) return;
-
   try {
     const res = await fetch(`${API_BASE}/my-progress`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     if (!res.ok) return;
-
     const data = await res.json();
     const progress = (data.in_progress || []).find(
       (item) => Number(item.lesson_id) === Number(lessonId)
     );
     if (!progress) return;
-
     state.attempt = Math.min((progress.attempt || 0) + 1, MAX_ATTEMPTS);
     const attemptEl = document.getElementById("attemptLabel");
     if (attemptEl) attemptEl.textContent = state.attempt;
@@ -137,33 +135,55 @@ function gotoStep(n) {
   if (state.step === 2 || state.step === 3) stopCamera();
   if (state.step === 3) stopWebSocket();
 
+  const prev = state.step;
   state.step = n;
+
   for (let i = 1; i <= 4; i++) {
     document.getElementById(`step${i}`).style.display = i === n ? "block" : "none";
   }
-  document.getElementById("pageTitle").textContent = `단어 학습 페이지 - 단계 ${n}`;
 
+  // 1번 기준: 스테퍼 애니메이션
   const nodes = document.querySelectorAll("#stepper .node");
   const lines = document.querySelectorAll("#stepper .line");
-  nodes.forEach((node, i) => {
-    node.classList.remove("active", "done");
-    if (i + 1 < n) node.classList.add("done");
-    else if (i + 1 === n) node.classList.add("active");
-  });
-  lines.forEach((line, i) => {
-    line.classList.toggle("done", i + 1 < n);
-  });
+
+  if (n > prev) {
+    lines.forEach((line, i) => {
+      line.classList.toggle("done", i + 1 < n);
+    });
+    setTimeout(() => {
+      nodes.forEach((node, i) => {
+        node.classList.remove("active");
+        if (i + 1 < n) node.classList.add("done");
+        else if (i + 1 === n) node.classList.add("active");
+        else node.classList.remove("done");
+      });
+    }, 200);
+  } else {
+    nodes.forEach((node, i) => {
+      node.classList.remove("active");
+      if (i + 1 < n) node.classList.add("done");
+      else if (i + 1 === n) node.classList.add("active");
+      else node.classList.remove("done");
+    });
+    setTimeout(() => {
+      lines.forEach((line, i) => {
+        line.classList.toggle("done", i + 1 < n);
+      });
+    }, 200);
+  }
 
   if (n === 2) startCameraForStep(2);
   if (n === 3) {
     state.maxScore = 0;
-    document.getElementById("scoreVal").textContent = "0";
+    state.hasAnalysisResult = false;
+    document.getElementById("scoreVal").textContent = "0점";
     document.getElementById("attemptLabel").textContent = state.attempt;
     document.getElementById("top3Box").innerHTML = "";
-    setProgress(0);
-    showProgress(false);
     showStartButton(true);
     showConfirmButton(false);
+    document.getElementById("startRecordBtn").textContent = "시작";
+    document.getElementById("statusLine3").textContent = "시작 버튼을 누르면 녹화가 시작됩니다";
+    document.getElementById("statusLine3").style.color = "#6B7280";
     startCameraForStep(3).then(() => startWebSocket());
   }
 }
@@ -176,7 +196,20 @@ async function startCameraForStep(n) {
     });
     const video = document.getElementById(`video${n}`);
     video.srcObject = state.stream;
-    if (n === 2) document.getElementById("cameraStatus2").textContent = "카메라 상태 : 정상";
+    if (n === 2) {
+      document.getElementById("cameraStatus2").textContent = "카메라 상태 : 정상";
+      const checkBtn = document.getElementById("cameraCheckBtn");
+      if (checkBtn) {
+        checkBtn.onclick = async () => {
+          document.getElementById("cameraStatus2").textContent = "카메라 상태 : 확인 중...";
+          stopCamera();
+          await startCameraForStep(2);
+        };
+      }
+    }
+    if (n === 3) {
+      document.getElementById("statusLine3").textContent = "카메라 연결됨";
+    }
   } catch (e) {
     if (n === 2) document.getElementById("cameraStatus2").textContent = "카메라 상태 : 실패 (" + e.message + ")";
     if (n === 3) document.getElementById("statusLine3").textContent = "카메라 실패: " + e.message;
@@ -190,6 +223,10 @@ function stopCamera() {
   }
 }
 
+// ════════════════════════════════════════════════════════════
+//  WebSocket — 2번 코드의 onmessage 로직 그대로 사용
+//  (hand_detected 처리 + top3 실시간 갱신 + score 실시간 갱신)
+// ════════════════════════════════════════════════════════════
 function startWebSocket() {
   const proto = location.protocol === "https:" ? "wss:" : "ws:";
   const url = `${proto}//${location.host}${API_BASE}/ws/word_recognition`;
@@ -206,33 +243,47 @@ function startWebSocket() {
 
     if (msg.type === "error") {
       document.getElementById("statusLine3").textContent = "오류: " + msg.message;
-      document.getElementById("statusLine3").style.color = "#c33";
-      stopRecording();
+      document.getElementById("statusLine3").style.color = "#7d2523";
+      finishWordRecording();
       return;
     }
     if (msg.type !== "prediction") return;
+    if (!state.recording) return;
 
-    if (!state.recording) return; // 녹화 중이 아니면 무시
+    if (msg.hand_detected === false) {
+      state._noHandCount = (state._noHandCount || 0) + 1;
+      if (state._noHandCount > 30) {
+        document.getElementById("top3Box").innerHTML =
+          "<i>손이 감지되지 않아요.<br>카메라 정면에 손을 크게 보여주세요.</i>";
+      } else {
+        document.getElementById("top3Box").innerHTML = "<i>손을 감지하는 중...</i>";
+      }
+      return;
+    }
+    state._noHandCount = 0; // 손 감지되면 카운터 리셋
 
-    // 세그먼트 완료 → 결과 표시
-    if (msg.segment_top3) {
-      stopRecording();
-      state.hasAnalysisResult = true;
-      const top3Html = msg.segment_top3
+    const predictions = msg.segment_top3 || msg.top3 || [];
+    if (predictions.length) {
+      const top3Html = predictions
         .map((p, i) => `${i + 1}위 : ${p.label} (${p.prob.toFixed(1)}%)`)
         .join("<br>");
       document.getElementById("top3Box").innerHTML = top3Html;
+    }
 
-      if (typeof msg.score === "number") {
-        const score = Math.round(msg.score);
-        if (score > state.maxScore) {
-          state.maxScore = score;
-          document.getElementById("scoreVal").textContent = score;
-        }
+    if (typeof msg.score === "number") {
+      const score = Math.round(msg.score || 0);
+      console.log("받은 score:", score, "maxScore:", state.maxScore);
+      if (score > state.maxScore) {
+        state.maxScore = score;
+        updateGauge(score);
       }
+    }
 
+    if (msg.segment_top3) {
+      finishWordRecording();
+      state.hasAnalysisResult = true;
+      showStartButton(true);
       showConfirmButton(true);
-      showStartButton(true); // 다시 시도 가능
       document.getElementById("startRecordBtn").textContent = "다시 녹화";
       document.getElementById("statusLine3").textContent = "분석 완료 — 확인 버튼을 누르거나 다시 녹화하세요";
       document.getElementById("statusLine3").style.color = "#2C3E63";
@@ -241,45 +292,56 @@ function startWebSocket() {
 
   state.ws.onerror = () => {
     document.getElementById("statusLine3").textContent = "WebSocket 오류";
-    document.getElementById("statusLine3").style.color = "#c33";
-    stopRecording();
+    document.getElementById("statusLine3").style.color = "#7d2523";
+    finishWordRecording();
   };
   state.ws.onclose = () => {
-    stopRecording();
+    finishWordRecording();
   };
 }
 
 function stopWebSocket() {
-  stopRecording();
+  finishWordRecording();
   if (state.ws) { try { state.ws.close(); } catch {} state.ws = null; }
 }
 
+// ════════════════════════════════════════════════════════════
+//  녹화 제어 
+// ════════════════════════════════════════════════════════════
 function onStartRecord() {
   if (!state.ws || state.ws.readyState !== WebSocket.OPEN) {
     alert("WebSocket 연결 대기 중입니다. 잠시 후 다시 시도하세요.");
     return;
   }
-  state.recording = true;
-  state.hasAnalysisResult = false;
-  state.recordStartAt = Date.now();
-  document.getElementById("top3Box").innerHTML = "";
-  showProgress(true);
-  setProgress(0);
   showStartButton(false);
   showConfirmButton(false);
-  document.getElementById("statusLine3").textContent = "🔴 녹화 중 — 수어를 수행하고 2초간 정지하면 완료됩니다";
-  document.getElementById("statusLine3").style.color = "#c7541f";
+  startWordRecording();
+}
+
+function startWordRecording() {
+  state.recording = true;
+  state.hasAnalysisResult = false;
+  state.maxScore = 0;
+  updateGauge(0);
+  document.getElementById("top3Box").innerHTML = "";
+  document.getElementById("statusLine3").textContent = "녹화 중 — 수어를 수행하고 2초간 정지하면 완료됩니다";
+  document.getElementById("statusLine3").style.color = "#7d2523";
+  startTimer();    
   startFrameSender();
-  startProgressAnimation();
 }
 
-function stopRecording() {
+function finishWordRecording() {
   state.recording = false;
-  if (state.sendTimer) { clearInterval(state.sendTimer); state.sendTimer = null; }
-  if (state.progressTimer) { clearInterval(state.progressTimer); state.progressTimer = null; }
-  showProgress(false);
+  stopTimer();
+  if (state.sendTimer) {
+    clearInterval(state.sendTimer);
+    state.sendTimer = null;
+  }
 }
 
+// ════════════════════════════════════════════════════════════
+//  프레임 전송 
+// ════════════════════════════════════════════════════════════
 function startFrameSender() {
   const video = document.getElementById("video3");
   if (!state.captureCanvas) {
@@ -293,11 +355,11 @@ function startFrameSender() {
   state.sendTimer = setInterval(() => {
     if (!state.ws || state.ws.readyState !== WebSocket.OPEN) return;
     if (!video.videoWidth) return;
-    // 26.05.08 : 가령 : 수정 내용 - 사용자 화면만 CSS로 반전하고 단어 모델에는 원본 프레임 전송
+    // 26.05.08: 사용자 화면만 CSS로 반전, 모델에는 원본 프레임 전송
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    // 가령: 26/04/19 수정내용: MediaPipe 손 검출 안정성을 위해 JPEG 품질 0.6 → 0.85
+    // 26/04/19: MediaPipe 손 검출 안정성을 위해 JPEG 품질 0.85
     const b64 = canvas.toDataURL("image/jpeg", 0.85);
-    // 가령: 26/04/19 수정내용: Top-3 를 카테고리 내부로 필터링하기 위해 category/subcategory 동반 전송
+    // 26/04/19: Top-3 필터링을 위해 category/subcategory 동반 전송
     state.ws.send(JSON.stringify({
       type: "frame",
       image: b64,
@@ -308,50 +370,74 @@ function startFrameSender() {
   }, FRAME_INTERVAL_MS);
 }
 
-function startProgressAnimation() {
-  state.progressTimer = setInterval(() => {
-    const elapsed = Date.now() - state.recordStartAt;
-    const pct = Math.min(100, (elapsed / RECORD_MAX_MS) * 100);
-    setProgress(pct, elapsed);
-    if (elapsed >= RECORD_MAX_MS) {
-      // 최대 시간 초과 — 녹화 강제 종료
-      stopRecording();
-      state.hasAnalysisResult = false;
-      document.getElementById("statusLine3").textContent = "시간 초과 — 다시 시도하세요";
-      document.getElementById("statusLine3").style.color = "#c33";
-      showStartButton(true);
-      showConfirmButton(false);
-      document.getElementById("startRecordBtn").textContent = "다시 녹화";
-    }
-  }, 150);
-}
+// ════════════════════════════════════════════════════════════
+//  타이머 
+// ════════════════════════════════════════════════════════════
+function startTimer() {
+  const wrap = document.getElementById("cameraTimerWrap");
+  const text = document.getElementById("cameraTimerText");
+  const fill = document.getElementById("timerFill");
+  if (!wrap) return;
 
-// 가령: 26/04/19 수정내용: 진행바에 경과 시간 텍스트 표시 추가
-function setProgress(pct, elapsedMs) {
-  document.getElementById("progressBar").style.width = pct + "%";
-  if (typeof elapsedMs === "number") {
-    const sec = (elapsedMs / 1000).toFixed(1);
-    const total = (RECORD_MAX_MS / 1000).toFixed(1);
-    document.getElementById("progressTime").textContent = `${sec} / ${total} 초`;
+  if (state.timerInterval) clearInterval(state.timerInterval);
+
+  let timerSeconds = RECORD_SECONDS;
+  wrap.style.display = "block";
+
+  if (fill) {
+    fill.style.transition = "none";
+    fill.style.strokeDasharray = TIMER_CIRCUMFERENCE;
+    fill.style.strokeDashoffset = "0";
+    fill.getBoundingClientRect(); 
   }
-}
-function showProgress(show) {
-  document.getElementById("progressWrap").style.display = show ? "block" : "none";
-  document.getElementById("progressTime").style.display = show ? "block" : "none";
-}
-function showStartButton(show) {
-  document.getElementById("startRecordBtn").style.display = show ? "inline-block" : "none";
-}
-function showConfirmButton(show) {
-  document.getElementById("confirmStep3").style.display = show ? "inline-block" : "none";
+  if (text) text.textContent = `${RECORD_SECONDS}s`;
+
+  state.timerInterval = setInterval(() => {
+    timerSeconds -= 1;
+    if (text) text.textContent = `${timerSeconds}s`;
+    if (fill) {
+      fill.style.transition = "stroke-dashoffset 1s linear";
+      const offset = TIMER_CIRCUMFERENCE * (1 - timerSeconds / RECORD_SECONDS);
+      fill.style.strokeDashoffset = offset;
+    }
+    if (timerSeconds <= 0) {
+      stopTimer();
+      // 분석 결과(segment_top3)가 왔으면 정상 처리,
+      // 없으면 손을 못 찾은 것 → 강제 제출 대신 재시도 유도
+      if (state.hasAnalysisResult) {
+        onConfirmStep3();
+      } else {
+        finishWordRecording();
+        document.getElementById("statusLine3").textContent = "시간 초과 — 손이 잘 보이도록 다시 시도하세요";
+        document.getElementById("statusLine3").style.color = "#7d2523";
+        showStartButton(true);
+        showConfirmButton(false);
+        document.getElementById("startRecordBtn").textContent = "다시 녹화";
+      }
+    }
+  }, 1000);
 }
 
+function stopTimer() {
+  if (state.timerInterval) {
+    clearInterval(state.timerInterval);
+    state.timerInterval = null;
+  }
+  const wrap = document.getElementById("cameraTimerWrap");
+  if (wrap) wrap.style.display = "none";
+}
+
+// ════════════════════════════════════════════════════════════
+//  결과 확인 및 단계 완료
+// ════════════════════════════════════════════════════════════
 async function onConfirmStep3() {
-  // 26.05.06 : 가령 : 수정 내용 - 시간 초과된 녹화는 시도 횟수에 반영하지 않음
+  // 분석 완료된 녹화만 시도 횟수에 반영
   if (!state.hasAnalysisResult) {
-    alert("분석이 완료된 녹화만 시도 횟수에 반영됩니다.");
+    alert("분석이 완료된 녹화만 확인할 수 있어요. 다시 녹화해주세요.");
     return;
   }
+  finishWordRecording();
+  stopWebSocket();
 
   const score = state.maxScore;
   state.lastScore = score;
@@ -388,29 +474,45 @@ async function onConfirmStep3() {
 }
 
 function finishStep3(result) {
+  const failMsg = document.getElementById("failMsg");
   if (!result.is_passed && state.attempt < MAX_ATTEMPTS) {
+    if (failMsg) failMsg.style.display = "block";
     state.attempt += 1;
     document.getElementById("attemptLabel").textContent = state.attempt;
     state.maxScore = 0;
-    document.getElementById("scoreVal").textContent = "0";
+    updateGauge(0);
     alert(`점수 ${result.score}점 — 재시도 (${state.attempt}/${MAX_ATTEMPTS})`);
-    // Step 3 재진입 상태로 초기화
+    if (failMsg) failMsg.style.display = "none";
     document.getElementById("top3Box").innerHTML = "";
-    showConfirmButton(false);
     showStartButton(true);
+    showConfirmButton(false);
     document.getElementById("startRecordBtn").textContent = "시작";
     document.getElementById("statusLine3").textContent = "시작 버튼을 누르면 녹화가 시작됩니다";
     document.getElementById("statusLine3").style.color = "#6B7280";
+    startWebSocket();
     return;
   }
 
-  document.getElementById("doneScore").textContent = result.score;
-  const msg = result.is_passed
-    ? "축하합니다!<br>학습을 완료했습니다!"
-    : `3회 시도 완료<br>최고 점수: ${result.score}점`;
-  document.getElementById("completeMsg").innerHTML = msg;
-  markLessonCompleted(lessonId);
+  const finalScore = result.score || state.maxScore;
+  const doneScoreEl = document.getElementById("doneScore");
+  if (doneScoreEl) doneScoreEl.textContent = finalScore;
+  if (result.is_passed) markLessonCompleted(lessonId);
   gotoStep(4);
+}
+
+function showStartButton(show) {
+  const btn = document.getElementById("startRecordBtn");
+  if (btn) btn.style.display = show ? "inline-block" : "none";
+}
+
+function showConfirmButton(show) {
+  const btn = document.getElementById("confirmStep3");
+  if (btn) btn.style.display = show ? "inline-block" : "none";
+}
+
+function updateGauge(score) {
+  const val = document.getElementById("scoreVal");
+  if (val) val.textContent = `${score}점`;
 }
 
 function markLessonCompleted(id) {

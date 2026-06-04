@@ -95,15 +95,40 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(() => {});
 
+        // fetch('/api/v1/profile/me', {
+        //     headers: { 'Authorization': `Bearer ${token}` }
+        // })
+        // .then(res => res.ok ? res.json() : null)
+        // .then(data => {
+        //     if (data && data.nickname) {
+        //         const el = document.getElementById('profileName');
+        //         if (el) el.textContent = data.nickname;
+        //         localStorage.setItem('kakaoNickname', data.nickname);
+        //     }
+        // })
+        // .catch(() => {});
         fetch('/api/v1/profile/me', {
             headers: { 'Authorization': `Bearer ${token}` }
         })
         .then(res => res.ok ? res.json() : null)
         .then(data => {
-            if (data && data.nickname) {
-                const el = document.getElementById('profileName');
-                if (el) el.textContent = data.nickname;
-                localStorage.setItem('kakaoNickname', data.nickname);
+            if (data) {
+                if (data.nickname) {
+                    const elName = document.getElementById('profileName');
+                    if (elName) elName.textContent = data.nickname;
+                    localStorage.setItem('kakaoNickname', data.nickname);
+                }
+
+                if (data.email) {
+                    const elEmail = document.getElementById('profileEmail');
+                    if (elEmail) elEmail.textContent = data.email;
+                    localStorage.setItem('kakaoEmail', data.email);
+                }
+                if (data.phone_num) {
+                    const elPhone = document.getElementById('profilePhone');
+                    if (elPhone) elPhone.textContent = data.phone_num;
+                    localStorage.setItem('userPhone', data.phone_num);
+                }
             }
         })
         .catch(() => {});
@@ -388,7 +413,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const countEl = document.getElementById('inProgressCount');
         const recentEl = document.getElementById('inProgressRecent');
         const listEl = document.getElementById('inProgressLearningList');
-        if (countEl) countEl.textContent = `진행 중인 학습 : ${totalCount}개 단어/문장`;
+        if (countEl) countEl.textContent = `${totalCount}개`;
         if (recentEl) {
             const recent = items[0];
             recentEl.textContent = recent
@@ -464,43 +489,32 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ─────────────────────────────────────────────
        1-2. 학습 바구니 DB 연동
        26.4.30 : 가령 : 수정 내용 - DB 바구니 항목을 category 기준 3열 UI로 렌더링
+       26.5.12 : 혜미 : 수정 내용 - category 기준으로 말고 행 순서대로 바구니가 차도록 수정
        ───────────────────────────────────────────── */
     function renderLearningBasket(items) {
         const countEl = document.getElementById('basketCount');
         const gridEl = document.getElementById('basketGrid');
-        if (countEl) countEl.textContent = `학습 바구니 총 항목 : ${items.length}개`;
+        if (countEl) countEl.innerHTML = `학습 바구니 총 항목 : <strong>${items.length}개</strong>`;
         if (!gridEl) return;
 
         gridEl.innerHTML = '';
-        const groups = [
-            // 26.4.30 : 가령 : 수정 내용 - lessons.category 기준으로 지문자/단어/문장 컬럼 분리
-            { key: 'fingerspell', label: '지문자' },
-            { key: 'word', label: '단어' },
-            { key: 'sentence', label: '문장' },
-        ];
-        const columns = {};
 
-        groups.forEach(group => {
+        if (!items.length) return;
+
+        // 컬럼 3개 생성
+        const cols = [0, 1, 2].map(() => {
             const col = document.createElement('div');
             col.className = 'basket-col';
             const list = document.createElement('ul');
             list.className = 'item-list';
-            list.dataset.category = group.key;
             col.appendChild(list);
             gridEl.appendChild(col);
-            columns[group.key] = list;
+            return list;
         });
 
-        if (!items.length) {
-            groups.forEach(group => {
-                columns[group.key].innerHTML = '';
-            });
-            return;
-        }
-
-        items.forEach(item => {
-            const list = columns[item.category];
-            if (!list) return;
+        // 가로 우선: 0→1→2→0→1→2 순서로 채우기
+        items.forEach((item, index) => {
+            const list = cols[index % 3];
             const li = document.createElement('li');
             li.innerHTML = `
                 <div class="flex-center"><i class="green-dot"></i><span></span></div>
@@ -511,12 +525,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 location.href = getLessonUrl(item);
             });
             list.appendChild(li);
-        });
-
-        groups.forEach(group => {
-            if (!columns[group.key].children.length) {
-                columns[group.key].innerHTML = '';
-            }
         });
     }
 

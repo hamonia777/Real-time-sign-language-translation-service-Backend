@@ -7,7 +7,6 @@ body {
     background-color: #FFFFFF;
     font-family: 'Inter', sans-serif;
     color: #474747;
-    line-height: 1.7;
     letter-spacing: -0.01em;
 }
 
@@ -16,83 +15,6 @@ body {
     max-width: 1600px;
     margin: 0 auto;
     padding: 0 30px;
-}
-
-.main-header {
-    width: 100%;
-    height: 55px;
-    background: #FFFFFF;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #f5f5f5;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-.header-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    height: 100%; 
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #2C2C2C;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.logo-img {
-    width: 24px;
-    height: auto;
-    object-fit: contain;
-}
-
-.nav-bar { 
-    display: flex;
-    align-items: center;
-    margin-left: auto;
-    margin-right: 10px; 
-}
-
-.nav-bar a {
-    text-decoration: none;
-    color: #393939;
-    font-size: 13px;
-    margin: 0 30px;
-    letter-spacing: 0em;
-}
-
-.nav-bar a.active {
-    font-weight: 600;
-    color: #0C0C0C;
-}
-
-.headerAuthBtn {
-  background: #1F2A58;
-  color: #FFFFFF;
-  border: none;
-  border-radius: 99px;
-  width: 75px;
-  height: 28px;
-  font-size: 12px;
-  cursor: pointer;
-  letter-spacing: 0.01em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.2s;
-}
-
-.headerAuthBtn:hover {
-  opacity: 0.9;
 }
 
 /* ──────────────────────────────────────────────────────────
@@ -113,13 +35,13 @@ body {
     align-items: flex-start; 
 }
 
-/* 2. 성취도 전체 섹션  */
+/* 성취도 전체 섹션  */
 .achievement-section {
     flex: 1;
     min-width: 0;
 }
 
-/* 3. 성취도 제목*/
+/* 성취도 제목*/
 .achievement-section .section-title {
     font-size: 14px;
     font-weight: 500;
@@ -128,7 +50,7 @@ body {
     padding-left: 2px;
 }
 
-/* 4. 성취도 흰색 박스 */
+/* 성취도 흰색 박스 */
 .achievement-card {
     background: #FFF;
     border: 1px solid #EEEEEE; 
@@ -141,24 +63,8 @@ body {
     flex-direction: column;
 }
 
-/* 5. 잔디 요일 라벨 */
-.day-labels {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 89px; /* (11px * 7행) + (2px * 6개 간격) = 약 89px */
-    margin-right: 12px;
-    padding-top: 2px; 
-}
 
-.day-labels span {
-    font-size: 10px;
-    color: #999;
-    height: 11px;
-    line-height: 11px;
-}
-
-/* 6. 잔디 범례위치 조정 */
+/* 잔디 범례위치 조정 */
 .grass-legend {
     display: flex;
     align-items: center;
@@ -170,13 +76,6 @@ body {
     padding-top: 24px;
     font-size: 10px;
     color: #999;
-}
-
-.grass-flex {
-    display: flex;
-    margin-top: 10px; 
-    gap: 12px; 
-    align-items: flex-start;
 }
 
 /* 잔디 그리드 간격 유지 */
@@ -195,14 +94,50 @@ body {
     background: #EFF2F5;
 }
 
+/* 월 라벨 컨테이너 */
 .month-labels {
     display: grid;
-    grid-template-columns: 22px repeat(53, 1fr); 
+    grid-template-columns: 26px repeat(53, 1fr); 
     width: 100%;
-    margin-left: 0;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    height: 15px;
+    align-items: center;
 }
 
+/* 개별 월 글자 스타일 */
+.month-label-item {
+    grid-row: 1;
+    font-size: 10px;
+    color: #999;
+    white-space: nowrap; /* 글자 줄바꿈 방지 */
+    text-align: left; 
+    padding-left: 1px; 
+}
+
+/* 요일 라벨과 잔디 사이의 간격 */
+.grass-flex {
+    display: flex;
+    gap: 4px; /* 요일 라벨과 잔디 그리드 사이 간격 */
+    align-items: flex-start;
+    width: 100%;
+}
+
+.day-labels {
+    width: 22px;
+    display: flex;
+    flex-direction: column;
+    height: 89px; 
+    justify-content: space-between;
+    font-size: 10px;
+    color: #999;
+    padding: 2px 0;
+    flex-shrink: 0;
+}
+
+.grass-graph-wrapper {
+    position: relative;
+    top: 15px; 
+}
 /* ──────────────────────────────────────────────────────────
    3. 프로필 카드
    ────────────────────────────────────────────────────────── */
@@ -254,8 +189,8 @@ body {
 
 .avatar-edit-btn {
     position: absolute;
-    right: -2px;
-    bottom: -2px;
+    right: -8px;
+    bottom: -8px;
     width: 22px;
     height: 22px;
     background: #FFF;
@@ -272,7 +207,7 @@ body {
     font-size: 14px;
     font-weight: 500;
     color: #424242;
-    margin: 4px 0 4px;
+    margin: 3px 0 3px;
 }
 
 .profile-name-editable {
@@ -286,14 +221,14 @@ body {
 }
 
 .status-text {
-    font-size: 9.5px;
+    font-size: 10px;
     color: #747474;
-    margin-bottom: 5px;
+    margin-bottom: 3px;
     font-weight: 500;
 }
 
 .info-details p {
-    font-size: 9px;
+    font-size: 9.5px;
     color: #A4A4A4;
     margin: 3px 0;
     font-weight: 500;
@@ -304,7 +239,7 @@ body {
     align-items: center;
     gap: 8px;
     margin-top: 8px;
-    font-size: 9px;
+    font-size: 9.5px;
     color: #747474;
     font-weight: 500;
 }
@@ -362,7 +297,7 @@ input:checked + .slider:before { transform: translateX(14px); }
     border-radius: 8px;
 }
 /* ──────────────────────────────────────────────────────────
-   4. 성취도 잔디 (최종 교정본)
+   4. 성취도 잔디
    ────────────────────────────────────────────────────────── */
 .achievement-card {
     flex: 1;
@@ -462,7 +397,7 @@ input:checked + .slider:before { transform: translateX(14px); }
     align-items: center;
     justify-content: flex-end;
     gap: 4px;
-    margin-top: 15px;
+    margin-top: 17px;
     font-size: 10px;
     color: #999;
 }
@@ -492,7 +427,7 @@ input:checked + .slider:before { transform: translateX(14px); }
     border-bottom: 2px solid transparent;
     background: transparent;
     color: #717171;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
     cursor: pointer;
     transition: color 0.2s, border-color 0.2s;
@@ -520,10 +455,14 @@ input:checked + .slider:before { transform: translateX(14px); }
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 12px;
+    font-size: 11.5px;
     border-bottom: 1px solid #D6D6D6;
     color: #474747;
     font-weight: 500;
+}
+
+.basket-section .box-header {
+    display: block;
 }
 
 .box-header strong { font-weight: 700; }
@@ -545,7 +484,7 @@ input:checked + .slider:before { transform: translateX(14px); }
 .progress-list .empty-learning {
     padding: 18px 20px;
     color: #717171;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
 }
 
@@ -573,7 +512,7 @@ input:checked + .slider:before { transform: translateX(14px); }
 
 .learning-list li span:nth-child(2) {
     flex: 1;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 500;
     color: #474747;
 }
@@ -589,9 +528,9 @@ input:checked + .slider:before { transform: translateX(14px); }
     background: #1C4476;
     color: #FFF;
     border: none;
-    padding: 7px 18px;
+    padding: 6px 14px;
     border-radius: 99px;
-    font-size: 10px;
+    font-size: 9.5px;
     cursor: pointer;
     font-weight: 500;
     white-space: nowrap;
@@ -620,7 +559,7 @@ input:checked + .slider:before { transform: translateX(14px); }
 }
 
 .summary-title {
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 500;
     color: #474747;
 }
@@ -630,7 +569,7 @@ input:checked + .slider:before { transform: translateX(14px); }
 }
 
 .summary-recent {
-    font-size: 12px; 
+    font-size: 11.5px; 
      font-weight: 500;
     color: #474747;
 }
@@ -655,7 +594,7 @@ input:checked + .slider:before { transform: translateX(14px); }
 .item-left {
     display: flex;
     align-items: center;
-    width: 140px;
+    width: 240px; /* 140px → 80px */
 }
 
 .custom-radio {
@@ -673,12 +612,12 @@ input:checked + .slider:before { transform: translateX(14px); }
 .radio-inner {
     width: 8px;
     height: 8px;
-    background: #517AAF;
+    background: #9F9F9F;
     border-radius: 50%;
 }
 
 .word-text {
-    font-size: 12px; 
+    font-size: 11px; 
     font-weight: 500;
     color: #474747;
 }
@@ -687,7 +626,7 @@ input:checked + .slider:before { transform: translateX(14px); }
     display: flex;
     align-items: center;
     flex: 1;
-    gap: 15px;
+    gap: 25px;
 }
 
 .bar-bg {
@@ -705,7 +644,7 @@ input:checked + .slider:before { transform: translateX(14px); }
 }
 
 .percent-text {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 500;
     color: #517AAF;
     width: 55px;
@@ -715,7 +654,7 @@ input:checked + .slider:before { transform: translateX(14px); }
 .date-text {
     font-size: 11px;
     color: #717171;
-    margin-right: 25px; 
+    margin-right: 40px; 
     font-weight: 500;
     width: 75px;
     text-align: right;
@@ -726,9 +665,9 @@ input:checked + .slider:before { transform: translateX(14px); }
     background: #1C4476;
     color: #FFF;
     border: none;
-    padding: 7px 18px; 
+    padding: 6px 14px; 
     border-radius: 99px;
-    font-size: 10px;
+    font-size: 9.5px;
     cursor: pointer;
     font-weight: 500;
     white-space: nowrap;
@@ -745,10 +684,11 @@ input:checked + .slider:before { transform: translateX(14px); }
 .basket-section { margin-bottom: 40px; }
 
 .basket-section .section-title {
-    font-size: 13px;
+    font-size: 12px;
+    margin-left:18px;
     font-weight: 500;
     color: #474747;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .basket-grid {
@@ -769,7 +709,7 @@ input:checked + .slider:before { transform: translateX(14px); }
 .item-list {
     list-style: none;
     padding: 10px;
-    border: 1px solid #D6D6D6;
+    border: none; 
     border-radius: 5px;
     min-height: 200px;
     display: flex;
@@ -792,14 +732,6 @@ input:checked + .slider:before { transform: translateX(14px); }
     align-items: center;
 }
 
-.green-dot {
-    width: 6px;
-    height: 6px;
-    background: #4F854D;
-    border-radius: 50%;
-    margin-right: 10px;
-    flex-shrink: 0;
-}
 
 .item-list li span {
     font-size: 12px;
@@ -813,7 +745,7 @@ input:checked + .slider:before { transform: translateX(14px); }
     border: none !important;
     padding: 5px 12px;
     border-radius: 99px;
-    font-size: 10px;
+    font-size: 9.5px;
     cursor: pointer;
     font-weight: 500;
     white-space: nowrap;
@@ -873,7 +805,7 @@ input:checked + .slider:before { transform: translateX(14px); }
 
 .nickname-modal {
     background: #fff;
-    border-radius: 10px;
+    border-radius: 6px;
     padding: 28px 28px 22px;
     width: 340px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.18);
@@ -881,8 +813,8 @@ input:checked + .slider:before { transform: translateX(14px); }
 }
 
 .nickname-modal-title {
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 500;
     color: #2C2C2C;
     margin-bottom: 6px;
 }
@@ -898,7 +830,7 @@ input:checked + .slider:before { transform: translateX(14px); }
     color: #E05252;
     background: #FFF5F5;
     border: 1px solid #F5C6C6;
-    border-radius: 6px;
+    border-radius: 5px;
     padding: 8px 12px;
     margin-bottom: 12px;
 }
@@ -912,7 +844,7 @@ input:checked + .slider:before { transform: translateX(14px); }
 .nickname-input {
     flex: 1;
     border: 1px solid #D6D6D6;
-    border-radius: 6px;
+    border-radius: 4px;
     padding: 8px 12px;
     font-size: 13px;
     outline: none;
@@ -927,10 +859,10 @@ input:checked + .slider:before { transform: translateX(14px); }
     background: #517AAF;
     color: #fff;
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;
     padding: 8px 12px;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 400;
     cursor: pointer;
     white-space: nowrap;
     transition: opacity 0.2s;
@@ -939,9 +871,9 @@ input:checked + .slider:before { transform: translateX(14px); }
 .nickname-check-btn:hover { opacity: 0.85; }
 
 .nickname-check-msg {
-    font-size: 11px;
+    font-size: 10px;
     min-height: 16px;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
 }
 
 .nickname-check-msg.ok  { color: #4F854D; }
@@ -958,9 +890,9 @@ input:checked + .slider:before { transform: translateX(14px); }
     color: #fff;
     border: none;
     border-radius: 99px;
-    padding: 8px 22px;
+    padding: 6px 20px;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 400;
     cursor: pointer;
     transition: opacity 0.2s;
 }
