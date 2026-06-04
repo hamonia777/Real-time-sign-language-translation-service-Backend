@@ -4,23 +4,43 @@ import json
 from fastapi import APIRouter, Depends, Query, WebSocket, WebSocketDisconnect
 
 from main.core.security import get_current_user_id
+# 26.4.30 : 가령 : 수정 내용 - 학습 바구니 API DTO/UseCase import 추가
+from main.domain.LearningBasket.dto.learning_basket_dto import (
+    LearningBasketAddRequestDto,
+    LearningBasketListResponseDto,
+    LearningBasketMutationResponseDto,
+)
+from main.domain.LearningBasket.usecase.learning_basket_usecase import (
+    AddLearningBasketUseCase,
+    ListLearningBasketUseCase,
+    RemoveLearningBasketUseCase,
+)
 from main.domain.learning.dto.lesson_dto import (
     LessonListResponseDto,
     LessonResponseDto,
+    MyLearningProgressResponseDto,
     SaveResultRequestDto,
     SaveResultResponseDto,
     SeedResponseDto,
+<<<<<<< HEAD
 
 
+=======
+    StartProgressRequestDto,
+    StartProgressResponseDto,
+    # 가령: 260422: 수정 내용 - 문장 시드 응답 DTO import
+>>>>>>> 31124cf78062457749f2ede9ec38fe26fcd1877e
     SeedSentencesResponseDto,
     # 가령: 260422: 수정 내용 - 문장+수어어순단어 응답 DTO import
     SentenceWithWordsResponseDto,
 )
 from main.domain.learning.usecase.lesson_usecase import (
     GetLessonUseCase,
+    GetMyLearningProgressUseCase,
     ListLessonsUseCase,
     SaveResultUseCase,
     SeedFingerspellUseCase,
+    StartLearningProgressUseCase,
     SeedWordsUseCase,
 
     # 가령: 260422: 수정 내용 - 문장 시드 usecase import
@@ -75,6 +95,53 @@ def get_lesson(lesson_id: int, usecase: GetLessonUseCase = Depends()):
     return usecase.execute(lesson_id)
 
 
+@router.get("/my-progress", response_model=MyLearningProgressResponseDto)
+def get_my_learning_progress(
+    usecase: GetMyLearningProgressUseCase = Depends(),
+    user_id: int = Depends(get_current_user_id),
+):
+    return usecase.execute(user_id)
+
+
+# 26.05.06 : 가령 : 수정 내용 - 학습 페이지 진입 시 진행 중 학습 기록 생성 API 추가
+@router.post("/progress/start", response_model=StartProgressResponseDto)
+def start_learning_progress(
+    body: StartProgressRequestDto,
+    usecase: StartLearningProgressUseCase = Depends(),
+    user_id: int = Depends(get_current_user_id),
+):
+    return usecase.execute(body, user_id)
+
+
+# 26.4.30 : 가령 : 수정 내용 - 학습 바구니 목록 조회 엔드포인트 신규 추가
+@router.get("/basket", response_model=LearningBasketListResponseDto)
+def list_learning_basket(
+    usecase: ListLearningBasketUseCase = Depends(),
+    user_id: int = Depends(get_current_user_id),
+):
+    return usecase.execute(user_id)
+
+
+# 26.4.30 : 가령 : 수정 내용 - 학습 바구니 항목 추가 엔드포인트 신규 추가
+@router.post("/basket", response_model=LearningBasketMutationResponseDto)
+def add_learning_basket(
+    body: LearningBasketAddRequestDto,
+    usecase: AddLearningBasketUseCase = Depends(),
+    user_id: int = Depends(get_current_user_id),
+):
+    return usecase.execute(user_id, body.lesson_id, body.source)
+
+
+# 26.4.30 : 가령 : 수정 내용 - 학습 바구니 항목 삭제 엔드포인트 신규 추가
+@router.delete("/basket/{basket_id}", response_model=LearningBasketMutationResponseDto)
+def remove_learning_basket(
+    basket_id: int,
+    usecase: RemoveLearningBasketUseCase = Depends(),
+    user_id: int = Depends(get_current_user_id),
+):
+    return usecase.execute(user_id, basket_id)
+
+
 # 가령: 26/04/19 수정내용: /results 엔드포인트에 JWT 인증 필수로 변경 + user_id 를 usecase 에 전달
 @router.post("/results", response_model=SaveResultResponseDto)
 def save_result(
@@ -118,6 +185,8 @@ async def recognition_ws(ws: WebSocket):
 
             image_b64 = msg.get("image", "")
             target = msg.get("target")
+            # 26.05.07 : 가령 : 수정 내용 - 지문자 자음/모음 후보군 필터링용 subcategory 수신
+            subcategory = msg.get("subcategory")
 
             if "," in image_b64:
                 image_b64 = image_b64.split(",", 1)[1]
@@ -132,7 +201,7 @@ async def recognition_ws(ws: WebSocket):
                 await ws.send_json({"type": "error", "message": f"decode: {e}"})
                 continue
 
-            result = service.predict_from_frame(frame)
+            result = service.predict_from_frame(frame, subcategory=subcategory)
 
             top3 = result["top3"]
             score = 0.0
@@ -207,6 +276,8 @@ async def word_recognition_ws(ws: WebSocket):
             # 가령: 26/04/19 수정내용: 카테고리 필터링용 category/subcategory 전달
             category = msg.get("category")
             subcategory = msg.get("subcategory")
+            # 26.05.07 : 가령 : 수정 내용 - 문장 학습 단어 단계에서 정답 단어 후보군만 인식에 참여
+            allowed_targets = msg.get("allowed_targets")
             if "," in image_b64:
                 image_b64 = image_b64.split(",", 1)[1]
 
@@ -220,8 +291,81 @@ async def word_recognition_ws(ws: WebSocket):
                 await ws.send_json({"type": "error", "message": f"decode: {e}"})
                 continue
 
-            result = session.process_frame(frame, target, category, subcategory)
+            result = session.process_frame(
+                frame, target, category, subcategory, allowed_targets=allowed_targets
+            )
             await ws.send_json({"type": "prediction", **result})
+    except WebSocketDisconnect:
+        return
+    except Exception as e:
+        try:
+            await ws.send_json({"type": "error", "message": str(e)})
+            await ws.close()
+        except Exception:
+            pass
+
+
+# 26.05.07 : 가령 : 수정 내용 - 문장 학습 Step 4 전체 영상 인식 WebSocket 추가
+@router.websocket("/ws/video_recognition")
+async def video_recognition_ws(ws: WebSocket):
+    await ws.accept()
+
+    try:
+        import cv2
+        import numpy as np
+        from main.domain.learning.service.video_recognition_service import (
+            VideoRecognitionService,
+            VideoSession,
+        )
+
+        service = VideoRecognitionService.instance()
+    except Exception as e:
+        await ws.send_json({"type": "error", "message": f"model load failed: {e}"})
+        await ws.close()
+        return
+
+    session = VideoSession(service)
+
+    try:
+        while True:
+            raw = await ws.receive_text()
+            try:
+                msg = json.loads(raw)
+            except json.JSONDecodeError:
+                await ws.send_json({"type": "error", "message": "invalid json"})
+                continue
+
+            message_type = msg.get("type")
+            if message_type == "reset":
+                session.reset()
+                await ws.send_json({"type": "sentence_status", "message": "reset"})
+                continue
+
+            if message_type == "finish":
+                # 26.05.07 : 가령 : 수정 내용 - 15초 녹화 종료 후 문장 모델 최종 Top-3 결과 반환
+                result = session.finish(target_sentence=msg.get("target_sentence"))
+                await ws.send_json({"type": "sentence_result", **result})
+                continue
+
+            if message_type != "frame":
+                continue
+
+            image_b64 = msg.get("image", "")
+            if "," in image_b64:
+                image_b64 = image_b64.split(",", 1)[1]
+
+            try:
+                img_bytes = base64.b64decode(image_b64)
+                arr = np.frombuffer(img_bytes, dtype=np.uint8)
+                frame = cv2.imdecode(arr, cv2.IMREAD_COLOR)
+                if frame is None:
+                    raise ValueError("decode returned None")
+            except Exception as e:
+                await ws.send_json({"type": "error", "message": f"decode: {e}"})
+                continue
+
+            result = session.process_frame(frame)
+            await ws.send_json({"type": "sentence_status", **result})
     except WebSocketDisconnect:
         return
     except Exception as e:

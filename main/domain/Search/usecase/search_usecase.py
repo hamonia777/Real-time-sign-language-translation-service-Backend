@@ -57,13 +57,14 @@ class SearchUseCase:
         return RecentSearchResponseDto(recentSearches=results)
     
     #26.04.28 혜미 추가 -> 단어 목록 반환용
-    async def suggest_word(self, word: str) -> SearchResponseDto:
+    # 26.4.30 : 가령 : 수정 내용 - user_id를 받아 자동완성 결과의 바구니 포함 여부 계산
+    async def suggest_word(self, user_id: int, word: str) -> SearchResponseDto:
         """save_history 없이 단어 목록만 반환 (자동완성용)"""
         word = word.strip()
         if not word:
             return SearchResponseDto(keyword="", totalCount=0, results=[])
 
-        lessons_data = await self.search_repo.find_lessons_by_word(0, word)
+        lessons_data = await self.search_repo.find_lessons_by_word(user_id, word)
         results = [
             SearchResultItem(
                 id=lesson.id,
@@ -74,9 +75,10 @@ class SearchUseCase:
         ]
         return SearchResponseDto(keyword=word, totalCount=len(results), results=results)
 
-    async def get_all_words(self) -> SearchResponseDto:
+    # 26.4.30 : 가령 : 수정 내용 - 전체 단어 목록도 로그인 사용자 기준 isInBasket 반영
+    async def get_all_words(self, user_id: int) -> SearchResponseDto:
             """전체 단어 목록 반환 (가나다순)"""
-            lessons_data = await self.search_repo.find_lessons_by_word(0, "")
+            lessons_data = await self.search_repo.find_lessons_by_word(user_id, "")
             results = [
                 SearchResultItem(
                     id=lesson.id,

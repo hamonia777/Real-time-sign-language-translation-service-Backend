@@ -21,6 +21,18 @@ POSE_WEIGHT = 0.005
 FACE_WEIGHT = 0.005
 HAND_WEIGHT = 0.99
 
+FINGERSPELL_ALLOWED = {
+    "consonant": {
+        "ㄱ", "ㄴ", "ㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅅ",
+        "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ",
+    },
+    "vowel": {
+        "ㅏ", "ㅑ", "ㅓ", "ㅕ", "ㅗ", "ㅛ", "ㅜ",
+        "ㅠ", "ㅡ", "ㅣ", "ㅐ", "ㅒ", "ㅔ", "ㅖ",
+        "ㅚ", "ㅟ", "ㅢ",
+    },
+}
+
 _MODEL_PATH = (
     Path(__file__).resolve().parent.parent.parent.parent
     / "learning_model"
@@ -193,7 +205,9 @@ class RecognitionService:
         out[POSE_DIM + FACE_DIM + HAND_DIM : TOTAL_DIM] *= HAND_WEIGHT
         return out
 
-    def predict_top3(self, keypoints: np.ndarray) -> List[Tuple[str, float]]:
+    def predict_top3(
+        self, keypoints: np.ndarray, allowed_labels: set[str] | None = None
+    ) -> List[Tuple[str, float]]:
         torch = self.torch
         weighted = self._apply_weights(keypoints)
         x = torch.tensor(weighted, dtype=torch.float32).unsqueeze(0).to(self.device)
@@ -202,18 +216,29 @@ class RecognitionService:
         with self._infer_lock, torch.no_grad():
             logits = self.model(x)
             probs = torch.softmax(logits, dim=1)
-            top3_probs, top3_idx = torch.topk(probs, 3)
+            if allowed_labels:
+                # 26.05.07 : 가령 : 수정 내용 - 지문자 자음 학습 중 모음 후보가 뜨지 않도록 허용 라벨만 Top-3 계산
+                mask = torch.full_like(probs, float("-inf"))
+                for idx, label in self.idx_to_label.items():
+                    if label in allowed_labels:
+                        mask[0][idx] = probs[0][idx]
+                probs = mask
+            top_k = min(3, int(torch.isfinite(probs).sum().item()))
+            if top_k <= 0:
+                return []
+            top3_probs, top3_idx = torch.topk(probs, top_k)
 
         results: List[Tuple[str, float]] = []
-        for i in range(3):
+        for i in range(top_k):
             idx = top3_idx[0][i].item()
             prob = top3_probs[0][i].item() * 100.0
             results.append((self.idx_to_label[idx], prob))
         return results
 
-    def predict_from_frame(self, bgr_frame: np.ndarray):
+    def predict_from_frame(self, bgr_frame: np.ndarray, subcategory: str | None = None):
         import cv2
 
+        allowed_labels = FINGERSPELL_ALLOWED.get(subcategory or "")
         kp, hand_detected = self.extract_keypoints(bgr_frame)
         kp_flip, hand_detected_flip = self.extract_keypoints(cv2.flip(bgr_frame, 1))
 
@@ -222,9 +247,9 @@ class RecognitionService:
 
         candidates: List[List[Tuple[str, float]]] = []
         if hand_detected:
-            candidates.append(self.predict_top3(kp))
+            candidates.append(self.predict_top3(kp, allowed_labels=allowed_labels))
         if hand_detected_flip:
-            candidates.append(self.predict_top3(kp_flip))
+            candidates.append(self.predict_top3(kp_flip, allowed_labels=allowed_labels))
 
         top3 = max(candidates, key=lambda c: c[0][1])
         return {

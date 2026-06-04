@@ -177,13 +177,58 @@ document.addEventListener('DOMContentLoaded', () => {
             li.innerHTML = `
                 <span class="sign-word" style="cursor:pointer;" onclick="window.open('https://sldict.korean.go.kr/front/search/searchAllList.do?searchKeyword=${encodeURIComponent(item.word)}', '_blank')">${item.word}</span>
                 <div class="btn-group">
-                    <button class="btn-basket">학습바구니 넣기</button>
+                    <button class="btn-basket" type="button"></button>
                     <button class="btn-learn">지금 학습하기</button>
                 </div>
             `;
+            const basketBtn = li.querySelector('.btn-basket');
+            basketBtn.textContent = item.isInBasket ? '담긴 항목' : '학습바구니 넣기';
+            basketBtn.disabled = Boolean(item.isInBasket);
+            basketBtn.addEventListener('click', async () => {
+                await addToLearningBasket(item, basketBtn);
+            });
+
+            li.querySelector('.btn-learn').addEventListener('click', () => {
+                location.href = `word_learn.html?lesson_id=${item.id}`;
+            });
             ul.appendChild(li);
         });
         resultsList.appendChild(ul);
+    }
+
+    // 26.4.30 : 가령 : 수정 내용 - 검색 결과에서 학습 바구니 추가 API 연동
+    async function addToLearningBasket(item, button) {
+        if (!token) {
+            alert('로그인이 필요합니다.');
+            location.href = 'login.html';
+            return;
+        }
+
+        button.disabled = true;
+        const originalText = button.textContent;
+        button.textContent = '담는 중...';
+
+        try {
+            const res = await fetch('/api/v1/learning/basket', {
+                method: 'POST',
+                headers: {
+                    ...authHeader,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ lesson_id: item.id, source: 'search' }),
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok && res.status !== 409) throw new Error(data.detail || '학습바구니 추가 실패');
+
+            item.isInBasket = true;
+            button.textContent = '담긴 항목';
+            button.disabled = true;
+        } catch (err) {
+            console.error('학습바구니 추가 실패:', err);
+            button.textContent = originalText;
+            button.disabled = false;
+            alert(err.message || '학습바구니 추가 중 오류가 발생했습니다.');
+        }
     }
 
     function showNone() {

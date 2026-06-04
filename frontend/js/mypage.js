@@ -95,15 +95,40 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(() => {});
 
+        // fetch('/api/v1/profile/me', {
+        //     headers: { 'Authorization': `Bearer ${token}` }
+        // })
+        // .then(res => res.ok ? res.json() : null)
+        // .then(data => {
+        //     if (data && data.nickname) {
+        //         const el = document.getElementById('profileName');
+        //         if (el) el.textContent = data.nickname;
+        //         localStorage.setItem('kakaoNickname', data.nickname);
+        //     }
+        // })
+        // .catch(() => {});
         fetch('/api/v1/profile/me', {
             headers: { 'Authorization': `Bearer ${token}` }
         })
         .then(res => res.ok ? res.json() : null)
         .then(data => {
-            if (data && data.nickname) {
-                const el = document.getElementById('profileName');
-                if (el) el.textContent = data.nickname;
-                localStorage.setItem('kakaoNickname', data.nickname);
+            if (data) {
+                if (data.nickname) {
+                    const elName = document.getElementById('profileName');
+                    if (elName) elName.textContent = data.nickname;
+                    localStorage.setItem('kakaoNickname', data.nickname);
+                }
+
+                if (data.email) {
+                    const elEmail = document.getElementById('profileEmail');
+                    if (elEmail) elEmail.textContent = data.email;
+                    localStorage.setItem('kakaoEmail', data.email);
+                }
+                if (data.phone_num) {
+                    const elPhone = document.getElementById('profilePhone');
+                    if (elPhone) elPhone.textContent = data.phone_num;
+                    localStorage.setItem('userPhone', data.phone_num);
+                }
             }
         })
         .catch(() => {});
@@ -323,6 +348,223 @@ document.addEventListener('DOMContentLoaded', () => {
     if (elEmail)  elEmail.innerText  = kakaoEmail;
     if (elPhone)  elPhone.innerText  = userPhone;
 
+    /* ─────────────────────────────────────────────
+       1-1. 완료/진행 중인 학습 DB 연동
+       ───────────────────────────────────────────── */
+    function formatDate(value) {
+        if (!value) return '';
+        const d = new Date(value);
+        if (Number.isNaN(d.getTime())) return '';
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}.${m}.${day}`;
+    }
+
+    function getLessonUrl(item) {
+        if (item.category === 'sentence') return `sentence_learn.html?lesson_id=${item.lesson_id}`;
+        if (item.category === 'fingerspell') {
+            const wordModelFsChars = new Set(['ㄲ', 'ㄸ', 'ㅃ', 'ㅆ', 'ㅉ', 'ㅘ', 'ㅙ', 'ㅝ', 'ㅞ']);
+            return `${wordModelFsChars.has(item.title) ? 'word_learn.html' : 'sign_learn.html'}?lesson_id=${item.lesson_id}`;
+        }
+        return `word_learn.html?lesson_id=${item.lesson_id}`;
+    }
+
+    // 26.05.06 : 가령 : 수정 내용 - 진행 중 학습 이어하기 시 기존 시도 횟수를 이어받도록 resume 플래그 추가
+    function getResumeLessonUrl(item) {
+        return `${getLessonUrl(item)}&resume=1`;
+    }
+
+    function renderCompletedLearning(items, totalCount) {
+        const countEl = document.getElementById('completedCount');
+        const recentEl = document.getElementById('completedRecent');
+        const listEl = document.getElementById('completedLearningList');
+        if (countEl) countEl.textContent = `${totalCount}개`;
+        if (recentEl) {
+            const recent = items[0];
+            recentEl.textContent = recent
+                ? `최근 완료 : ${recent.title} (${formatDate(recent.updated_at)})`
+                : '최근 완료 : 없음';
+        }
+        if (!listEl) return;
+        listEl.innerHTML = '';
+        if (!items.length) {
+            listEl.innerHTML = '<li class="empty-learning">완료된 학습이 없습니다.</li>';
+            return;
+        }
+        items.forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <i class="check-dot"></i>
+                <span></span>
+                <span class="date"></span>
+                <button class="btn-sm" type="button">다시 학습</button>
+            `;
+            li.querySelector('span').textContent = item.title;
+            li.querySelector('.date').textContent = formatDate(item.updated_at);
+            li.querySelector('button').addEventListener('click', () => {
+                location.href = getLessonUrl(item);
+            });
+            listEl.appendChild(li);
+        });
+    }
+
+    function renderInProgressLearning(items, totalCount) {
+        const countEl = document.getElementById('inProgressCount');
+        const recentEl = document.getElementById('inProgressRecent');
+        const listEl = document.getElementById('inProgressLearningList');
+        if (countEl) countEl.textContent = `${totalCount}개`;
+        if (recentEl) {
+            const recent = items[0];
+            recentEl.textContent = recent
+                ? `최근 진행 : ${recent.title} (${formatDate(recent.updated_at)})`
+                : '최근 진행 : 없음';
+        }
+        if (!listEl) return;
+        listEl.innerHTML = '';
+        if (!items.length) {
+            listEl.innerHTML = '<div class="empty-learning">진행 중인 학습이 없습니다.</div>';
+            return;
+        }
+        items.forEach(item => {
+            const pct = Math.max(0, Math.min(100, item.progress_percent || 0));
+            const row = document.createElement('div');
+            row.className = 'progress-item';
+            row.innerHTML = `
+                <div class="item-left">
+                    <div class="custom-radio active"><div class="radio-inner"></div></div>
+                    <span class="word-text"></span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="bar-bg"><div class="bar-fill"></div></div>
+                    <span class="percent-text"></span>
+                </div>
+                <span class="date-text"></span>
+                <button class="resume-btn" type="button">이어하기</button>
+            `;
+            row.querySelector('.word-text').textContent = item.title;
+            row.querySelector('.bar-fill').style.width = `${pct}%`;
+            row.querySelector('.percent-text').textContent = `${pct}% 완료`;
+            row.querySelector('.date-text').textContent = formatDate(item.updated_at);
+            row.querySelector('button').addEventListener('click', () => {
+                location.href = getResumeLessonUrl(item);
+            });
+            listEl.appendChild(row);
+        });
+    }
+
+    async function loadLearningProgress() {
+        try {
+            const authHeaders = { 'Authorization': `Bearer ${token}` };
+            const [completedRes, inProgressRes] = await Promise.all([
+                fetch('/api/v1/profile/learning/completed', { headers: authHeaders }),
+                fetch('/api/v1/profile/learning/in-progress', { headers: authHeaders }),
+            ]);
+            if (completedRes.status === 401 || inProgressRes.status === 401) {
+                alert('로그인이 필요합니다.');
+                location.href = 'login.html';
+                return;
+            }
+            if (!completedRes.ok) throw new Error(`completed HTTP ${completedRes.status}`);
+            if (!inProgressRes.ok) throw new Error(`in-progress HTTP ${inProgressRes.status}`);
+
+            const completedData = await completedRes.json();
+            const inProgressData = await inProgressRes.json();
+            const completedItems = completedData.items || [];
+            const inProgressItems = inProgressData.items || [];
+            renderCompletedLearning(completedItems, completedData.total_count || 0);
+            renderInProgressLearning(inProgressItems, inProgressData.total_count || 0);
+
+            const completedIds = completedItems.map(item => item.lesson_id);
+            localStorage.setItem('learning_completed_lessons', JSON.stringify(completedIds));
+        } catch (err) {
+            console.error('학습 진행 현황 로드 실패:', err);
+            renderCompletedLearning([], 0);
+            renderInProgressLearning([], 0);
+        }
+    }
+
+    loadLearningProgress();
+
+    /* ─────────────────────────────────────────────
+       1-2. 학습 바구니 DB 연동
+       26.4.30 : 가령 : 수정 내용 - DB 바구니 항목을 category 기준 3열 UI로 렌더링
+       26.5.12 : 혜미 : 수정 내용 - category 기준으로 말고 행 순서대로 바구니가 차도록 수정
+       ───────────────────────────────────────────── */
+    function renderLearningBasket(items) {
+        const countEl = document.getElementById('basketCount');
+        const gridEl = document.getElementById('basketGrid');
+        if (countEl) countEl.innerHTML = `학습 바구니 총 항목 : <strong>${items.length}개</strong>`;
+        if (!gridEl) return;
+
+        gridEl.innerHTML = '';
+
+        if (!items.length) return;
+
+        // 컬럼 3개 생성
+        const cols = [0, 1, 2].map(() => {
+            const col = document.createElement('div');
+            col.className = 'basket-col';
+            const list = document.createElement('ul');
+            list.className = 'item-list';
+            col.appendChild(list);
+            gridEl.appendChild(col);
+            return list;
+        });
+
+        // 가로 우선: 0→1→2→0→1→2 순서로 채우기
+        items.forEach((item, index) => {
+            const list = cols[index % 3];
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <div class="flex-center"><i class="green-dot"></i><span></span></div>
+                <button class="btn-blue learn-btn" type="button">학습하기</button>
+            `;
+            li.querySelector('span').textContent = item.title;
+            li.querySelector('.learn-btn').addEventListener('click', () => {
+                location.href = getLessonUrl(item);
+            });
+            list.appendChild(li);
+        });
+    }
+
+    // 26.4.30 : 가령 : 수정 내용 - 마이페이지 진입 시 서버에서 학습 바구니 목록 조회
+    async function loadLearningBasket() {
+        try {
+            const res = await fetch('/api/v1/profile/basket', {
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+            if (res.status === 401) {
+                alert('로그인이 필요합니다.');
+                location.href = 'login.html';
+                return;
+            }
+            if (!res.ok) throw new Error(`basket HTTP ${res.status}`);
+            const data = await res.json();
+            renderLearningBasket(data.items || []);
+        } catch (err) {
+            console.error('학습 바구니 로드 실패:', err);
+            renderLearningBasket([]);
+        }
+    }
+
+    async function removeLearningBasket(basketId) {
+        if (!confirm('학습 바구니에서 삭제하시겠습니까?')) return;
+        try {
+            const res = await fetch(`/api/v1/learning/basket/${basketId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+            if (!res.ok) throw new Error(`basket delete HTTP ${res.status}`);
+            await loadLearningBasket();
+        } catch (err) {
+            console.error('학습 바구니 삭제 실패:', err);
+            alert('학습 바구니 삭제 중 오류가 발생했습니다.');
+        }
+    }
+
+    loadLearningBasket();
+
 
 /* ──────────────────────────────────────────────────────────
    2. 성취도 잔디 그래프 생성 (가변 그리드 대응 교정본)
@@ -345,7 +587,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 오늘부터 52주 전 계산
     const today = new Date();
     const startDate = new Date(today);
-    startDate.setDate(today.getDate() - 52 * 7 - today.getDay());
+    startDate.setDate(today.getDate() - 370);
 
     // 2. 월 라벨 생성 (CSS 그리드 칼럼 시스템 활용)
     if (monthContainer) {
@@ -378,36 +620,54 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 3. 잔디 그리드 채우기 (데이터 정합성 및 시뮬레이션 보완)
-    if (grassGrid) {
-        grassGrid.innerHTML = '';
-        let learningData = [];
+    function toIsoDate(date) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
 
-        try {
-            const raw = localStorage.getItem('learningHistory');
-            learningData = JSON.parse(raw);
-            if (!Array.isArray(learningData)) learningData = null;
-        } catch (e) {
-            learningData = null;
-        }
+    function renderAchievement(days, startDateValue) {
+        if (!grassGrid) return;
+        grassGrid.innerHTML = '';
+        const countMap = new Map((days || []).map(day => [day.date, day.count || 0]));
+        const graphStartDate = startDateValue ? new Date(`${startDateValue}T00:00:00`) : startDate;
 
         // 371개(53주 * 7일) 박스 생성
         for (let i = 0; i < 371; i++) {
             const square = document.createElement('div');
             square.className = 'grass-square';
-
-            // 데이터가 없으면 랜덤하게 테스트용 색칠
-            let count = (learningData && learningData[i] !== undefined) 
-                        ? learningData[i] 
-                        : (Math.random() > 0.6 ? Math.floor(Math.random() * 6) : 0);
-
+            const currentDate = new Date(graphStartDate.getTime());
+            currentDate.setDate(graphStartDate.getDate() + i);
+            const dateKey = toIsoDate(currentDate);
+            const count = countMap.get(dateKey) || 0;
             const level = getGrassLevel(count);
-            square.classList.add(level); // lv0~lv4 클래스 부여
-            
-            square.title = `학습량: ${count}개`;
+            square.classList.add(level);
+            square.title = `${dateKey} 학습량: ${count}개`;
             grassGrid.appendChild(square);
         }
     }
+
+    async function loadAchievement() {
+        try {
+            const res = await fetch('/api/v1/profile/achievement', {
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+            if (res.status === 401) {
+                alert('로그인이 필요합니다.');
+                location.href = 'login.html';
+                return;
+            }
+            if (!res.ok) throw new Error(`achievement HTTP ${res.status}`);
+            const data = await res.json();
+            renderAchievement(data.days || [], data.start_date);
+        } catch (err) {
+            console.error('성취도 로드 실패:', err);
+            renderAchievement([]);
+        }
+    }
+
+    loadAchievement();
 
     // 레벨 판별 함수 (수치 조정)
     function getGrassLevel(count) {
