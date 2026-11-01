@@ -164,22 +164,6 @@ SENTENCES_TXT_PATH = (
 )
 
 
-
-# 가령: 260422: 수정 내용 - 문장(sentences.txt) 단어 → 기존 word lesson title 동의어 매핑 (시드 시점에 정규화)
-SENTENCE_WORD_ALIASES = {
-    "저": "저는",
-    "나": "저는",
-    "감사": "감사합니다",
-    "프로그래머": "개발자",
-}
-
-
-# 가령: 260422: 수정 내용 - sentences.txt 절대 경로 (lesson_service.py 위치 기준)
-SENTENCES_TXT_PATH = (
-    Path(__file__).resolve().parent.parent.parent.parent / "learning_model" / "sentences.txt"
-)
-
-
 class LessonService:
     # 가령: 260422: 수정 내용 - 문장 시드를 위해 LessonWordMappingRepository 추가 주입
     def __init__(
