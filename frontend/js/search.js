@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (confirm('로그아웃 하시겠습니까?')) {
                 document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
                 document.cookie = "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                await fetch('/api/v1/auth/logout', { method: 'GET', credentials: 'include' });
+                await fetch('api/v1/auth/logout', { method: 'GET', credentials: 'include' });
                 alert('로그아웃 되었습니다.');
                 location.href = 'home.html';
             }
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         autocompleteTimer = setTimeout(async () => {
             try {
-                const res = await fetch(`/api/v1/search/suggest?word=${encodeURIComponent(q)}`, {
+                const res = await fetch(`api/v1/search/suggest?word=${encodeURIComponent(q)}`, {
                     headers: authHeader
                 });
                 const data = await res.json();
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!query) return;
 
         try {
-            const res = await fetch(`/api/v1/search?word=${encodeURIComponent(query)}`, {
+            const res = await fetch(`api/v1/search?word=${encodeURIComponent(query)}`, {
                 headers: authHeader
             });
             const data = await res.json();
@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
         button.textContent = '담는 중...';
 
         try {
-            const res = await fetch('/api/v1/learning/basket', {
+            const res = await fetch('api/v1/learning/basket', {
                 method: 'POST',
                 headers: {
                     ...authHeader,
@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ────────────────────────────────────────────────────────*/
     async function loadRecentSearches() {
         try {
-            const res = await fetch('/api/v1/search/recent', { headers: authHeader });
+            const res = await fetch('api/v1/search/recent', { headers: authHeader });
             const data = await res.json();
             renderRecentTags(data.recentSearches || []);
         } catch {
@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // X 버튼 → 삭제
             span.querySelector('.close-icon').addEventListener('click', async () => {
                 try {
-                    await fetch(`/api/v1/search/recent/${item.id}`, {
+                    await fetch(`api/v1/search/recent/${item.id}`, {
                         method: 'DELETE',
                         headers: authHeader
                     });
@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadAllWords() {
         try {
-            const res = await fetch('/api/v1/search/all', { headers: authHeader });
+            const res = await fetch('api/v1/search/all', { headers: authHeader });
             const data = await res.json();
             renderResults(data.results || []);
         } catch {}
@@ -295,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ────────────────────────────────────────────────────────*/
     async function loadPopularSearches() {
         try {
-            const res = await fetch('/api/v1/search/popular', { headers: authHeader });
+            const res = await fetch('api/v1/search/popular', { headers: authHeader });
             const data = await res.json();
             renderPopular(data.popularSearches || []);
         } catch {}

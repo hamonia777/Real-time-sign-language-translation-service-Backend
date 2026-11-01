@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      const res = await fetch('/api/v1/users/info', {
+      const res = await fetch('api/v1/users/info', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

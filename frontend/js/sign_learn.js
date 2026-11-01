@@ -1,5 +1,13 @@
 // 가령: 26/04/19 수정내용: 라우터 prefix 가 /api/v1/learning 으로 변경된 것에 맞춰 API_BASE 수정
-const API_BASE = "/api/v1/learning";
+const API_BASE = "api/v1/learning";
+
+// 현재 페이지 기준 상대 경로를 ws/wss 절대 URL 로 바꾼다 (/sign 같은 하위 경로 배포 대응)
+function toWebSocketUrl(path) {
+  const url = new URL(path, location.href);
+  url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
+  return url.href;
+}
+
 
 // 진웅 : live 서버에서는 CORS 문제로 인해 API_BASE 를 상대경로로 설정. 개발 시에는 필요에 따라 주석 처리된 라인을 사용 가능.
 // const API_BASE = "http://127.0.0.1:8080/api/v1/learning";
@@ -235,21 +243,41 @@ function stopCamera() {
 
 //   state.ws.onopen = () => {
 
+// 연결이 끊기면 지수 백오프(1s, 2s, 4s … 최대 8s)로 자동 재연결한다.
+const WS_RETRY_BASE_MS = 1000;
+const WS_RETRY_MAX_MS = 8000;
+const WS_MAX_RETRY = 10;
+
 function startWebSocket() {
-  const proto = location.protocol === "https:" ? "wss:" : "ws:";
-  const url = `${proto}//${location.host}${API_BASE}/ws/recognition`;
-  state.ws = new WebSocket(url);
+  state.wsIntentionalClose = false;
+  state.wsRetryCount = 0;
+  state.wsTimerStarted = false;
+  connectRecognitionSocket();
+}
+
+function connectRecognitionSocket() {
+  const url = `${API_BASE}/ws/recognition`;
+  const wsUrl = toWebSocketUrl(url);
+  const status = document.getElementById("statusLine3");
+  status.textContent = state.wsRetryCount === 0 ? "연결중..." : `재연결 중 (${state.wsRetryCount}회)...`;
+  state.ws = new WebSocket(wsUrl);
 
   state.ws.onopen = () => {
-    document.getElementById("statusLine3").textContent = "WebSocket 연결됨 — 손을 카메라에 보여주세요";
-    startTimer(); 
+    state.wsRetryCount = 0;
+    state.wsConfigKey = null; // 새 연결에는 대상 설정을 다시 보낸다
+    status.textContent = "연결 완료";
+    // 타이머는 처음 연결될 때만 시작한다 (재연결 시 카운트다운이 초기화되지 않도록)
+    if (!state.wsTimerStarted) {
+      startTimer();
+      state.wsTimerStarted = true;
+    }
     startFrameSender();
   };
   state.ws.onmessage = (ev) => {
     let msg;
     try { msg = JSON.parse(ev.data); } catch { return; }
     if (msg.type === "error") {
-      document.getElementById("statusLine3").textContent = "오류: " + msg.message;
+      status.textContent = "오류: " + msg.message;
       return;
     }
     if (msg.type !== "prediction") return;
@@ -267,33 +295,45 @@ function startWebSocket() {
     const score = Math.round(msg.score || 0);
     if (score > state.maxScore) {
       state.maxScore = score;
-      updateGauge(score); 
+      updateGauge(score);
     }
-  };
-  state.ws.onerror = () => {
-    document.getElementById("statusLine3").textContent = "WebSocket 오류";
   };
   state.ws.onclose = () => {
-    if (state.sendTimer) {
-      clearInterval(state.sendTimer);
-      state.sendTimer = null;
+    stopFrameSender();
+    if (state.wsIntentionalClose) return;
+
+    state.wsRetryCount += 1;
+    if (state.wsRetryCount > WS_MAX_RETRY) {
+      status.textContent = "연결 실패 — 페이지를 새로고침해 주세요";
+      return;
     }
+    const delay = Math.min(WS_RETRY_BASE_MS * 2 ** (state.wsRetryCount - 1), WS_RETRY_MAX_MS);
+    status.textContent = `연결 끊김 — ${delay / 1000}초 후 재연결 (${state.wsRetryCount}회)`;
+    state.wsRetryTimer = setTimeout(connectRecognitionSocket, delay);
   };
 }
 
 function stopWebSocket() {
-  stopTimer(); 
-  if (state.sendTimer) {
-    clearInterval(state.sendTimer);
-    state.sendTimer = null;
-  }
+  state.wsIntentionalClose = true;
+  clearTimeout(state.wsRetryTimer);
+  state.wsRetryTimer = null;
+  stopTimer();
+  stopFrameSender();
   if (state.ws) {
     try { state.ws.close(); } catch {}
     state.ws = null;
   }
 }
 
+function stopFrameSender() {
+  if (state.sendTimer) {
+    clearInterval(state.sendTimer);
+    state.sendTimer = null;
+  }
+}
+
 function startFrameSender() {
+  stopFrameSender();
   const video = document.getElementById("video3");
   if (!state.captureCanvas) {
     state.captureCanvas = document.createElement("canvas");
@@ -305,18 +345,30 @@ function startFrameSender() {
 
   state.sendTimer = setInterval(() => {
     if (!state.ws || state.ws.readyState !== WebSocket.OPEN) return;
-    if (!video.videoWidth) return;
+    if (!video.videoWidth || state.frameEncoding) return; // 이전 프레임 인코딩 중이면 건너뜀
+
+    // 대상이 바뀐 경우에만 설정 메시지를 보낸다 (프레임마다 JSON을 붙이지 않음)
+    const configKey = `${state.lesson.title}|${state.lesson.subcategory}`;
+    if (state.wsConfigKey !== configKey) {
+      state.ws.send(JSON.stringify({
+        type: "config",
+        target: state.lesson.title,
+        // 26.05.07 : 가령 : 수정 내용 - 지문자 자음/모음 후보군 필터링을 위해 subcategory 전달
+        subcategory: state.lesson.subcategory,
+      }));
+      state.wsConfigKey = configKey;
+    }
+
     // 26.05.06 : 가령 : 수정 내용 - 사용자 화면은 CSS로만 반전하고 서버 전송 프레임은 원본 방향 유지
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    // 26.05.07 : 가령 : 수정 내용 - 지문자 손가락 윤곽 보존을 위해 JPEG 품질 0.6 → 0.85
-    const b64 = canvas.toDataURL("image/jpeg", 0.85);
-    state.ws.send(JSON.stringify({
-      type: "frame",
-      image: b64,
-      target: state.lesson.title,
-      // 26.05.07 : 가령 : 수정 내용 - 지문자 자음/모음 후보군 필터링을 위해 subcategory 전달
-      subcategory: state.lesson.subcategory,
-    }));
+    // 바이너리(JPEG Blob)로 전송한다. 26.05.07 : 가령 : 지문자 손가락 윤곽 보존을 위해 JPEG 품질 0.85
+    state.frameEncoding = true;
+    canvas.toBlob((blob) => {
+      state.frameEncoding = false;
+      if (blob && state.ws && state.ws.readyState === WebSocket.OPEN) {
+        state.ws.send(blob);
+      }
+    }, "image/jpeg", 0.85);
   }, FRAME_INTERVAL_MS);
 }
 

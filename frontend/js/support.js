@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.textContent = '전송 중...';
 
         try {
-            const res = await fetch('/api/v1/inquiry', {
+            const res = await fetch('api/v1/inquiry', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

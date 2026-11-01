@@ -1,7 +1,7 @@
 // 가령: 26/04/19 수정내용: 라우터 prefix 가 /api/v1/learning 으로 변경된 것에 맞춰 API_BASE 수정
 // 가령: 26/04/19 수정내용: DB 시드 초기화 버튼/기능 제거 (seed 함수 및 클릭 핸들러 삭제)
 // 가령: 26/04/19 수정내용: 단어 학습 섹션 카테고리 탭 + 단어 렌더링 로직 추가
-const API_BASE = "/api/v1/learning";
+const API_BASE = "api/v1/learning";
 
 // 진웅 : live 서버에서는 CORS 문제로 인해 API_BASE 를 상대경로로 설정. 개발 시에는 필요에 따라 주석 처리된 라인을 사용 가능.
 // const API_BASE = "http://127.0.0.1:8080/api/v1/learning";

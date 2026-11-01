@@ -1,0 +1,16 @@
+.git
+.github
+.idea
+.venv
+venv
+.env
+.env.*
+__pycache__
+**/__pycache__
+*.pyc
+*.iml
+doc
+웹사이트-클롤링
+dump.rdb
+tests
+.DS_Store

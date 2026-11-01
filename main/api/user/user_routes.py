@@ -1,8 +1,10 @@
 # 가령: 26/04/19 수정내용: git 충돌 해결 — 기존 /sign-up (upstream) + Kakao 로그인/콜백/로그아웃 (stash) 양쪽 모두 유지
 import httpx
+import secrets
 import traceback
 from typing import List
-from fastapi import APIRouter, Depends, Response, HTTPException
+from urllib.parse import urlencode
+from fastapi import APIRouter, Depends, Request, Response, HTTPException
 from fastapi.responses import RedirectResponse
 
 from main.core.config import settings
@@ -40,43 +42,82 @@ async def update_user_info(
     return await usecase.update_info(user_id, user_info_req)
 
 
+KAKAO_AUTHORIZE_URL = "https://kauth.kakao.com/oauth/authorize"
+KAKAO_STATE_COOKIE = "kakao_oauth_state"
+KAKAO_NOTIFICATION_STATE_PREFIX = "notification:"
+
+
+def _kakao_authorize_redirect(state: str, scope: str = None, prompt: str = None) -> RedirectResponse:
+    """카카오 인증 페이지로 이동. state 는 콜백에서 검증하기 위해 쿠키에도 저장한다 (CSRF 방어)."""
+    params = {
+        "client_id": settings.KAKAO_REST_API_KEY,
+        "redirect_uri": settings.KAKAO_REDIRECT_URI,
+        "response_type": "code",
+        "state": state,
+    }
+    if scope:
+        params["scope"] = scope
+    if prompt:
+        params["prompt"] = prompt
+
+    response = RedirectResponse(f"{KAKAO_AUTHORIZE_URL}?{urlencode(params)}")
+    response.set_cookie(
+        key=KAKAO_STATE_COOKIE,
+        value=state,
+        httponly=True,
+        secure=False,
+        samesite="lax",
+        max_age=600,
+    )
+    return response
+
+
 @router.get("/login/kakao")
 def kakao_login():
-    auth_url = (
-        f"https://kauth.kakao.com/oauth/authorize?"
-        f"client_id={settings.KAKAO_REST_API_KEY}&redirect_uri={settings.KAKAO_REDIRECT_URI}"
-        f"&response_type=code"
-    )
-    return RedirectResponse(auth_url)
+    state = secrets.token_urlsafe(32)
+    # scope 를 지정하지 않으면 카카오 ID 만으로 로그인된다. 닉네임/이메일은 동의항목 설정 후 추가 가능.
+    return _kakao_authorize_redirect(state)
 
 
 @router.get("/kakao/notification/enable")
 def kakao_notification_enable():
     """학습 알림 ON 시 talk_message 동의 페이지로 이동"""
-    auth_url = (
-        f"https://kauth.kakao.com/oauth/authorize?"
-        f"client_id={settings.KAKAO_REST_API_KEY}&redirect_uri={settings.KAKAO_REDIRECT_URI}"
-        f"&response_type=code&scope=talk_message&state=notification&prompt=consent"
-    )
-    return RedirectResponse(auth_url)
+    state = KAKAO_NOTIFICATION_STATE_PREFIX + secrets.token_urlsafe(32)
+    return _kakao_authorize_redirect(state, scope="talk_message", prompt="consent")
 
 
 @router.get("/kakao/auth", response_model=KakaoLoginResponseDto)
 async def kakao_callback(
-    code: str,
+    request: Request,
     response: Response,
     usecase: KakaoLoginUseCase = Depends(),
+    code: str = None,
     state: str = None,
+    error: str = None,
+    error_description: str = None,
 ):
+    if error:
+        raise HTTPException(status_code=400, detail=f"카카오 로그인 실패: {error_description or error}")
+    if not code:
+        raise HTTPException(status_code=400, detail="카카오 인증 코드가 없습니다. 다시 로그인해 주세요.")
+
+    expected_state = request.cookies.get(KAKAO_STATE_COOKIE)
+    if not state or not expected_state or not secrets.compare_digest(state, expected_state):
+        raise HTTPException(status_code=400, detail="잘못된 로그인 요청입니다. 다시 시도해 주세요.")
+
     try:
-        if state == "notification":
-            return await _kakao_notification_consent_impl(code, usecase)
-        return await _kakao_callback_impl(code, response, usecase)
+        if state.startswith(KAKAO_NOTIFICATION_STATE_PREFIX):
+            result = await _kakao_notification_consent_impl(code, usecase)
+        else:
+            result = await _kakao_callback_impl(code, response, usecase)
     except Exception as e:
         print("===== 카카오 콜백 에러 =====")
         print(traceback.format_exc())
         print("===========================")
         raise
+
+    result.delete_cookie(KAKAO_STATE_COOKIE)
+    return result
 
 
 async def _kakao_notification_consent_impl(code: str, usecase: KakaoLoginUseCase):
@@ -116,7 +157,7 @@ async def _kakao_notification_consent_impl(code: str, usecase: KakaoLoginUseCase
         user.kakao_notification_enabled = True
         usecase.user_repo.save(user)
 
-    return RedirectResponse(url="/mypage.html", status_code=302)
+    return RedirectResponse(url=f"{settings.APP_BASE_PATH}/mypage.html", status_code=302)
 
 
 async def _kakao_callback_impl(code: str, response: Response, usecase: KakaoLoginUseCase):
@@ -185,9 +226,9 @@ async def _kakao_callback_impl(code: str, response: Response, usecase: KakaoLogi
 
     # 혜미 : 26/04/20 수정내용 : 사용자 입장에서는 JSON 응답보다 로그인 후 리다이렉트가 더 자연스러울 것 같아서, 로그인 성공 시 프론트엔드의 /register.html (전화번호 입력 페이지) 또는 / (메인 페이지)로 리다이렉트하도록 변경
     if is_first:
-        redirect = RedirectResponse(url="/register.html", status_code=302)
+        redirect = RedirectResponse(url=f"{settings.APP_BASE_PATH}/register.html", status_code=302)
     else:
-        redirect = RedirectResponse(url="/", status_code=302)
+        redirect = RedirectResponse(url=f"{settings.APP_BASE_PATH}/", status_code=302)
 
     redirect.set_cookie(key="refresh_token", value=my_refresh_token, httponly=True, secure=False, samesite="lax", max_age=1209600)
     redirect.set_cookie(key="access_token", value=my_access_token, httponly=False, secure=False, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)

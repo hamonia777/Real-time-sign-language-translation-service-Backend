@@ -1,7 +1,7 @@
 // 가령: 5월 11일 : 수정 내용 - 수어 학습 1단계 영상 연결 로직을 별도 파일로 분리
-const SIGN_VIDEO_URLS_URL = "/data/sign_video_urls.json";
-const SIGN_VIDEO_PROGRESS_URL = "/data/sign_video_progress.json";
-const SIGN_VIDEO_BASE_URL = "/videos";
+const SIGN_VIDEO_URLS_URL = "data/sign_video_urls.json";
+const SIGN_VIDEO_PROGRESS_URL = "data/sign_video_progress.json";
+const SIGN_VIDEO_BASE_URL = "videos";
 
 const signVideoState = {
   urlMap: null,

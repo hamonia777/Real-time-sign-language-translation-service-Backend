@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
             authBtn.innerText = "로그아웃";
             authBtn.classList.add('logout-style');
             authBtn.onclick = async () => {
-                await fetch('/api/v1/auth/logout', { method: 'GET', credentials: 'include' });
+                await fetch('api/v1/auth/logout', { method: 'GET', credentials: 'include' });
                 alert("로그아웃 되었습니다.");
                 location.href = 'home.html';
             };
@@ -59,12 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 location.href = 'login.html';
             };
         }
-    }
-
-    // 로그인 -> 가입 이동
-    const kakaoBtn = document.querySelector('.kakao-login-btn');
-    if (kakaoBtn) {
-        kakaoBtn.onclick = () => { location.href = 'register.html'; };
     }
 
     // 가입 폼 제출

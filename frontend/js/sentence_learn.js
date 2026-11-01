@@ -1,7 +1,15 @@
 // 가령: 260422: 수정 내용 - 문장 학습 페이지 신규 JS. word_learn.js 의 단일 단어 루프를 N개 단어 + 1개 문장 흐름으로 확장
 // 26.05.07 : 가령 : 수정 내용 - Step 4 문장 인식은 model_video.pt 문장 모델 WebSocket으로 연결
 // 가령: 260422: 수정 내용 - 단어 학습 60점 통과 기준 제거 (단어는 연습용, 문장만 60점 기준 적용)
-const API_BASE = "/api/v1/learning";
+const API_BASE = "api/v1/learning";
+
+// 현재 페이지 기준 상대 경로를 ws/wss 절대 URL 로 바꾼다 (/sign 같은 하위 경로 배포 대응)
+function toWebSocketUrl(path) {
+  const url = new URL(path, location.href);
+  url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
+  return url.href;
+}
+
 const SENTENCE_PASS_THRESHOLD = 60.0;
 const FRAME_INTERVAL_MS = 100;
 // 26.05.06 : 가령 : 수정 내용 - 서버 분석 완료 여유 확보를 위해 녹화 제한 10초 → 15초
@@ -427,9 +435,9 @@ function stopCamera() {
 }
 
 function startWebSocket() {
-  const proto = location.protocol === "https:" ? "wss:" : "ws:";
-  const url = `${proto}//${location.host}${API_BASE}/ws/word_recognition`;
-  state.ws = new WebSocket(url);
+  const url = `${API_BASE}/ws/word_recognition`;
+  const wsUrl = toWebSocketUrl(url);
+  state.ws = new WebSocket(wsUrl);
 
   state.ws.onopen = () => {
     document.getElementById("statusLine3").textContent = "준비 완료 — 시작 버튼을 누르세요";
@@ -488,9 +496,9 @@ function stopWebSocket() {
 
 // 26.05.07 : 가령 : 수정 내용 - 문장 학습 Step 4 전체 영상 인식 WebSocket 연결
 function startSentenceWebSocket() {
-  const proto = location.protocol === "https:" ? "wss:" : "ws:";
-  const url = `${proto}//${location.host}${API_BASE}/ws/video_recognition`;
-  state.sentenceWs = new WebSocket(url);
+  const url = `${API_BASE}/ws/video_recognition`;
+  const wsUrl = toWebSocketUrl(url);
+  state.sentenceWs = new WebSocket(wsUrl);
 
   state.sentenceWs.onopen = () => {
     document.getElementById("statusLine4").textContent = "준비 완료 — 시작 버튼을 누르세요";
