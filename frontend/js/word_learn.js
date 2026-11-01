@@ -1,6 +1,14 @@
 // UI·타이머: 1번 코드 기준
 // WS 모델 연결·top3·hand_detected·score 실시간 처리: 2번 코드 기준
-const API_BASE = "/api/v1/learning";
+const API_BASE = "api/v1/learning";
+
+// 현재 페이지 기준 상대 경로를 ws/wss 절대 URL 로 바꾼다 (/sign 같은 하위 경로 배포 대응)
+function toWebSocketUrl(path) {
+  const url = new URL(path, location.href);
+  url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
+  return url.href;
+}
+
 // const API_BASE = "http://127.0.0.1:8080/api/v1/learning";
 
 const PASS_THRESHOLD = 80.0;
@@ -228,9 +236,9 @@ function stopCamera() {
 //  (hand_detected 처리 + top3 실시간 갱신 + score 실시간 갱신)
 // ════════════════════════════════════════════════════════════
 function startWebSocket() {
-  const proto = location.protocol === "https:" ? "wss:" : "ws:";
-  const url = `${proto}//${location.host}${API_BASE}/ws/word_recognition`;
-  state.ws = new WebSocket(url);
+  const url = `${API_BASE}/ws/word_recognition`;
+  const wsUrl = toWebSocketUrl(url);
+  state.ws = new WebSocket(wsUrl);
 
   state.ws.onopen = () => {
     document.getElementById("statusLine3").textContent = "준비 완료 — 시작 버튼을 누르세요";

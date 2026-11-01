@@ -22,14 +22,11 @@ from main.domain.learning.dto.lesson_dto import (
     SaveResultRequestDto,
     SaveResultResponseDto,
     SeedResponseDto,
-<<<<<<< HEAD
 
-
-=======
     StartProgressRequestDto,
     StartProgressResponseDto,
     # 가령: 260422: 수정 내용 - 문장 시드 응답 DTO import
->>>>>>> 31124cf78062457749f2ede9ec38fe26fcd1877e
+
     SeedSentencesResponseDto,
     # 가령: 260422: 수정 내용 - 문장+수어어순단어 응답 DTO import
     SentenceWithWordsResponseDto,
@@ -171,28 +168,42 @@ async def recognition_ws(ws: WebSocket):
         await ws.close()
         return
 
+    target = None
+    subcategory = None
     try:
         while True:
-            raw = await ws.receive_text()
+            message = await ws.receive()
+            if message["type"] == "websocket.disconnect":
+                return
+
+            if message.get("bytes") is not None:
+                # 바이너리 프레임: JPEG 바이트를 그대로 받는다 (base64 대비 전송량 약 33% 감소)
+                payload = message["bytes"]
+            else:
+                try:
+                    msg = json.loads(message.get("text") or "")
+                except json.JSONDecodeError:
+                    await ws.send_json({"type": "error", "message": "invalid json"})
+                    continue
+
+                # 연결 직후와 대상 변경 시 한 번만 보내는 설정 메시지
+                if msg.get("type") == "config":
+                    target = msg.get("target")
+                    subcategory = msg.get("subcategory")
+                    continue
+
+                # 하위 호환: 기존 base64 프레임 메시지
+                if msg.get("type") != "frame":
+                    continue
+                target = msg.get("target", target)
+                # 26.05.07 : 가령 : 수정 내용 - 지문자 자음/모음 후보군 필터링용 subcategory 수신
+                subcategory = msg.get("subcategory", subcategory)
+                payload = msg.get("image", "")
+                if "," in payload:
+                    payload = payload.split(",", 1)[1]
+
             try:
-                msg = json.loads(raw)
-            except json.JSONDecodeError:
-                await ws.send_json({"type": "error", "message": "invalid json"})
-                continue
-
-            if msg.get("type") != "frame":
-                continue
-
-            image_b64 = msg.get("image", "")
-            target = msg.get("target")
-            # 26.05.07 : 가령 : 수정 내용 - 지문자 자음/모음 후보군 필터링용 subcategory 수신
-            subcategory = msg.get("subcategory")
-
-            if "," in image_b64:
-                image_b64 = image_b64.split(",", 1)[1]
-
-            try:
-                img_bytes = base64.b64decode(image_b64)
+                img_bytes = payload if isinstance(payload, bytes) else base64.b64decode(payload)
                 arr = np.frombuffer(img_bytes, dtype=np.uint8)
                 frame = cv2.imdecode(arr, cv2.IMREAD_COLOR)
                 if frame is None:

@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (confirm('로그아웃 하시겠습니까?')) {
                 document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
                 document.cookie = "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                await fetch('/api/v1/auth/logout', { method: 'GET', credentials: 'include' });
+                await fetch('api/v1/auth/logout', { method: 'GET', credentials: 'include' });
                 alert('로그아웃 되었습니다.');
                 location.href = 'home.html';
             }

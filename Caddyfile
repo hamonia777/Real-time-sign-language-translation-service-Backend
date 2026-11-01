@@ -1,0 +1,17 @@
+# HTTPS 인증서(Let's Encrypt)는 Caddy 가 자동으로 발급·갱신한다.
+signlanguagelab.scarlett-project.cloud {
+	encode gzip
+
+	# 도메인 루트는 사용하지 않으므로 서비스 경로로 보낸다
+	redir / /sign/ 302
+	redir /sign /sign/ 308
+
+	# /sign/ 을 떼고 앱으로 전달한다 (WebSocket 포함)
+	handle_path /sign/* {
+		reverse_proxy app:8000
+	}
+
+	handle {
+		respond "Not Found" 404
+	}
+}

@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (confirm('로그아웃 하시겠습니까?')) {
                 document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
                 document.cookie = "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                await fetch('/api/v1/auth/logout', { method: 'GET', credentials: 'include' });
+                await fetch('api/v1/auth/logout', { method: 'GET', credentials: 'include' });
                 alert('로그아웃 되었습니다.');
                 location.href = 'home.html';
             }
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 현재 저장된 프로필 사진 및 닉네임 불러오기
     if (token) {
-        fetch('/api/v1/profile/photo', {
+        fetch('api/v1/profile/photo', {
             headers: { 'Authorization': `Bearer ${token}` }
         })
         .then(res => res.ok ? res.json() : null)
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(() => {});
 
-        // fetch('/api/v1/profile/me', {
+        // fetch('api/v1/profile/me', {
         //     headers: { 'Authorization': `Bearer ${token}` }
         // })
         // .then(res => res.ok ? res.json() : null)
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
         //     }
         // })
         // .catch(() => {});
-        fetch('/api/v1/profile/me', {
+        fetch('api/v1/profile/me', {
             headers: { 'Authorization': `Bearer ${token}` }
         })
         .then(res => res.ok ? res.json() : null)
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('file', file);
 
             try {
-                const res = await fetch('/api/v1/profile/photo', {
+                const res = await fetch('api/v1/profile/photo', {
                     method: 'PATCH',
                     headers: { 'Authorization': `Bearer ${token}` },
                     body: formData,
@@ -202,12 +202,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 7일 제한 여부 서버에서 확인
         if (token) {
-            fetch('/api/v1/profile/nickname/check?nickname=__dummy_check__', {
+            fetch('api/v1/profile/nickname/check?nickname=__dummy_check__', {
                 headers: { 'Authorization': `Bearer ${token}` }
             }).catch(() => {});
 
             // 현재 프로필 조회로 nickname_updated_at 확인
-            fetch('/api/v1/profile/me', {
+            fetch('api/v1/profile/me', {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
             .then(res => res.ok ? res.json() : null)
@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             try {
-                const res = await fetch(`/api/v1/profile/nickname/check?nickname=${encodeURIComponent(val)}`);
+                const res = await fetch(`api/v1/profile/nickname/check?nickname=${encodeURIComponent(val)}`);
                 const data = await res.json();
                 if (data.is_available) {
                     nicknameCheckMsg.textContent = '사용 가능한 닉네임입니다.';
@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!token) { alert('로그인이 필요합니다.'); return; }
 
             try {
-                const res = await fetch('/api/v1/profile/nickname', {
+                const res = await fetch('api/v1/profile/nickname', {
                     method: 'PATCH',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -457,8 +457,8 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const authHeaders = { 'Authorization': `Bearer ${token}` };
             const [completedRes, inProgressRes] = await Promise.all([
-                fetch('/api/v1/profile/learning/completed', { headers: authHeaders }),
-                fetch('/api/v1/profile/learning/in-progress', { headers: authHeaders }),
+                fetch('api/v1/profile/learning/completed', { headers: authHeaders }),
+                fetch('api/v1/profile/learning/in-progress', { headers: authHeaders }),
             ]);
             if (completedRes.status === 401 || inProgressRes.status === 401) {
                 alert('로그인이 필요합니다.');
@@ -531,7 +531,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 26.4.30 : 가령 : 수정 내용 - 마이페이지 진입 시 서버에서 학습 바구니 목록 조회
     async function loadLearningBasket() {
         try {
-            const res = await fetch('/api/v1/profile/basket', {
+            const res = await fetch('api/v1/profile/basket', {
                 headers: { 'Authorization': `Bearer ${token}` },
             });
             if (res.status === 401) {
@@ -551,7 +551,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function removeLearningBasket(basketId) {
         if (!confirm('학습 바구니에서 삭제하시겠습니까?')) return;
         try {
-            const res = await fetch(`/api/v1/learning/basket/${basketId}`, {
+            const res = await fetch(`api/v1/learning/basket/${basketId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` },
             });
@@ -650,7 +650,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadAchievement() {
         try {
-            const res = await fetch('/api/v1/profile/achievement', {
+            const res = await fetch('api/v1/profile/achievement', {
                 headers: { 'Authorization': `Bearer ${token}` },
             });
             if (res.status === 401) {
@@ -693,7 +693,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const notifToggle = document.getElementById('kakaoNotif');
     if (notifToggle && token) {
         // 현재 알림 상태 서버에서 조회
-        fetch('/api/v1/profile/notification/status', {
+        fetch('api/v1/profile/notification/status', {
             headers: { 'Authorization': `Bearer ${token}` }
         })
         .then(res => res.ok ? res.json() : null)
@@ -706,14 +706,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.target.checked) {
                 // ON: 카카오 talk_message 동의 페이지로 이동
                 if (confirm('카카오톡 학습 알림을 받으려면 카카오 메시지 권한 동의가 필요합니다.\n동의 페이지로 이동하시겠습니까?')) {
-                    location.href = '/api/v1/auth/kakao/notification/enable';
+                    location.href = 'api/v1/auth/kakao/notification/enable';
                 } else {
                     e.target.checked = false;
                 }
             } else {
                 // OFF: 알림 비활성화 API 호출
                 try {
-                    const res = await fetch('/api/v1/profile/notification/disable', {
+                    const res = await fetch('api/v1/profile/notification/disable', {
                         method: 'PATCH',
                         headers: { 'Authorization': `Bearer ${token}` },
                     });
@@ -732,7 +732,7 @@ document.addEventListener('DOMContentLoaded', () => {
             notifTestBtn.textContent = '발송 중...';
             notifTestBtn.disabled = true;
             try {
-                const res = await fetch('/api/v1/profile/notification/test', {
+                const res = await fetch('api/v1/profile/notification/test', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}` },
                 });
@@ -759,7 +759,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (confirm('로그아웃 하시겠습니까?')) {
                 document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
                 document.cookie = "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                await fetch('/api/v1/auth/logout', { method: 'GET', credentials: 'include' });
+                await fetch('api/v1/auth/logout', { method: 'GET', credentials: 'include' });
                 alert('로그아웃 되었습니다.');
                 location.href = 'home.html';
             }

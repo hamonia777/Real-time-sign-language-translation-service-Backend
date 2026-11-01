@@ -6,6 +6,8 @@ class Settings(BaseSettings):
     model_config = ConfigDict(env_file=".env", case_sensitive=False)
     
     PROJECT_NAME: str = "Sign Language Translator API"
+    # 하위 경로 배포 시 앞에 붙는 경로 (예: "/sign"). 로컬은 빈 값.
+    APP_BASE_PATH: str = ""
     CORS_ORIGINS: list[str] = ["*"]
     
     DB_USER: str
@@ -21,7 +23,10 @@ class Settings(BaseSettings):
     KAKAO_REST_API_KEY: str
     KAKAO_REDIRECT_URI: str
     KAKAO_CLIENT_SECRET: str
-    
+
+    # 카카오 토큰 등 DB 저장 민감정보 암호화 키 (Fernet). 생성: Fernet.generate_key()
+    TOKEN_ENCRYPTION_KEY: str
+
     REDIS_HOST: str
     REDIS_PORT: int = 6379
 
